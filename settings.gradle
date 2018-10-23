@@ -1,0 +1,6 @@
+rootProject.name = 'lab2'
+
+include 'services/flightService'
+include 'services/ticketService'
+include 'services/routeService'
+include 'services/gateway'

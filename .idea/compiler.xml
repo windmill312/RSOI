@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="services_flightService_main" target="1.8" />
+      <module name="services_flightService_test" target="1.8" />
+      <module name="services_gateway_main" target="1.8" />
+      <module name="services_gateway_test" target="1.8" />
+      <module name="services_routeService_main" target="1.8" />
+      <module name="services_routeService_test" target="1.8" />
+      <module name="services_ticketService_main" target="1.8" />
+      <module name="services_ticketService_test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
