@@ -1,23 +1,9 @@
 package rsoi.lab2.gateway;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.json.JSONArray;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import rsoi.lab2.gateway.model.FlightInfo;
-import rsoi.lab2.gateway.model.RouteInfo;
-import rsoi.lab2.gateway.model.TicketInfo;
-
-
-import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -26,6 +12,7 @@ public class GatewayApplicationTests {
     @Test
     public void contextLoads() {
     }
+
     /*@Autowired
     private GatewayApplication application;
 
