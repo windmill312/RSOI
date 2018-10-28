@@ -26,8 +26,11 @@ repositories {
 
 dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
-    implementation('org.springframework.boot:spring-boot-starter-web')
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
+    compile "org.springframework.boot:spring-boot-starter-web"
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+    testCompile "org.springframework.restdocs:spring-restdocs-mockmvc"
+    testCompile "com.google.code.gson:gson:2.8.5"
+
     //testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'
 
     compile "org.postgresql:postgresql"

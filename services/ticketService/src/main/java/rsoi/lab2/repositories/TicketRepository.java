@@ -8,12 +8,10 @@ import java.util.List;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
-    @NonNull
     int countTicketsByIdFlight(int idFlight);
 
     void deleteTicketsByIdFlight(int idFlight);
 
-    @NonNull
     List<Ticket> findAllByIdFlight(int idFlight);
 
     @NonNull

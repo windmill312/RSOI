@@ -32,6 +32,7 @@ public class TicketServiceImpl implements TicketService {
         info.setClassType(ticket.getClassType());
         info.setIdPassenger(ticket.getIdPassenger());
         info.setIdFlight(ticket.getIdFlight());
+        info.setUid(ticket.getUid());
         return info;
     }
 

@@ -1,10 +1,7 @@
 package rsoi.lab2.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rsoi.lab2.entity.Ticket;
 import rsoi.lab2.model.PingResponse;
 import rsoi.lab2.model.TicketInfo;
@@ -16,7 +13,6 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/tickets")
 public class TicketController {
 
     Logger logger = Logger.getLogger(TicketController.class.getName());
@@ -24,19 +20,24 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
+    public TicketController(TicketService service) {
+        this.ticketService = service;
+    }
+
     @GetMapping("/ping")
     public PingResponse ping() {
         logger.info("Get \"ping\" request.");
         return new PingResponse("ok");
     }
 
-    @GetMapping
+    @GetMapping("/tickets")
     public List<TicketInfo> listTickets() {
-        logger.info("Get \"tickets\" request.");
         List<TicketInfo> list = null;
         try {
+            logger.info("Get \"tickets\" request.");
             list = ticketService.listAll();
-        }catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
         return list;
     }
 
@@ -47,42 +48,41 @@ public class TicketController {
         return ticketService.listFlightTickets(idFlight);
     }
 
-    @GetMapping(value = "/show",
+    @GetMapping(value = "/ticket",
             params = "idTicket")
     public TicketInfo getTicket(@RequestParam Integer idTicket) {
-        logger.info("Get \"show\" request with param (idTicket=" + idTicket + ").");
+        logger.info("Get \"ticket\" request with param (idTicket=" + idTicket + ").");
         return ticketService.getTicketInfoById(idTicket);
     }
 
-    @GetMapping(
-            value = "/add",
-            params = {"classType", "idFlight", "idPassenger", "nnMaxTickets"}
+    @PutMapping(
+            params = {"nnMaxTickets"}
     )
-    public int add(@RequestParam String classType, @RequestParam int idFlight, @RequestParam int idPassenger, @RequestParam int nnMaxTickets) {
-            logger.info("Get \"add\" request with params (classType=" + classType + ", idFlight=" + idFlight +
-                    ", idPassenger=" + idPassenger + ").");
+    public int add(@RequestBody TicketInfo ticketInfo, @RequestParam int nnMaxTickets) {
+        logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", idFlight=" + ticketInfo.getIdFlight() +
+                ", idPassenger=" + ticketInfo.getIdPassenger() + ").");
             int count = 0;
             try {
-                count = ticketService.countFlightTickets(idFlight);
+                count = ticketService.countFlightTickets(ticketInfo.getIdFlight());
             }catch (Exception e) {
                 logger.info(e.getLocalizedMessage());
             }
+        try {
             logger.info("Method 'add': count=" + count);
             if (count < nnMaxTickets | count == 0) {
                 Ticket ticket = new Ticket();
-                ticket.setIdFlight(idFlight);
-                ticket.setIdPassenger(idPassenger);
-                ticket.setClassType(classType);
+                ticket.setIdFlight(ticketInfo.getIdFlight());
+                ticket.setIdPassenger(ticketInfo.getIdPassenger());
+                ticket.setClassType(ticketInfo.getClassType());
                 ticket.setUid(UUID.randomUUID());
-                try {
-                    ticketService.saveOrUpdate(ticket);
-                }catch (Exception e) {
-                    logger.info(e.getLocalizedMessage());
-                    return -2;
-                }
-                return count;
+                ticketService.saveOrUpdate(ticket);
+                return ticket.getIdTicket();
             } else
                 return -1;
+        } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return -2;
+        }
     }
 
     @GetMapping(
@@ -103,34 +103,28 @@ public class TicketController {
         return ticketService.countTicketsByFlightAndClassType(idFlight, classType);
     }
 
-    @GetMapping(
-            value = "/edit",
-            params = {"idTicket", "classType"}
-    )
-    public String edit(@RequestParam int idTicket,
-                       @RequestParam String classType) {
-        logger.info("Get \"edit\" request with params (idTicket=" + idTicket + ", classType=" + classType + ").");
-        Ticket ticket = ticketService.getTicketById(idTicket);
-        ticket.setClassType(classType);
+    @PatchMapping("/ticket")
+    public String edit(@RequestBody TicketInfo ticketInfo) {
+        logger.info("Get PATCH request (/edit) with params (idTicket=" + ticketInfo.getIdTicket() + ", classType=" + ticketInfo.getClassType() + ").");
+        Ticket ticket = ticketService.getTicketById(ticketInfo.getIdTicket());
+        ticket.setClassType(ticketInfo.getClassType());
         ticketService.saveOrUpdate(ticket);
         return "Done";
     }
 
-    @GetMapping(value = "/delete",
-            params = "idTicket")
-    public boolean delete(@RequestParam int idTicket) {
-        logger.info("Get \"delete\" request with param (idTicket=" + idTicket + ").");
+    @DeleteMapping("/ticket")
+    public String delete(@RequestBody int idTicket) {
+        logger.info("Get DELETE request (delete) with param (idTicket=" + idTicket + ").");
         ticketService.delete(idTicket);
-        return true;
+        return "Done";
     }
 
     @Transactional
-    @GetMapping(value = "/deleteFlightTickets",
-            params = "idFlight")
-    public boolean deleteFlightTickets(@RequestParam int idFlight) {
-        logger.info("Get \"deleteFlightTickets\" request with param (idFlight=" + idFlight + ").");
+    @DeleteMapping(value = "/tickets")
+    public String deleteFlightTickets(@RequestBody int idFlight) {
+        logger.info("Get DELETE request (deleteFlightTickets) with param (idFlight=" + idFlight + ").");
         ticketService.deleteFlightTickets(idFlight);
-        return true;
+        return "Done";
     }
 
 }
