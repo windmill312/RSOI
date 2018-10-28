@@ -9,9 +9,11 @@ public class Route {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id_route;
-    @Column(name = "nm_route")
+    private int idRoute;
+
+    @Column(name = "nmRoute")
     private String nmRoute;
+
     @Column
     private UUID uid;
 
@@ -24,7 +26,7 @@ public class Route {
     }
 
     public String getNmRoute() {
-        return nmRoute;
+        return this.nmRoute;
     }
 
     public void setNmRoute(String nmRoute) {
@@ -32,15 +34,15 @@ public class Route {
     }
 
     public int getIdRoute() {
-        return id_route;
+        return this.idRoute;
     }
 
-    public void setId_route(int id_route) {
-        this.id_route = id_route;
+    public void setIdRoute(int idRoute) {
+        this.idRoute = idRoute;
     }
 
     public UUID getUid() {
-        return uid;
+        return this.uid;
     }
 
     public void setUid(UUID uid) {

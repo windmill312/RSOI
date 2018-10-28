@@ -21,7 +21,7 @@ public interface RouteService {
     @Nullable
     List<RouteInfo> listAllByNmRoute(String nmRoute);
 
-    Route saveOrUpdate(Route ticket);
+    Route saveOrUpdate(Route route);
 
     void delete(int id);
 

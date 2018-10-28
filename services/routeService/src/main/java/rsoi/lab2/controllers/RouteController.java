@@ -12,13 +12,16 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/routes")
 public class RouteController {
 
     Logger logger = Logger.getLogger(RouteController.class.getName());
 
     @Autowired
-    private RouteService routeService;
+    public RouteService routeService;
+
+    public RouteController(RouteService service) {
+        this.routeService = service;
+    }
 
     @GetMapping("/ping")
     public PingResponse ping() {
@@ -26,13 +29,13 @@ public class RouteController {
         return new PingResponse("ok");
     }
 
-    @GetMapping
-    public List<RouteInfo> listTickets() {
+    @GetMapping("/routes")
+    public List<RouteInfo> getRoutes() {
         logger.info("Get \"routes\" request.");
         return routeService.listAll();
     }
 
-    @GetMapping(value = "/show",
+    @GetMapping(value = "/route",
             params = "idRoute",
             produces = "application/json")
     public RouteInfo getRoute(@RequestParam Integer idRoute) {
@@ -48,38 +51,46 @@ public class RouteController {
         return routeService.listAllByNmRoute(nmRoute);
     }
 
-    @GetMapping(
-            value = "/add",
-            params = "routeName"
-    )
-    public String add(@RequestParam String routeName) {
-        logger.info("Get \"add\" request with param (routeName=" + routeName + ").");
-        Route route = new Route();
-        route.setNmRoute(routeName);
-        route.setUid(UUID.randomUUID());
-        routeService.saveOrUpdate(route);
-        return "Done";
+    @PutMapping("/route")
+    public int add(@RequestBody RouteInfo route) {
+        try {
+            logger.info("Get PUT request (add) with param (routeName=" + route.getRouteName() + ").");
+            Route newRoute = new Route(route.getRouteName());
+            if (route.getIdRoute() != 0)
+                newRoute.setIdRoute(route.getIdRoute());
+            newRoute.setUid(UUID.randomUUID());
+            routeService.saveOrUpdate(newRoute);
+            return newRoute.getIdRoute();
+        } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return -1;
+        }
     }
 
-    @GetMapping(
-            value = "/edit",
-            params = {"idRoute", "nmRoute"}
-    )
-    public String edit(@RequestParam int idRoute,
-                       @RequestParam String nmRoute) {
-        logger.info("Get \"edit\" request with param (idRoute=" + idRoute + ", nmRoute=" + nmRoute + ").");
-        Route route = routeService.getRouteById(idRoute);
-        route.setNmRoute(nmRoute);
-        routeService.saveOrUpdate(route);
-        return "Done";
+    @PatchMapping("/route")
+    public String edit(@RequestBody Route route) {
+        try {
+            logger.info("Get PATCH request (edit) with param (idRoute=" + route.getIdRoute() + ", nmRoute=" + route.getNmRoute() + ").");
+            Route newRoute = routeService.getRouteById(route.getIdRoute());
+            newRoute.setNmRoute(route.getNmRoute());
+            routeService.saveOrUpdate(newRoute);
+            return "Done";
+        } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return "Server error";
+        }
     }
 
-    @GetMapping(value = "/delete",
-            params = "idRoute")
-    public boolean delete(@RequestParam String idRoute) {
-        logger.info("Get \"delete\" request with param (idRoute=" + idRoute + ").");
-        routeService.delete(Integer.valueOf(idRoute));
-        return true;
+    @DeleteMapping("/route")
+    public String delete(@RequestBody int idRoute) {
+        try {
+            logger.info("Get DELETE request (delete) with param (idRoute=" + idRoute + ").");
+            routeService.delete(idRoute);
+            return "Done";
+        } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return "Server error";
+        }
     }
 
 }

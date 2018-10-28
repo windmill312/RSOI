@@ -26,7 +26,7 @@ public class RouteServiceImpl implements RouteService {
 
     private RouteInfo buildRouteInfo(Route route) {
         RouteInfo info = new RouteInfo();
-        info.setId_route(route.getIdRoute());
+        info.setIdRoute(route.getIdRoute());
         info.setRouteName(route.getNmRoute());
         info.setUid(route.getUid());
         return info;

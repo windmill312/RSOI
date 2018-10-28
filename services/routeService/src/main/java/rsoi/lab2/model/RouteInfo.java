@@ -4,18 +4,18 @@ import java.util.UUID;
 
 public class RouteInfo {
 
-    private int id_route;
+    private int idRoute;
 
     private String nmRoute;
 
     private UUID uid;
 
-    public int getId_route() {
-        return id_route;
+    public int getIdRoute() {
+        return idRoute;
     }
 
-    public void setId_route(int id_route) {
-        this.id_route = id_route;
+    public void setIdRoute(int idRoute) {
+        this.idRoute = idRoute;
     }
 
     public String getRouteName() {
