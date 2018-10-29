@@ -1,6 +1,5 @@
 package rsoi.lab2.model;
 
-import java.sql.Timestamp;
 import java.util.UUID;
 
 public class FlightInfo {
@@ -11,7 +10,7 @@ public class FlightInfo {
 
     private int idRoute;
 
-    private Timestamp dtFlight;
+    private String dtFlight;
 
     private int nnTickets;
 
@@ -33,11 +32,11 @@ public class FlightInfo {
         this.idRoute = idRoute;
     }
 
-    public Timestamp getDtFlight() {
+    public String getDtFlight() {
         return dtFlight;
     }
 
-    public void setDtFlight(Timestamp dtFlight) {
+    public void setDtFlight(String dtFlight) {
         this.dtFlight = dtFlight;
     }
 

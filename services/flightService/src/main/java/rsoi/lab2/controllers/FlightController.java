@@ -16,12 +16,15 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 @RestController
-@RequestMapping("/flights")
 public class FlightController {
     Logger logger = Logger.getLogger(FlightController.class.getName());
 
     @Autowired
     private FlightService flightService;
+
+    public FlightController(FlightService service) {
+        this.flightService = service;
+    }
 
     @GetMapping(value = "/ping",
             produces = "application/json")
@@ -30,13 +33,15 @@ public class FlightController {
         return new PingResponse("ok");
     }
 
-    @GetMapping(produces = "application/json")
+
+    @GetMapping(value = "/flights",
+            produces = "application/json")
     public List<FlightInfo> listFlights() {
         logger.info("Get \"flights\" request.");
         return flightService.listAll();
     }
 
-    @GetMapping(value = "/show",
+    @GetMapping(value = "/flight",
             params = "idFlight",
             produces = "application/json")
     public FlightInfo getFlight(@RequestParam int idFlight) {
@@ -44,7 +49,7 @@ public class FlightController {
         return flightService.getFlightInfoById(idFlight);
     }
 
-    @GetMapping(value = "/routeFlights",
+    @GetMapping(value = "/flights",
             params = "idRoute",
             produces = "application/json")
     public List<FlightInfo> getRouteFlights(@RequestParam int idRoute) {
@@ -52,58 +57,69 @@ public class FlightController {
         return flightService.listRouteFlights(idRoute);
     }
 
-    @GetMapping(
-            value = "/add",
-            params = {"idRoute", "dtFlight", "maxTickets"}
-    )
-    public String add(@RequestParam int idRoute, @RequestParam String dtFlight, @RequestParam int maxTickets) {
-        logger.info("Get \"add\" request with param (idRoute=" + idRoute + ", dtFlight=" + dtFlight + ", maxTickets=" + maxTickets + ").");
+    @PutMapping("/flight")
+    public int add(@RequestBody FlightInfo flight) {
+        logger.info("Get PUT request (add) with param (idRoute=" + flight.getIdRoute()
+                + ", dtFlight=" + flight.getDtFlight() + ", maxTickets=" + flight.getMaxTickets() + ").");
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
-            Date parsedDate = dateFormat.parse(dtFlight);
+            Date parsedDate = dateFormat.parse(flight.getDtFlight());
             Timestamp timestamp = new Timestamp(parsedDate.getTime());
-            Flight flight = new Flight();
-            flight.setIdRoute(idRoute);
-            flight.setDtFlight(timestamp);
-            flight.setNnTickets(0);
-            flight.setMaxTickets(maxTickets);
-            flight.setUuid(UUID.randomUUID());
-            flightService.saveOrUpdate(flight);
+            Flight newFlight = new Flight();
+            if (flight.getIdFlight() != 0)
+                newFlight.setIdFlight(flight.getIdFlight());
+            newFlight.setIdRoute(flight.getIdRoute());
+            newFlight.setDtFlight(timestamp.toString());
+            newFlight.setNnTickets(0);
+            newFlight.setMaxTickets(flight.getMaxTickets());
+            newFlight.setUuid(UUID.randomUUID());
+            flightService.saveOrUpdate(newFlight);
+            return flight.getIdFlight();
         } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return -1;
+        }
+    }
+
+    @PatchMapping("/flight")
+    public String edit(@RequestBody FlightInfo newFlight) {
+        try {
+            logger.info("Get PATCH request (edit) with param (idFlight=" + newFlight.getIdFlight()
+                    + ", nnTickets=" + newFlight.getNnTickets() + ").");
+            Flight flight = flightService.getFlightById(newFlight.getIdFlight());
+            flight.setMaxTickets(newFlight.getNnTickets());
+            flightService.saveOrUpdate(flight);
+            return "Done";
+        } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return "Server error";
         }
 
-        return "Done";
-
     }
 
-    @GetMapping(
-            value = "/edit",
-            params = {"idFlight", "nnTickets"}
-    )
-    public boolean edit(@RequestParam int idFlight,
-                        @RequestParam int nnTickets) {
-        logger.info("Get \"edit\" request with param (idFlight=" + idFlight + ", nnTickets=" + nnTickets + ").");
-        Flight flight = flightService.getFlightById(idFlight);
-        flight.setMaxTickets(nnTickets);
-        flightService.saveOrUpdate(flight);
-        return true;
-    }
-
-    @GetMapping(value = "/delete",
-            params = "idFlight")
-    public boolean delete(@RequestParam int idFlight) {
-        logger.info("Get \"delete\" request with param (idFlight=" + idFlight + ").");
-        flightService.delete(idFlight);
-        return true;
+    @DeleteMapping("/flight")
+    public String delete(@RequestBody int idFlight) {
+        try {
+            logger.info("Get DELETE request (flight) with param (idFlight=" + idFlight + ").");
+            flightService.delete(idFlight);
+            return "Done";
+        } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return "Server error";
+        }
     }
 
     @Transactional
-    @GetMapping(value = "/deleteRouteFlights",
-            params = "idRoute")
-    public boolean deleteRouteFlights(@RequestParam int idRoute) {
-        logger.info("Get \"deleteRouteFlights\" request with param (idRoute=" + idRoute + ").");
+    @DeleteMapping("/flights")
+    public String deleteRouteFlights(@RequestBody int idRoute) {
+        try {
+            logger.info("Get DELETE request (flights) with param (idRoute=" + idRoute + ").");
         flightService.deleteRouteFlights(idRoute);
-        return true;
+            return "Done";
+        } catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
+            return "Server error";
+        }
     }
 
 }
