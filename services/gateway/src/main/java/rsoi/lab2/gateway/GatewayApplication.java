@@ -13,13 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import rsoi.lab2.gateway.model.FlightInfo;
+import rsoi.lab2.gateway.model.RouteInfo;
 import rsoi.lab2.gateway.model.TicketInfo;
 
 import java.io.IOException;
@@ -41,91 +39,305 @@ public class GatewayApplication {
     public RouteLocator myRoutes(RouteLocatorBuilder builder) {
         return builder.routes()
                 //Flights Service
-                .route("pingFlight", p -> p
-                        .path("/flights/ping")
-                        .uri("http://localhost:8083/flights/ping")
-                )
-                .route("addFlight", p -> p
-                        .path("/flights/add")
-                        .filters(f -> f.rewritePath("/flights/add(?<idRoute>,<dtFlight>,<maxTickets>)", "/flights/add?${idRoute},{dtFlight},{maxTickets}"))
-                        .uri("http://localhost:8083/flights/add")
-                )
-                .route("editFlight", p -> p
-                        .path("/flights/edit")
-                        .filters(f -> f.rewritePath("/flights/edit(?<idFlight>,<nnTickets>)", "/flights/edit?${idFlight},{nnTickets}"))
-                        .uri("http://localhost:8083/flights/edit")
+                .route("pingFlights", p -> p
+                        .path("/pingFlights")
+                        .uri("http://localhost:8083/ping")
                 )
                 .route("showFlight", p -> p
-                        .path("/flights/show")
-                        .filters(f -> f.rewritePath("/flights/show?<idFlight>", "/flights/show?${idFlight}"))
-                        .uri("http://localhost:8083/flights/show")
+                        .path("/flight")
+                        .filters(f -> f.rewritePath("/flight?<idFlight>", "/flight?${idFlight}"))
+                        .uri("http://localhost:8083/flight")
                 )
                 .route("flights", p -> p
                         .path("/flights")
-                        .uri("http://localhost:8083/flights/")
-                )
-                .route("deleteFlight", p -> p
-                        .path("/flights/delete")
-                        .filters(f -> f.rewritePath("/flights/delete?<idFlight>", "/flights/delete?${idFlight}"))
-                        .uri("http://localhost:8083/flights/delete")
+                        .uri("http://localhost:8083/flights")
                 )
                 //Routes Service
                 .route("pingRoutes", p -> p
-                        .path("/routes/ping")
-                        .uri("http://localhost:8082/routes/ping")
-                )
-                .route("addRoute", p -> p
-                        .path("/routes/add")
-                        .filters(f -> f.rewritePath("/routes/add?<routeName>", "/flights/add?${routeName}"))
-                        .uri("http://localhost:8082/routes/add")
-                )
-                .route("editRoute", p -> p
-                        .path("/routes/edit")
-                        .filters(f -> f.rewritePath("/routes/edit(?<idRoute>,<nmRoute>)", "/routes/edit?${idRoute},{nmRoute}"))
-                        .uri("http://localhost:8082/routes/edit")
+                        .path("/pingRoutes")
+                        .uri("http://localhost:8082/ping")
                 )
                 .route("showRoute", p -> p
-                        .path("/routes/show")
-                        .filters(f -> f.rewritePath("/routes/show?<idRoute>", "/routes/show?${idRoute}"))
-                        .uri("http://localhost:8082/routes/show")
+                        .path("/route")
+                        .filters(f -> f.rewritePath("/route?<idRoute>", "/route?${idRoute}"))
+                        .uri("http://localhost:8082/route")
                 )
                 .route("routes", p -> p
                         .path("/routes")
-                        .uri("http://localhost:8082/routes/")
+                        .uri("http://localhost:8082/routes")
                 )
                 //Tickets Service
                 .route("pingTickets", p -> p
-                        .path("/tickets/ping")
-                        .uri("http://localhost:8081/tickets/ping")
-                )
-                .route("editTicket", p -> p
-                        .path("/tickets/edit")
-                        .filters(f -> f.rewritePath("/tickets/edit(?<idTicket>,<classType>)", "/tickets/edit?${idTicket},{classType}"))
-                        .uri("http://localhost:8081/tickets/edit")
+                        .path("/pingTickets")
+                        .uri("http://localhost:8081/ping")
                 )
                 .route("showTicket", p -> p
-                        .path("/tickets/show")
-                        .filters(f -> f.rewritePath("/tickets/show?<idTicket>", "/tickets/show?${idTicket}"))
-                        .uri("http://localhost:8081/tickets/show")
+                        .path("/ticket")
+                        .filters(f -> f.rewritePath("/ticket?<idTicket>", "/ticket?${idTicket}"))
+                        .uri("http://localhost:8081/ticket")
                 )
                 .route("tickets", p -> p
                         .path("/tickets")
-                        .uri("http://localhost:8081/tickets/")
-                )
-                .route("deleteFlightTickets", p -> p
-                        .path("/tickets/deleteFlightTickets")
-                        .filters(f -> f.rewritePath("/tickets/deleteFlightTickets?<idFlight>", "/tickets/deleteFlightTickets?${idFlight}"))
-                        .uri("http://localhost:8081/tickets/deleteFlightTickets")
+                        .uri("http://localhost:8081/tickets")
                 )
                 .build();
     }
+
+    @PutMapping(value = "/ticket")
+    public String addTicket(@RequestBody TicketInfo ticketInfo) throws JsonProcessingException {
+        try {
+            logger.info("Get PUT request (addTicket)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8083/flight?idFlight=" + ticketInfo.getIdFlight();
+            ResponseEntity<?> responseNnTickets = restTemplate.getForEntity(resourceUrl, Object.class);
+            if (responseNnTickets.getStatusCode() == HttpStatus.OK) {
+                String flightObject = mapper.writeValueAsString(responseNnTickets.getBody());
+                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                FlightInfo flightInfo = gson.fromJson(flightObject, FlightInfo.class);
+                int nnTickets = flightInfo.getNnTickets();
+                logger.info("nnTickets = " + nnTickets);
+                int nnMaxTickets = flightInfo.getMaxTickets();
+                logger.info("nnMaxTickets = " + nnMaxTickets);
+                if (nnTickets < nnMaxTickets) {
+                    logger.info("PUT add ticket");
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+                    HttpEntity<TicketInfo> requestTicket = new HttpEntity<>(ticketInfo, headers);
+                    ResponseEntity<Integer> responseTicket = restTemplate.exchange("http://localhost:8081/ticket", HttpMethod.PUT, requestTicket, Integer.class);
+                    if (responseTicket.getStatusCode() == HttpStatus.OK && responseTicket.getBody() != -1) {
+                        logger.info("Ticket created with id " + responseTicket.getBody());
+                        flightInfo.setIdFlight(responseTicket.getBody());
+                        flightInfo.setNnTickets(flightInfo.getNnTickets() + 1);
+                        HttpEntity<FlightInfo> requestFlight = new HttpEntity<>(flightInfo, headers);
+                        ResponseEntity<String> responseFlight = restTemplate.exchange("http://localhost:8081/ticket", HttpMethod.PATCH, requestFlight, String.class);
+                        if (responseFlight.getStatusCode() == HttpStatus.OK && responseFlight.getBody() == "Done")
+                            return "Ticket created with id " + responseTicket.getBody();
+                        else
+                            return "Server error while incrementing nnTickets";
+                    } else
+                        return "Server error while creating new ticket";
+                } else
+                    return "There is no more tickets for this flight!";
+            } else
+                return "Server error while getting flight nnTickets";
+        } catch (JsonProcessingException ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @PutMapping(value = "/flight")
+    public String addFlight(@RequestBody FlightInfo flightInfo) throws Exception {
+        try {
+            logger.info("Get PUT request (addFlight)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8083/flight";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
+            ResponseEntity<Integer> response = restTemplate.exchange(resourceUrl, HttpMethod.PUT, request, Integer.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != -1)
+                return "Flight created with id " + response.getBody();
+            else {
+                logger.info("Server error while creating new flight");
+                return "Server error while creating new flight";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @PutMapping(value = "/route")
+    public String addRoute(@RequestBody RouteInfo routeInfo) throws Exception {
+        try {
+            logger.info("Get PUT request (addRoute)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8082/route";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<RouteInfo> request = new HttpEntity<>(routeInfo, headers);
+            ResponseEntity<Integer> response = restTemplate.exchange(resourceUrl, HttpMethod.PUT, request, Integer.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() != -1)
+                return "Route created with id " + response.getBody();
+            else {
+                logger.info("Server error while creating new route");
+                return "Server error while creating new route";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @PatchMapping(value = "/route")
+    public String editRoute(@RequestBody RouteInfo routeInfo) throws Exception {
+        try {
+            logger.info("Get PATCH request (editRoute)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8082/route";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<RouteInfo> request = new HttpEntity<>(routeInfo, headers);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PATCH, request, String.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() == "Done")
+                return "Route updated";
+            else {
+                logger.info("Server error while updating route");
+                return "Server error while updating route";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @PatchMapping(value = "/flight")
+    public String editFlight(@RequestBody FlightInfo flightInfo) throws Exception {
+        try {
+            logger.info("Get PATCH request (editFlight)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8083/flight";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PATCH, request, String.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() == "Done")
+                return "Flight updated";
+            else {
+                logger.info("Server error while updating flight");
+                return "Server error while updating flight";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @PatchMapping(value = "/ticket")
+    public String editTicket(@RequestBody TicketInfo ticketInfo) throws Exception {
+        try {
+            logger.info("Get PATCH request (editTicket)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8081/ticket";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<TicketInfo> request = new HttpEntity<>(ticketInfo, headers);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PATCH, request, String.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() == "Done")
+                return "Ticket updated";
+            else {
+                logger.info("Server error while updating ticket");
+                return "Server error while updating ticket";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @DeleteMapping(value = "/ticket")
+    public String deleteTicket(@RequestBody int idTicket) throws Exception {
+        try {
+            logger.info("Get DELETE request (deleteTicket)");
+            //get ticket
+            //save idFlight
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8081/ticket";
+            TicketInfo ticketInfo = new Gson().fromJson(mapper.writeValueAsString(restTemplate.getForEntity(resourceUrl, Object.class).getBody()), TicketInfo.class);
+            int idFlight = ticketInfo.getIdFlight();
+            //remove ticket
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<Integer> request = new HttpEntity<>(idTicket, headers);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() == "Done") {
+                //update flight
+                resourceUrl = "http://localhost:8083/flight?idFlight=" + idFlight;
+                ResponseEntity<?> responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
+                FlightInfo flightInfo = new Gson().fromJson(mapper.writeValueAsString(responseFlight.getBody()), FlightInfo.class);
+                flightInfo.setNnTickets(flightInfo.getNnTickets() - 1);
+                editFlight(flightInfo);
+                return "Ticket removed";
+            } else {
+                logger.info("Server error while removing ticket");
+                return "Server error while removing ticket";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @DeleteMapping(value = "/tickets")
+    public String deleteTickets(@RequestBody int idFlight) throws Exception {
+        try {
+            logger.info("Get DELETE request (deleteTickets)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8081/tickets";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<Integer> request = new HttpEntity<>(idFlight, headers);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() == "Done")
+                return "Tickets of flight" + idFlight + " removed";
+            else {
+                logger.info("Server error while removing tickets");
+                return "Server error while removing tickets";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
+    @DeleteMapping(value = "/route")
+    public String deleteRoute(@RequestBody RouteInfo routeInfo) throws Exception {
+        try {
+            logger.info("Get DELETE request (deleteRoute)");
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+            String resourceUrl = "http://localhost:8082/route";
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+            HttpEntity<RouteInfo> request = new HttpEntity<>(routeInfo, headers);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
+            if (response.getStatusCode() == HttpStatus.OK && response.getBody() == "Done")
+                return "Route removed";
+            else {
+                logger.info("Server error while removing route");
+                return "Server error while removing route";
+            }
+        } catch (Exception ex) {
+            logger.info(ex.getLocalizedMessage());
+            return "Server error because of exception (" + ex.getLocalizedMessage() + ")";
+        }
+    }
+
 
     @GetMapping(value = "/findFlightsAndTicketsByRoute",
             params = "idRoute",
             produces = "application/json")
     public String findFlightsAndTickets(@RequestParam int idRoute) throws IOException, JSONException {
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8083/flights/routeFlights?idRoute=" + idRoute;
+        String resourceUrl = "http://localhost:8083/flights?idRoute=" + idRoute;
         ResponseEntity<?> responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -141,7 +353,7 @@ public class GatewayApplication {
             JSONObject object = jsonFlightArray.getJSONObject(i);
             FlightInfo flightInfo = gson.fromJson(object.toString(), FlightInfo.class);
 
-            resourceUrl = "http://localhost:8081/tickets/flightTickets?idFlight=" + object.getString("idFlight");
+            resourceUrl = "http://localhost:8081/tickets?idFlight=" + object.getString("idFlight");
             ResponseEntity<?> responseTickets = restTemplate.getForEntity(resourceUrl, Object.class);
             String jsonTickets = mapper.writeValueAsString(responseTickets.getBody());
             JSONArray jsonTicketsArray = new JSONArray(jsonTickets);
@@ -150,136 +362,75 @@ public class GatewayApplication {
                 listTicketInfo.add(gson.fromJson(jsonTicketsArray.getJSONObject(j).toString(), TicketInfo.class));
             }
 
-            flightInfo.setListTickets(listTicketInfo);
+            flightInfo.setTickets(listTicketInfo);
             listFlightInfo.add(flightInfo);
         }
 
         return gson.toJson(listFlightInfo);
     }
 
-    @GetMapping(value = "/tickets/add",
-            params = {"classType", "idFlight", "idPassenger"})
-    public String addTickets(@RequestParam String classType, @RequestParam int idFlight, @RequestParam int idPassenger) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        String resourceUrl = "http://localhost:8083/flights/show?idFlight=" + idFlight;
-        ResponseEntity<?> responseNnTickets = restTemplate.getForEntity(resourceUrl, Object.class);
-        if (responseNnTickets.getStatusCode() == HttpStatus.OK) {
-            String flightObject = mapper.writeValueAsString(responseNnTickets.getBody());
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            FlightInfo flightJson = gson.fromJson(flightObject, FlightInfo.class);
-            int nnMaxTickets = flightJson.getMaxTickets();
-            logger.info("Method 'addTickets': nnMaxTickets=" + nnMaxTickets);
-
-            resourceUrl = "http://localhost:8081/tickets/add?classType=" + classType + "&idFlight=" + idFlight + "&idPassenger=" + idPassenger + "&nnMaxTickets=" + nnMaxTickets;
-            ResponseEntity<?> responseTicket = restTemplate.getForEntity(resourceUrl, Object.class);
-
-            int nnNewTicket = Integer.valueOf(responseTicket.getBody().toString()).intValue();
-            logger.info("Method 'addTickets': nnNewTicket=" + nnNewTicket);
-
-            if (nnNewTicket != -1) {
-                resourceUrl = "http://localhost:8083/flights/edit?idFlight=" + idFlight + "&nnTickets=" + (nnNewTicket + 1);
-                ResponseEntity<?> responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
-                String flightRequest = mapper.writeValueAsString(responseFlight.getBody());
-                if (flightRequest.equals("true"))
-                    return "Done";
-                else
-                    return "Server error";
-            } else
-                return "There is no more tickets for this flight!";
-        } else
-            return "Server error";
-    }
-
-    @GetMapping(value = "/tickets/delete",
-            params = {"idTicket"})
-    public String deleteTicket(@RequestParam int idTicket) throws JsonProcessingException {
-        RestTemplate restTemplate = new RestTemplate();
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        String resourceUrl = "http://localhost:8081/tickets/show?idTicket=" + idTicket;
-        ResponseEntity<?> responseTicket = restTemplate.getForEntity(resourceUrl, Object.class);
-        String ticketObject = mapper.writeValueAsString(responseTicket.getBody());
-        if (ticketObject == "-1")
-            return "There is no tickets";
-        else {
-            TicketInfo ticketInfo = new GsonBuilder().setPrettyPrinting().create().fromJson(ticketObject, TicketInfo.class);
-
-            resourceUrl = "http://localhost:8081/tickets/countTickets?idFlight=" + ticketInfo.getIdFlight();
-            ResponseEntity<?> nnTicketsResponse = restTemplate.getForEntity(resourceUrl, Object.class);
-            String nnTickets = mapper.writeValueAsString(nnTicketsResponse.getBody());
-
-            resourceUrl = "http://localhost:8081/tickets/delete?idTicket=" + idTicket;
-            ResponseEntity<?> deleteResponse = restTemplate.getForEntity(resourceUrl, Object.class);
-            if (deleteResponse.getStatusCode() == HttpStatus.OK) {
-                resourceUrl = "http://localhost:8083/flights/edit?idFlight=" + ticketInfo.getIdFlight() + "&nnTickets=" + (Integer.valueOf(nnTickets).intValue() - 1);
-                ResponseEntity<?> responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
-                String flightRequest = responseFlight.getBody().toString();
-
-                if (flightRequest.equals("true"))
-                    return "Done";
-                else
-                    return "Server error";
-            } else
-                return "Server error!";
-        }
-    }
-
-    @GetMapping(value = "/flights/delete",
-            params = {"idFlight"})
+    @DeleteMapping("/flights")
     public String deleteFlight(@RequestParam int idFlight) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        String resourceUrl = "http://localhost:8081/tickets/deleteFlightTickets?idFlight=" + idFlight;
-        ResponseEntity<?> responseTicketsDelete = restTemplate.getForEntity(resourceUrl, Object.class);
-        String ticketObject = responseTicketsDelete.getBody().toString();
-        if (ticketObject == "true") {
-            resourceUrl = "http://localhost:8083/flights/delete?idFlight=" + idFlight;
-            ResponseEntity<?> responseFlightDelete = restTemplate.getForEntity(resourceUrl, Object.class);
-            String flightObject = responseFlightDelete.getBody().toString();
-            if (flightObject == "true")
-                return "Done";
+        String resourceUrl = "http://localhost:8081/tickets";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        HttpEntity<Integer> request = new HttpEntity<>(idFlight, headers);
+        ResponseEntity<String> responseTickets = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
+        if (responseTickets.getStatusCode() == HttpStatus.OK) {
+            resourceUrl = "http://localhost:8083/flight";
+            HttpEntity<Integer> requestFlight = new HttpEntity<>(idFlight, headers);
+            ResponseEntity<String> responseFlight = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestFlight, String.class);
+            if (responseFlight.getStatusCode() == HttpStatus.OK && responseFlight.getBody() == "Done")
+                return "Flight successfully removed";
             else
-                return "Service error!";
+                return "Service error while flight removing";
         } else
-            return "Service error!";
+            return "Service error while flight tickets removing";
     }
 
-    @GetMapping(value = "/routes/delete",
-            params = {"idRoute"})
-    public String deleteRoute(@RequestParam int idRoute) throws JSONException, JsonProcessingException {
+
+    @DeleteMapping("/route")
+    public String deleteRoute(@RequestBody int idRoute) throws JSONException, JsonProcessingException {
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8083/flights/routeFlights?idRoute=" + idRoute;
-        ResponseEntity<?> responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
+        String resourceUrl = "http://localhost:8083/flights?idRoute=" + idRoute;
+        ResponseEntity<?> responseFlights = restTemplate.getForEntity(resourceUrl, Object.class);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        String flight = mapper.writeValueAsString(responseFlight.getBody());
+        String flight = mapper.writeValueAsString(responseFlights.getBody());
 
         JSONArray jsonFlightArray = new JSONArray(flight);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
         for (int i = 0; i < jsonFlightArray.length(); i++) {
+            //removing flight tickets
             JSONObject flightObject = jsonFlightArray.getJSONObject(i);
-            resourceUrl = "http://localhost:8081/tickets/deleteFlightTickets?idFlight=" + flightObject.get("idFlight");
-            ResponseEntity<?> responseTicketsDelete = restTemplate.getForEntity(resourceUrl, Object.class);
-            if (responseTicketsDelete.getStatusCode() == HttpStatus.OK) {
-                resourceUrl = "http://localhost:8083/flights/delete?idFlight=" + flightObject.get("idFlight");
-                ResponseEntity<?> responseFlightDelete = restTemplate.getForEntity(resourceUrl, Object.class);
-                if (responseFlightDelete.getStatusCode() != HttpStatus.OK)
-                    return "Service error! (Flight service down)";
+            resourceUrl = "http://localhost:8081/tickets";
+            HttpEntity<Object> requestTickets = new HttpEntity<>(flightObject.get("idFlight"), headers);
+            ResponseEntity<String> responseTickets = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestTickets, String.class);
+            //removing flight
+            if (responseTickets.getStatusCode() == HttpStatus.OK && responseTickets.getBody() == "Done") {
+                logger.info("Tickets of flight " + flightObject.get("idFlight") + " successfully removed");
+                resourceUrl = "http://localhost:8083/flight";
+                HttpEntity<Object> requestFlight = new HttpEntity<>(flightObject.get("idFlight"), headers);
+                ResponseEntity<String> responseFlight = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestFlight, String.class);
+                if (responseFlights.getStatusCode() != HttpStatus.OK || responseFlight.getBody() != "Done")
+                    return "Service error while removing flight";
             } else
-                return "Service error! (Ticket service down)";
-
+                return "Service error while removing tickets";
         }
-
-        resourceUrl = "http://localhost:8082/routes/delete?idRoute=" + idRoute;
-        ResponseEntity<?> responseRouteDelete = restTemplate.getForEntity(resourceUrl, Object.class);
-        if (responseRouteDelete.getStatusCode() == HttpStatus.OK)
-            return "Done";
+        //removing route
+        resourceUrl = "http://localhost:8082/route";
+        HttpEntity<Object> requestRoute = new HttpEntity<>(idRoute, headers);
+        ResponseEntity<?> responseRoute = restTemplate.getForEntity(resourceUrl, Object.class);
+        if (responseRoute.getStatusCode() == HttpStatus.OK && responseRoute.getBody() == "Done")
+            return "Route successfully removed";
         else
-            return "Service error! (Route service down)";
-
+            return "Service error while removing route";
     }
 }

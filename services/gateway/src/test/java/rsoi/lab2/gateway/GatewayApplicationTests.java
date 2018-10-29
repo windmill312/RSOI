@@ -1,19 +1,23 @@
-package rsoi.lab2.gateway;
+/*package rsoi.lab2.gateway;
 
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class GatewayApplicationTests {
 
-    @Test
-    public void contextLoads() {
-    }
+    private final Gson gson = new Gson();
 
-    /*@Autowired
+    @Autowired
     private GatewayApplication application;
 
     private MockMvc mvc;
@@ -189,6 +193,6 @@ public class GatewayApplicationTests {
         String ticketJson = mvcResult
                 .getResponse().getContentAsString();
         assertTrue(ticketJson == "true");
-    }*/
+    }
 
-}
+}*/

@@ -1,18 +1,23 @@
 package rsoi.lab2.gateway.model;
 
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
 
 public class FlightInfo {
 
-    public List<TicketInfo> listTickets;
     private int idFlight;
+
     private UUID uid;
+
     private int idRoute;
-    private Timestamp dtFlight;
+
+    private String dtFlight;
+
     private int nnTickets;
+
     private int maxTickets;
+
+    private List<TicketInfo> tickets;
 
     public int getIdFlight() {
         return idFlight;
@@ -20,14 +25,6 @@ public class FlightInfo {
 
     public void setIdFlight(int idFlight) {
         this.idFlight = idFlight;
-    }
-
-    public List<TicketInfo> getListTickets() {
-        return listTickets;
-    }
-
-    public void setListTickets(List<TicketInfo> listTickets) {
-        this.listTickets = listTickets;
     }
 
     public int getIdRoute() {
@@ -38,11 +35,11 @@ public class FlightInfo {
         this.idRoute = idRoute;
     }
 
-    public Timestamp getDtFlight() {
+    public String getDtFlight() {
         return dtFlight;
     }
 
-    public void setDtFlight(Timestamp dtFlight) {
+    public void setDtFlight(String dtFlight) {
         this.dtFlight = dtFlight;
     }
 
@@ -68,5 +65,13 @@ public class FlightInfo {
 
     public void setUid(UUID uid) {
         this.uid = uid;
+    }
+
+    public List<TicketInfo> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<TicketInfo> tickets) {
+        this.tickets = tickets;
     }
 }
