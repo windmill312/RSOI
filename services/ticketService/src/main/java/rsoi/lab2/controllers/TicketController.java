@@ -55,33 +55,21 @@ public class TicketController {
         return ticketService.getTicketInfoById(idTicket);
     }
 
-    @PutMapping(
-            params = {"nnMaxTickets"}
-    )
-    public int add(@RequestBody TicketInfo ticketInfo, @RequestParam int nnMaxTickets) {
-        logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", idFlight=" + ticketInfo.getIdFlight() +
-                ", idPassenger=" + ticketInfo.getIdPassenger() + ").");
-            int count = 0;
-            try {
-                count = ticketService.countFlightTickets(ticketInfo.getIdFlight());
-            }catch (Exception e) {
-                logger.info(e.getLocalizedMessage());
-            }
+    @PutMapping("/ticket")
+    public int add(@RequestBody TicketInfo ticketInfo) {
         try {
-            logger.info("Method 'add': count=" + count);
-            if (count < nnMaxTickets | count == 0) {
-                Ticket ticket = new Ticket();
-                ticket.setIdFlight(ticketInfo.getIdFlight());
-                ticket.setIdPassenger(ticketInfo.getIdPassenger());
-                ticket.setClassType(ticketInfo.getClassType());
-                ticket.setUid(UUID.randomUUID());
-                ticketService.saveOrUpdate(ticket);
-                return ticket.getIdTicket();
-            } else
-                return -1;
+            logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", idFlight=" + ticketInfo.getIdFlight() +
+                    ", idPassenger=" + ticketInfo.getIdPassenger() + ").");
+            Ticket ticket = new Ticket();
+            ticket.setIdFlight(ticketInfo.getIdFlight());
+            ticket.setIdPassenger(ticketInfo.getIdPassenger());
+            ticket.setClassType(ticketInfo.getClassType());
+            ticket.setUid(UUID.randomUUID());
+            ticketService.saveOrUpdate(ticket);
+            return ticket.getIdTicket();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
-            return -2;
+            return -1;
         }
     }
 

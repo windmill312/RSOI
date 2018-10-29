@@ -17,14 +17,12 @@ import rsoi.lab2.model.PingResponse;
 import rsoi.lab2.model.TicketInfo;
 import rsoi.lab2.services.TicketService;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -134,18 +132,6 @@ public class TicketControllerTest {
     @Test
     public void addTicketTest() throws Exception {
 
-        List<TicketInfo> allTickets = new ArrayList<>();
-        given(service.listAll()).willReturn(allTickets);
-        given(service.countFlightTickets(5)).willReturn(0);
-
-        MvcResult mvcResult = mvc.perform(get("/countTickets")
-                .param("idFlight", "5")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        int count = Integer.parseInt(mvcResult.getResponse().getContentAsString());
-
         TicketInfo ticketInfo = new TicketInfo();
         ticketInfo.setClassType("ECONOMIC");
         ticketInfo.setIdFlight(5);
@@ -158,23 +144,15 @@ public class TicketControllerTest {
 
         given(service.saveOrUpdate(ticket)).willReturn(ticket);
 
-        mvc.perform(put("/ticket")
+        MvcResult mvcResult = mvc.perform(put("/ticket")
                 .content(gson.toJson(ticketInfo))
-                .param("nnMaxTickets", "2")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk());
-
-        given(service.countFlightTickets(5)).willReturn(1);
-
-        mvcResult = mvc.perform(get("/countTickets")
-                .param("idFlight", "5")
-                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        int countNew = Integer.parseInt(mvcResult.getResponse().getContentAsString());
+        int idTicket = Integer.parseInt(mvcResult.getResponse().getContentAsString());
 
-        assertEquals(count + 1, countNew);
+        assertNotEquals(idTicket, -1);
     }
 
     @Test
