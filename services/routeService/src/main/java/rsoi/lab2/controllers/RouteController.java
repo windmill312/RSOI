@@ -30,9 +30,13 @@ public class RouteController {
     }
 
     @GetMapping("/routes")
-    public List<RouteInfo> getRoutes() {
-        logger.info("Get \"routes\" request.");
-        return routeService.listAll();
+    public List<RouteInfo> getRoutes(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"routes\" request with params (page=" + page + ", size=" + size + ").");
+        List<RouteInfo> list = routeService.listAll();
+        if ((size * page) > list.size())
+            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+        else
+            return list.subList(size * (page - 1), size * page);
     }
 
     @GetMapping(value = "/route",
@@ -46,15 +50,19 @@ public class RouteController {
     @GetMapping(value = "/routes",
             params = "nmRoute",
             produces = "application/json")
-    public List<RouteInfo> getRoutes(@RequestParam String nmRoute) {
-        logger.info("Get \"routes\" request with param (nmRoute=" + nmRoute + ").");
-        return routeService.listAllByNmRoute(nmRoute);
+    public List<RouteInfo> getRoutes(@RequestParam String nmRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"routes\" request with param (nmRoute=" + nmRoute + ", page=" + page + ", size=" + size + ").");
+        List<RouteInfo> list = routeService.listAllByNmRoute(nmRoute);
+        if ((size * page) > list.size())
+            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+        else
+            return list.subList(size * (page - 1), size * page);
     }
 
     @PutMapping("/route")
     public int add(@RequestBody RouteInfo route) {
         try {
-            logger.info("Get PUT request (add) with param (routeName=" + route.getRouteName() + ").");
+            logger.info("Get PUT request (add) with params (routeName=" + route.getRouteName() + ", idRoute=" + route.getIdRoute() + ").");
             Route newRoute = new Route(route.getRouteName());
             if (route.getIdRoute() != 0)
                 newRoute.setIdRoute(route.getIdRoute());

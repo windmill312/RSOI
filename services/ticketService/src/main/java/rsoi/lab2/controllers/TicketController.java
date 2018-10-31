@@ -31,21 +31,23 @@ public class TicketController {
     }
 
     @GetMapping("/tickets")
-    public List<TicketInfo> listTickets() {
-        List<TicketInfo> list = null;
-        try {
-            logger.info("Get \"tickets\" request.");
-            list = ticketService.listAll();
-        } catch (Exception ex) {
-        }
-        return list;
+    public List<TicketInfo> listTickets(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"tickets\" request with params (page=" + page + ", size=" + size + ").");
+        List<TicketInfo> list = ticketService.listAll();
+        if ((size * page) > list.size())
+            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+        else
+            return list.subList(size * (page - 1), size * page);
     }
 
-    @GetMapping(value = "/flightTickets",
-            params = "idFlight")
-    public List<TicketInfo> getFlightTickets(@RequestParam Integer idFlight) {
-        logger.info("Get \"flightTickets\" request with param (idFlight=" + idFlight + ").");
-        return ticketService.listFlightTickets(idFlight);
+    @GetMapping("/flightTickets")
+    public List<TicketInfo> getFlightTickets(@RequestParam Integer idFlight, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"flightTickets\" request with param (idFlight=" + idFlight + ", page=" + page + ", size=" + size + ").");
+        List<TicketInfo> list = ticketService.listFlightTickets(idFlight);
+        if ((size * page) > list.size())
+            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+        else
+            return list.subList(size * (page - 1), size * page);
     }
 
     @GetMapping(value = "/ticket",
@@ -61,6 +63,8 @@ public class TicketController {
             logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", idFlight=" + ticketInfo.getIdFlight() +
                     ", idPassenger=" + ticketInfo.getIdPassenger() + ").");
             Ticket ticket = new Ticket();
+            if (ticketInfo.getIdTicket() != 0)
+                ticket.setIdTicket(ticketInfo.getIdTicket());
             ticket.setIdFlight(ticketInfo.getIdFlight());
             ticket.setIdPassenger(ticketInfo.getIdPassenger());
             ticket.setClassType(ticketInfo.getClassType());
@@ -93,7 +97,7 @@ public class TicketController {
 
     @PatchMapping("/ticket")
     public String edit(@RequestBody TicketInfo ticketInfo) {
-        logger.info("Get PATCH request (/edit) with params (idTicket=" + ticketInfo.getIdTicket() + ", classType=" + ticketInfo.getClassType() + ").");
+        logger.info("Get PATCH request (edit) with params (idTicket=" + ticketInfo.getIdTicket() + ", classType=" + ticketInfo.getClassType() + ").");
         Ticket ticket = ticketService.getTicketById(ticketInfo.getIdTicket());
         ticket.setClassType(ticketInfo.getClassType());
         ticketService.saveOrUpdate(ticket);

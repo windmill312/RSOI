@@ -36,9 +36,13 @@ public class FlightController {
 
     @GetMapping(value = "/flights",
             produces = "application/json")
-    public List<FlightInfo> listFlights() {
-        logger.info("Get \"flights\" request.");
-        return flightService.listAll();
+    public List<FlightInfo> listFlights(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"flights\" request with params (page=" + page + ", size=" + size + ").");
+        List<FlightInfo> list = flightService.listAll();
+        if ((size * page) > list.size())
+            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+        else
+            return list.subList(size * (page - 1), size * page);
     }
 
     @GetMapping(value = "/flight",
@@ -52,9 +56,13 @@ public class FlightController {
     @GetMapping(value = "/flights",
             params = "idRoute",
             produces = "application/json")
-    public List<FlightInfo> getRouteFlights(@RequestParam int idRoute) {
-        logger.info("Get \"routeFlights\" request with param (idRoute=" + idRoute + ").");
-        return flightService.listRouteFlights(idRoute);
+    public List<FlightInfo> getRouteFlights(@RequestParam int idRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"routeFlights\" request with param (idRoute=" + idRoute + ", page=" + page + ", size=" + size + ").");
+        List<FlightInfo> list = flightService.listRouteFlights(idRoute);
+        if ((size * page) > list.size())
+            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+        else
+            return list.subList(size * (page - 1), size * page);
     }
 
     @PutMapping("/flight")
