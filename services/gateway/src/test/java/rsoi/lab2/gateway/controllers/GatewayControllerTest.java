@@ -1,4 +1,4 @@
-package rsoi.lab2.gateway.controllers;
+/*package rsoi.lab2.gateway.controllers;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -151,4 +151,4 @@ public class GatewayControllerTest {
         assertTrue(controller.deleteRoute(idRoute).contains("Route successfully removed"));
 
     }
-}
+}*/
