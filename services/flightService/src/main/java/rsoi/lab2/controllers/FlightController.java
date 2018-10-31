@@ -74,7 +74,7 @@ public class FlightController {
             newFlight.setMaxTickets(flight.getMaxTickets());
             newFlight.setUuid(UUID.randomUUID());
             flightService.saveOrUpdate(newFlight);
-            return flight.getIdFlight();
+            return newFlight.getIdFlight();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
             return -1;
@@ -87,7 +87,7 @@ public class FlightController {
             logger.info("Get PATCH request (edit) with param (idFlight=" + newFlight.getIdFlight()
                     + ", nnTickets=" + newFlight.getNnTickets() + ").");
             Flight flight = flightService.getFlightById(newFlight.getIdFlight());
-            flight.setMaxTickets(newFlight.getNnTickets());
+            flight.setNnTickets(newFlight.getNnTickets());
             flightService.saveOrUpdate(flight);
             return "Done";
         } catch (Exception e) {

@@ -258,12 +258,12 @@ public class GatewayController {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String resourceUrl = "http://localhost:8082/route";
+            String resourceUrl = "http://localhost:8082/route?_method=patch";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<RouteInfo> request = new HttpEntity<>(routeInfo, headers);
-            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PATCH, request, String.class);
-            if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody().equals("Done"))
+            String response = restTemplate.postForObject(resourceUrl, request, String.class);
+            if (response.equals("Done"))
                 return "Route updated";
             else {
                 logger.info("Server error while updating route");
@@ -282,12 +282,12 @@ public class GatewayController {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String resourceUrl = "http://localhost:8083/flight";
+            String resourceUrl = "http://localhost:8083/flight?_method=patch";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
-            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PATCH, request, String.class);
-            if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody().equals("Done"))
+            String response = restTemplate.postForObject(resourceUrl, request, String.class);
+            if (response.equals("Done"))
                 return "Flight updated";
             else {
                 logger.info("Server error while updating flight");
@@ -310,8 +310,8 @@ public class GatewayController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<TicketInfo> request = new HttpEntity<>(ticketInfo, headers);
-            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PATCH, request, String.class);
-            if (response.getStatusCode().equals(HttpStatus.OK) && response.getBody().equals("Done"))
+            String response = restTemplate.postForObject(resourceUrl, request, String.class);
+            if (response.equals("Done"))
                 return "Ticket updated";
             else {
                 logger.info("Server error while updating ticket");
@@ -332,8 +332,10 @@ public class GatewayController {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String resourceUrl = "http://localhost:8081/ticket";
-            TicketInfo ticketInfo = new Gson().fromJson(mapper.writeValueAsString(restTemplate.getForEntity(resourceUrl, Object.class).getBody()), TicketInfo.class);
+            String resourceUrl = "http://localhost:8081/ticket?idTicket=" + idTicket;
+            ResponseEntity<String> responseTicket = restTemplate.getForEntity(resourceUrl, String.class);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            TicketInfo ticketInfo = gson.fromJson(responseTicket.getBody(), TicketInfo.class);
             int idFlight = ticketInfo.getIdFlight();
             //remove ticket
             HttpHeaders headers = new HttpHeaders();
@@ -359,19 +361,19 @@ public class GatewayController {
     }
 
     @DeleteMapping(value = "/tickets")
-    public String deleteTickets(@RequestBody int idFlight) {
+    public String deleteTickets(@RequestBody int idTicket) {
         try {
             logger.info("Get DELETE request (deleteTickets)");
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String resourceUrl = "http://localhost:8081/tickets";
+            String resourceUrl = "http://localhost:8081/ticket";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-            HttpEntity<Integer> request = new HttpEntity<>(idFlight, headers);
+            HttpEntity<Integer> request = new HttpEntity<>(idTicket, headers);
             ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
             if (response.getStatusCode() == HttpStatus.OK && response.getBody().equals("Done"))
-                return "Tickets of flight=" + idFlight + " removed";
+                return "Tickets of flight=" + idTicket + " removed";
             else {
                 logger.info("Server error while removing tickets");
                 return "Server error while removing tickets";
@@ -429,7 +431,7 @@ public class GatewayController {
                 JSONObject object = jsonFlightArray.getJSONObject(i);
                 FlightInfo flightInfo = gson.fromJson(object.toString(), FlightInfo.class);
 
-                resourceUrl = "http://localhost:8081/tickets?idFlight=" + object.getString("idFlight");
+                resourceUrl = "http://localhost:8081/tickets?idFlight=" + object.getInt("idFlight");
                 ResponseEntity<?> responseTickets = restTemplate.getForEntity(resourceUrl, Object.class);
                 String jsonTickets = mapper.writeValueAsString(responseTickets.getBody());
                 JSONArray jsonTicketsArray = new JSONArray(jsonTickets);
@@ -449,7 +451,7 @@ public class GatewayController {
         }
     }
 
-    @DeleteMapping(value = "/flights")
+    @DeleteMapping(value = "/flight")
     public String deleteFlight(@RequestBody int idFlight) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
