@@ -1,4 +1,4 @@
-package rsoi.lab2;
+/*package rsoi.lab2;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,4 +23,4 @@ public class Lab2ApplicationTests {
     public void contextLoads() {
     }
 
-}
+}*/

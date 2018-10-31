@@ -1,4 +1,4 @@
-package rsoi.lab2;
+/*package rsoi.lab2;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,4 +16,4 @@ public class Lab2ApplicationTests {
     public void contextLoads() {
     }
 
-}
+}*/
