@@ -1,6 +1,8 @@
 rootProject.name = 'lab2'
 
-include 'services/flightService'
-include 'services/ticketService'
-include 'services/routeService'
-include 'services/gateway'
+include 'backend/services/flightService'
+include 'backend/services/ticketService'
+include 'backend/services/routeService'
+include 'backend/services/gateway'
+include 'frontend/ui'
+
