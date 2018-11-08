@@ -1,21 +1,6 @@
-.button__container {
-    margin-top: 10px;
-    margin-left: 10px;
-    text-align: left;
-    width: 70%;
-}
-
 .content_container {
     margin-top: 50px;
-    margin-left: 300px;
+    margin-left: 200px;
     width: 70%;
     text-align: center;
-}
-
-.deleteButton {
-    background: red;
-}
-
-.table {
-    display: none;
 }
