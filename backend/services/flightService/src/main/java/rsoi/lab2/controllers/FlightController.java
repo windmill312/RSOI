@@ -70,7 +70,7 @@ public class FlightController {
         logger.info("Get PUT request (add) with param (idRoute=" + flight.getIdRoute()
                 + ", dtFlight=" + flight.getDtFlight() + ", maxTickets=" + flight.getMaxTickets() + ").");
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date parsedDate = dateFormat.parse(flight.getDtFlight());
             Timestamp timestamp = new Timestamp(parsedDate.getTime());
             Flight newFlight = new Flight();

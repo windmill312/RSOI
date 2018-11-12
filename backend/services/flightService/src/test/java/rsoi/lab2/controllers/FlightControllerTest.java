@@ -61,7 +61,7 @@ public class FlightControllerTest {
         flightInfo.setMaxTickets(5);
         flightInfo.setIdRoute(1);
         flightInfo.setUid(UUID.randomUUID());
-        flightInfo.setDtFlight("01.05.2018 12:10:55");
+        flightInfo.setDtFlight("2018-07-12 12:10");
 
         List<FlightInfo> allTickets = Arrays.asList(flightInfo);
 
@@ -83,7 +83,7 @@ public class FlightControllerTest {
         flightInfo.setMaxTickets(5);
         flightInfo.setIdRoute(1);
         flightInfo.setUid(UUID.randomUUID());
-        flightInfo.setDtFlight("01.05.2018 12:10:55");
+        flightInfo.setDtFlight("2018-07-12 12:10");
 
         /*Flight flight = new Flight();
         flight.setIdFlight(10);
@@ -114,7 +114,7 @@ public class FlightControllerTest {
         flightInfo1.setMaxTickets(5);
         flightInfo1.setIdRoute(1);
         flightInfo1.setUid(UUID.randomUUID());
-        flightInfo1.setDtFlight("01.05.2018 12:10:55");
+        flightInfo1.setDtFlight("2018-07-12 12:10");
 
         FlightInfo flightInfo2 = new FlightInfo();
         flightInfo2.setIdFlight(11);
@@ -122,7 +122,7 @@ public class FlightControllerTest {
         flightInfo2.setMaxTickets(5);
         flightInfo2.setIdRoute(1);
         flightInfo2.setUid(UUID.randomUUID());
-        flightInfo2.setDtFlight("01.06.2018 13:10:55");
+        flightInfo2.setDtFlight("2018-07-12 12:10");
 
         List<FlightInfo> allTickets = Arrays.asList(flightInfo1, flightInfo2);
         given(service.listRouteFlights(1)).willReturn(allTickets);
@@ -150,7 +150,7 @@ public class FlightControllerTest {
         flightInfo.setMaxTickets(5);
         flightInfo.setIdRoute(1);
         flightInfo.setUid(UUID.randomUUID());
-        flightInfo.setDtFlight("01.05.2018 12:10:55");
+        flightInfo.setDtFlight("2018-07-12 12:10");
 
         Flight flight = new Flight();
         flight.setIdFlight(10);
@@ -158,7 +158,7 @@ public class FlightControllerTest {
         flight.setMaxTickets(5);
         flight.setIdRoute(1);
         flight.setUuid(UUID.randomUUID());
-        flight.setDtFlight("01.05.2018 12:10:55");
+        flight.setDtFlight("2018-07-12 12:10");
 
         given(service.saveOrUpdate(flight)).willReturn(flight);
 
@@ -178,7 +178,7 @@ public class FlightControllerTest {
         flightInfo.setMaxTickets(5);
         flightInfo.setIdRoute(1);
         flightInfo.setUid(UUID.randomUUID());
-        flightInfo.setDtFlight("01.05.2018 12:10:55");
+        flightInfo.setDtFlight("2018-07-12 12:10");
 
         Flight flight = new Flight();
         flight.setIdFlight(10);
@@ -186,7 +186,7 @@ public class FlightControllerTest {
         flight.setMaxTickets(5);
         flight.setIdRoute(1);
         flight.setUuid(UUID.randomUUID());
-        flight.setDtFlight("01.05.2018 12:10:55");
+        flight.setDtFlight("2018-07-12 12:10");
 
 
         given(service.getFlightById(10)).willReturn(flight);

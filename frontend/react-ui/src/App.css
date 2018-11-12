@@ -1,6 +1,10 @@
 .content_container {
-    margin-top: 50px;
-    margin-left: 200px;
-    width: 70%;
-    text-align: center;
+    margin-top: 25px;
+    margin-left: 100px;
+    margin-right: 100px;
+    text-align: left;
+
+}
+.lblIdPassenger {
+    text-align: left;
 }
