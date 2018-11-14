@@ -166,7 +166,7 @@ public class FlightControllerTest {
                 .content(gson.toJson(flightInfo))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(String.valueOf(flightInfo.getIdFlight())));
+                .andExpect(content().json(new Gson().toJson(flightInfo.getIdFlight())));
     }
 
     @Test
@@ -195,8 +195,7 @@ public class FlightControllerTest {
         mvc.perform(patch("/flight")
                 .content(gson.toJson(flightInfo))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Done"));
+                .andExpect(status().isOk());
 
     }
 
@@ -207,9 +206,7 @@ public class FlightControllerTest {
         mvc.perform(delete("/flight")
                 .content("10")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Done"));
-
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -219,8 +216,6 @@ public class FlightControllerTest {
         mvc.perform(delete("/flights")
                 .content("1")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Done"));
-
+                .andExpect(status().isOk());
     }
 }

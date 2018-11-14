@@ -203,7 +203,7 @@ public class GatewayController {
     }
 
     @PutMapping(value = "/flight")
-    public String addFlight(@RequestBody FlightInfo flightInfo) {
+    public ResponseEntity addFlight(@RequestBody FlightInfo flightInfo) {
         try {
             logger.info("Get PUT request (addFlight)");
             RestTemplate restTemplate = new RestTemplate();

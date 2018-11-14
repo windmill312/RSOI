@@ -1,6 +1,8 @@
 package rsoi.lab2.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import rsoi.lab2.entity.Flight;
@@ -14,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+import com.google.gson.Gson;
 
 @RestController
 public class FlightController {
@@ -66,7 +69,7 @@ public class FlightController {
     }
 
     @PutMapping("/flight")
-    public int add(@RequestBody FlightInfo flight) {
+    public ResponseEntity<String> add(@RequestBody FlightInfo flight) {
         logger.info("Get PUT request (add) with param (idRoute=" + flight.getIdRoute()
                 + ", dtFlight=" + flight.getDtFlight() + ", maxTickets=" + flight.getMaxTickets() + ").");
         try {
@@ -82,51 +85,51 @@ public class FlightController {
             newFlight.setMaxTickets(flight.getMaxTickets());
             newFlight.setUuid(UUID.randomUUID());
             flightService.saveOrUpdate(newFlight);
-            return newFlight.getIdFlight();
+            return new ResponseEntity<>(new Gson().toJson(newFlight.getIdFlight()), HttpStatus.OK);
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
-            return -1;
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PatchMapping("/flight")
-    public String edit(@RequestBody FlightInfo newFlight) {
+    public ResponseEntity edit(@RequestBody FlightInfo newFlight) {
         try {
             logger.info("Get PATCH request (edit) with param (idFlight=" + newFlight.getIdFlight()
                     + ", nnTickets=" + newFlight.getNnTickets() + ").");
             Flight flight = flightService.getFlightById(newFlight.getIdFlight());
             flight.setNnTickets(newFlight.getNnTickets());
             flightService.saveOrUpdate(flight);
-            return "Done";
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
-            return "Server error";
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @DeleteMapping("/flight")
-    public String delete(@RequestBody int idFlight) {
+    public ResponseEntity delete(@RequestBody int idFlight) {
         try {
             logger.info("Get DELETE request (flight) with param (idFlight=" + idFlight + ").");
             flightService.delete(idFlight);
-            return "Done";
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
-            return "Server error";
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Transactional
     @DeleteMapping("/flights")
-    public String deleteRouteFlights(@RequestBody int idRoute) {
+    public ResponseEntity deleteRouteFlights(@RequestBody int idRoute) {
         try {
             logger.info("Get DELETE request (flights) with param (idRoute=" + idRoute + ").");
             flightService.deleteRouteFlights(idRoute);
-            return "Done";
+            return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
-            return "Server error";
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
