@@ -31,41 +31,41 @@ public class FlightController {
 
     @GetMapping(value = "/ping",
             produces = "application/json")
-    public PingResponse ping() {
+    public ResponseEntity<PingResponse> ping() {
         logger.info("Get \"ping\" request.");
-        return new PingResponse("ok");
+        return ResponseEntity.ok().build();
     }
 
 
     @GetMapping(value = "/flights",
             produces = "application/json")
-    public List<FlightInfo> listFlights(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+    public ResponseEntity<List<FlightInfo>> listFlights(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get \"flights\" request with params (page=" + page + ", size=" + size + ").");
         List<FlightInfo> list = flightService.listAll();
         if ((size * page) > list.size())
-            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+            return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
         else
-            return list.subList(size * (page - 1), size * page);
+            return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
     }
 
     @GetMapping(value = "/flight",
             params = "idFlight",
             produces = "application/json")
-    public FlightInfo getFlight(@RequestParam int idFlight) {
+    public ResponseEntity<FlightInfo> getFlight(@RequestParam int idFlight) {
         logger.info("Get \"show\" request with param (idFlight=" + idFlight + ").");
-        return flightService.getFlightInfoById(idFlight);
+        return ResponseEntity.ok(flightService.getFlightInfoById(idFlight));
     }
 
     @GetMapping(value = "/flights",
             params = "idRoute",
             produces = "application/json")
-    public List<FlightInfo> getRouteFlights(@RequestParam int idRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+    public ResponseEntity<List<FlightInfo>> getRouteFlights(@RequestParam int idRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get \"routeFlights\" request with param (idRoute=" + idRoute + ", page=" + page + ", size=" + size + ").");
         List<FlightInfo> list = flightService.listRouteFlights(idRoute);
         if ((size * page) > list.size())
-            return list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size()));
+            return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
         else
-            return list.subList(size * (page - 1), size * page);
+            return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
     }
 
     @PutMapping("/flight")
@@ -116,8 +116,9 @@ public class FlightController {
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+
     }
 
     @Transactional
@@ -129,7 +130,7 @@ public class FlightController {
             return new ResponseEntity(HttpStatus.OK);
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
-            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
