@@ -323,7 +323,7 @@ public class GatewayController {
     }
 
     @DeleteMapping(value = "/ticket")
-    public String deleteTicket(@RequestBody int idTicket) {
+    public String deleteTicket(@RequestParam int idTicket) {
         try {
             logger.info("Get DELETE request (deleteTicket)");
             //get ticket
