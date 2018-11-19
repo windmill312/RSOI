@@ -110,6 +110,7 @@ public class FlightController {
 
     }
 
+    @Transactional
     @DeleteMapping("/flight")
     public ResponseEntity delete(@RequestBody String uidFlight) {
         try {

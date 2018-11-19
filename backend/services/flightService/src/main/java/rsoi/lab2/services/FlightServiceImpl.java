@@ -39,12 +39,12 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public Flight getFlightByUid(UUID uidFlight) {
-        return flightRepository.findByUid(uidFlight);
+        return flightRepository.findByUuid(uidFlight);
     }
 
     @Override
     public FlightInfo getFlightInfoByUid(UUID uidFlight) {
-        return buildTicketInfo(flightRepository.findByUid(uidFlight));
+        return buildTicketInfo(flightRepository.findByUuid(uidFlight));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     public void delete(UUID uidFlight) {
-        flightRepository.deleteByUid(uidFlight);
+        flightRepository.deleteByUuid(uidFlight);
     }
 
     @Override

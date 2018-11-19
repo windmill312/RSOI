@@ -17,9 +17,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     int countTicketsByUidFlightAndClassType(UUID uidFlight, String classType);
 
-    void deleteByUid(UUID uid);
+    void deleteTicketsByUid(UUID uid);
 
     Ticket findByUid(UUID uid);
-
-    Ticket findById(int idTicket);
 }

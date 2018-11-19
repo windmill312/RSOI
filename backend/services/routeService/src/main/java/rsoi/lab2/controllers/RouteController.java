@@ -9,6 +9,7 @@ import rsoi.lab2.entity.Route;
 import rsoi.lab2.model.RouteInfo;
 import rsoi.lab2.services.RouteService;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -88,6 +89,7 @@ public class RouteController {
         }
     }
 
+    @Transactional
     @DeleteMapping("/route")
     public ResponseEntity delete(@RequestBody String uidRoute) {
         try {

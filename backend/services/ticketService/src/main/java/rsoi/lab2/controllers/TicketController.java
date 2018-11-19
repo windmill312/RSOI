@@ -54,8 +54,7 @@ public class TicketController {
     @GetMapping(value = "/ticket",
             params = "uidTicket")
     public ResponseEntity getTicket(@RequestParam String uidTicket) {
-        logger.info("Get \"ticket\" request with param (idTicket=" + uidTicket + ").");
-        UUID uid = UUID.fromString(uidTicket);
+        logger.info("Get \"ticket\" request with param (uidTicket=" + uidTicket + ").");
         return ResponseEntity.ok(ticketService.getTicketInfoByUid(UUID.fromString(uidTicket)));
     }
 
@@ -106,11 +105,11 @@ public class TicketController {
         return ResponseEntity.ok().build();
     }
 
+    @Transactional
     @DeleteMapping("/ticket")
     public ResponseEntity delete(@RequestBody String uidTicket) {
         logger.info("Get DELETE request (delete) with param (uidTicket=" + uidTicket + ").");
-        UUID uid = UUID.fromString(uidTicket);
-        ticketService.delete(uid);
+        ticketService.delete(UUID.fromString(uidTicket));
         return ResponseEntity.ok().build();
     }
 

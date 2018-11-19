@@ -1,5 +1,6 @@
 package rsoi.lab2.gateway.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ public class FlightInfo {
 
     private UUID uid;
 
-    private int idRoute;
+    private UUID uidRoute;
 
     private String dtFlight;
 
@@ -25,14 +26,6 @@ public class FlightInfo {
 
     public void setIdFlight(int idFlight) {
         this.idFlight = idFlight;
-    }
-
-    public int getIdRoute() {
-        return idRoute;
-    }
-
-    public void setIdRoute(int idRoute) {
-        this.idRoute = idRoute;
     }
 
     public String getDtFlight() {
@@ -65,6 +58,14 @@ public class FlightInfo {
 
     public void setUid(UUID uid) {
         this.uid = uid;
+    }
+
+    public UUID getUidRoute() {
+        return uidRoute;
+    }
+
+    public void setUidRoute(UUID uidRoute) {
+        this.uidRoute = uidRoute;
     }
 
     public List<TicketInfo> getTickets() {

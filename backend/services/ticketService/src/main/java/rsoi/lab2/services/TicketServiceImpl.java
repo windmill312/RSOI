@@ -65,7 +65,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void delete(UUID uid) {
-        ticketRepository.deleteByUid(uid);
+        ticketRepository.deleteTicketsByUid(uid);
     }
 
     @Override

@@ -34,11 +34,11 @@ public class GatewayController {
     }
 
     @GetMapping(value = "/flights",
-            params = "idRoute")
-    public ResponseEntity<?> getFlightsByRoute(@RequestParam int idRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+            params = "uidRoute")
+    public ResponseEntity<?> getFlightsByRoute(@RequestParam String uidRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getFlights)");
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8083/flights?idRoute=" + idRoute + "&page=" + page + "&size=" + size;
+        String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&page=" + page + "&size=" + size;
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -51,11 +51,11 @@ public class GatewayController {
     }
 
     @GetMapping(value = "/flight",
-            params = {"idFlight"})
-    public ResponseEntity<?> getFlight(@RequestParam int idFlight) {
+            params = {"uidFlight"})
+    public ResponseEntity<?> getFlight(@RequestParam String uidFlight) {
         logger.info("Get request (getFlight)");
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8083/flight?idFlight=" + idFlight;
+        String resourceUrl = "http://localhost:8083/flight?uidFlight=" + uidFlight;
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -76,11 +76,11 @@ public class GatewayController {
     }
 
     @GetMapping(value = "/route",
-            params = {"idRoute"})
-    public ResponseEntity<?> getRoute(@RequestParam int idRoute) {
+            params = {"uidRoute"})
+    public ResponseEntity<?> getRoute(@RequestParam String uidRoute) {
         logger.info("Get request (getRoute)");
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8082/route?idRoute=" + idRoute;
+        String resourceUrl = "http://localhost:8082/route?uidRoute=" + uidRoute;
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -101,13 +101,12 @@ public class GatewayController {
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
-    //todo get idFlight by UUID then add ticket
     @GetMapping(value = "/tickets",
-            params = "idFlight")
-    public ResponseEntity<?> getTickets(@RequestParam int idFlight, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+            params = "uidFlight")
+    public ResponseEntity<?> getTickets(@RequestParam String uidFlight, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getTicketsByFlight)");
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8081/flightTickets?idFlight=" + idFlight + "&page=" + page + "&size=" + size;
+        String resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + uidFlight + "&page=" + page + "&size=" + size;
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -120,7 +119,7 @@ public class GatewayController {
     }
 
     @GetMapping(value = "/ticket",
-            params = {"uidTicket"})
+            params = "uidTicket")
     public ResponseEntity<?> getTicket(@RequestParam String uidTicket) {
         logger.info("Get request (getTicket)");
         RestTemplate restTemplate = new RestTemplate();
@@ -128,7 +127,6 @@ public class GatewayController {
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
-    //todo get idFlight by UUID then add ticket
     @PutMapping(value = "/ticket")
     public ResponseEntity addTicket(@RequestBody TicketInfo ticketInfo) {
         try {
@@ -136,7 +134,7 @@ public class GatewayController {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String resourceUrl = "http://localhost:8083/flight?idFlight=" + ticketInfo.getIdFlight();
+            String resourceUrl = "http://localhost:8083/flight?uidFlight=" + ticketInfo.getUidFlight();
             ResponseEntity<?> responseNnTickets = restTemplate.getForEntity(resourceUrl, Object.class);
             if (responseNnTickets.getStatusCode().equals(HttpStatus.OK)) {
                 String flightObject = mapper.writeValueAsString(responseNnTickets.getBody());
@@ -151,9 +149,9 @@ public class GatewayController {
                     HttpHeaders headers = new HttpHeaders();
                     headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                     HttpEntity<TicketInfo> requestTicket = new HttpEntity<>(ticketInfo, headers);
-                    ResponseEntity<Integer> responseTicket = restTemplate.exchange("http://localhost:8081/ticket", HttpMethod.PUT, requestTicket, Integer.class);
+                    ResponseEntity<String> responseTicket = restTemplate.exchange("http://localhost:8081/ticket", HttpMethod.PUT, requestTicket, String.class);
                     if (responseTicket.getStatusCode().equals(HttpStatus.OK)) {
-                        logger.info("Ticket created with id " + responseTicket.getBody());
+                        logger.info("Ticket created with uid " + responseTicket.getBody());
                         flightInfo.setNnTickets(flightInfo.getNnTickets() + 1);
                         RestTemplate restTemplateFlight = new RestTemplate();
 
@@ -188,7 +186,7 @@ public class GatewayController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
-            ResponseEntity<Integer> response = restTemplate.exchange(resourceUrl, HttpMethod.PUT, request, Integer.class);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PUT, request, String.class);
             if (response.getStatusCode().equals(HttpStatus.OK))
                 return response;
             else {
@@ -212,7 +210,7 @@ public class GatewayController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<RouteInfo> request = new HttpEntity<>(routeInfo, headers);
-            ResponseEntity<Integer> response = restTemplate.exchange(resourceUrl, HttpMethod.PUT, request, Integer.class);
+            ResponseEntity<String> response = restTemplate.exchange(resourceUrl, HttpMethod.PUT, request, String.class);
             if (response.getStatusCode().equals(HttpStatus.OK))
                 return response;
             else {
@@ -248,8 +246,6 @@ public class GatewayController {
         try {
             logger.info("Get PATCH request (editFlight)");
             RestTemplate restTemplate = new RestTemplate();
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             String resourceUrl = "http://localhost:8083/flight?_method=patch";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -291,7 +287,7 @@ public class GatewayController {
             ResponseEntity responseTicket = restTemplate.getForEntity(resourceUrl, String.class);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             TicketInfo ticketInfo = gson.fromJson(responseTicket.getBody().toString(), TicketInfo.class);
-            int idFlight = ticketInfo.getIdFlight();
+            String uidFlight = ticketInfo.getUidFlight().toString();
             //remove ticket
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
@@ -299,7 +295,7 @@ public class GatewayController {
             ResponseEntity response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
             if (response.getStatusCode().equals(HttpStatus.OK)) {
                 //update flight
-                resourceUrl = "http://localhost:8083/flight?idFlight=" + idFlight;
+                resourceUrl = "http://localhost:8083/flight?uidFlight=" + uidFlight;
                 ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
                 FlightInfo flightInfo = new Gson().fromJson(responseFlight.getBody().toString(), FlightInfo.class);
                 flightInfo.setNnTickets(flightInfo.getNnTickets() - 1);
@@ -315,16 +311,15 @@ public class GatewayController {
         }
     }
 
-    //todo idFlight
     @DeleteMapping(value = "/tickets")
-    public ResponseEntity deleteTickets(@RequestParam int idFlight) {
+    public ResponseEntity deleteTickets(@RequestParam String uidFlight) {
         try {
             logger.info("Get DELETE request (deleteTickets)");
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8081/tickets";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-            HttpEntity<Integer> request = new HttpEntity<>(idFlight, headers);
+            HttpEntity<String> request = new HttpEntity<>(uidFlight, headers);
             ResponseEntity response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
             if (response.getStatusCode().equals(HttpStatus.OK))
                 return response;
@@ -339,13 +334,13 @@ public class GatewayController {
     }
 
     @GetMapping(value = "/flightsAndTicketsByRoute",
-            params = "idRoute",
+            params = "uidRoute",
             produces = "application/json")
-    public ResponseEntity findFlightsAndTickets(@RequestParam int idRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+    public ResponseEntity findFlightsAndTickets(@RequestParam String uidRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/flights?idRoute=" + idRoute;
-            ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
+            String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute;
+            ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, String.class);
 
             String flight = responseFlight.getBody().toString();
 
@@ -358,8 +353,8 @@ public class GatewayController {
                 JSONObject object = jsonFlightArray.getJSONObject(i);
                 FlightInfo flightInfo = gson.fromJson(object.toString(), FlightInfo.class);
 
-                resourceUrl = "http://localhost:8081/tickets?idFlight=" + object.getInt("idFlight");
-                ResponseEntity responseTickets = restTemplate.getForEntity(resourceUrl, Object.class);
+                resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + object.getString("uid");
+                ResponseEntity responseTickets = restTemplate.getForEntity(resourceUrl, String.class);
                 String jsonTickets = responseTickets.getBody().toString();
                 JSONArray jsonTicketsArray = new JSONArray(jsonTickets);
                 List<TicketInfo> listTicketInfo = new ArrayList<>();
@@ -384,7 +379,7 @@ public class GatewayController {
     }
 
     @DeleteMapping(value = "/flight")
-    public ResponseEntity deleteFlight(@RequestBody int idFlight) {
+    public ResponseEntity deleteFlight(@RequestBody String uidFlight) {
         RestTemplate restTemplate = new RestTemplate();
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
@@ -392,11 +387,11 @@ public class GatewayController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-        HttpEntity<Integer> request = new HttpEntity<>(idFlight, headers);
+        HttpEntity<String> request = new HttpEntity<>(uidFlight, headers);
         ResponseEntity<String> responseTickets = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
         if (responseTickets.getStatusCode() == HttpStatus.OK) {
             resourceUrl = "http://localhost:8083/flight";
-            HttpEntity<Integer> requestFlight = new HttpEntity<>(idFlight, headers);
+            HttpEntity<String> requestFlight = new HttpEntity<>(uidFlight, headers);
             ResponseEntity responseFlight = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestFlight, String.class);
             if (responseFlight.getStatusCode().equals(HttpStatus.OK))
                 return responseFlight;
@@ -408,10 +403,10 @@ public class GatewayController {
 
 
     @DeleteMapping(value = "/route")
-    public ResponseEntity deleteRoute(@RequestBody int idRoute) {
+    public ResponseEntity deleteRoute(@RequestBody String uidRoute) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/flights?idRoute=" + idRoute;
+            String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute;
             ResponseEntity responseFlights = restTemplate.getForEntity(resourceUrl, String.class);
 
             JSONArray jsonFlightArray = new JSONArray(responseFlights.getBody().toString());
@@ -422,13 +417,13 @@ public class GatewayController {
                 //removing flight tickets
                 JSONObject flightObject = jsonFlightArray.getJSONObject(i);
                 resourceUrl = "http://localhost:8081/tickets";
-                HttpEntity<Object> requestTickets = new HttpEntity<>(flightObject.get("idFlight"), headers);
+                HttpEntity<Object> requestTickets = new HttpEntity<>(flightObject.get("uid"), headers);
                 ResponseEntity responseTickets = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestTickets, Object.class);
                 //removing flight
                 if (responseTickets.getStatusCode().equals(HttpStatus.OK)) {
-                    logger.info("Tickets of flight " + flightObject.get("idFlight") + " successfully removed");
+                    logger.info("Tickets of flight " + flightObject.get("uid") + " successfully removed");
                     resourceUrl = "http://localhost:8083/flight";
-                    HttpEntity<Object> requestFlight = new HttpEntity<>(flightObject.get("idFlight"), headers);
+                    HttpEntity<Object> requestFlight = new HttpEntity<>(flightObject.get("uid"), headers);
                     ResponseEntity responseFlight = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestFlight, Object.class);
                     if (! responseFlight.getStatusCode().equals(HttpStatus.OK))
                         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service error while removing flight");
@@ -438,7 +433,7 @@ public class GatewayController {
             //removing route
             logger.info("Flights successfully removed");
             resourceUrl = "http://localhost:8082/route";
-            HttpEntity<Object> requestRoute = new HttpEntity<>(idRoute, headers);
+            HttpEntity<String> requestRoute = new HttpEntity<>(uidRoute, headers);
             ResponseEntity responseRoute = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestRoute, Object.class);
             if (responseRoute.getStatusCode() == HttpStatus.OK)
                 return responseRoute;

@@ -11,8 +11,8 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     List<Flight> findAllByUidRoute(UUID uidRoute);
 
-    Flight findByUid(UUID uidFlight);
+    Flight findByUuid(UUID uidFlight);
 
-    void deleteByUid (UUID uidFlight);
+    void deleteByUuid(UUID uidFlight);
 
 }
