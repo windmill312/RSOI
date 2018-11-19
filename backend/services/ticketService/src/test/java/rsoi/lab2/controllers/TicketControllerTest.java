@@ -14,12 +14,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import rsoi.lab2.entity.Ticket;
-import rsoi.lab2.model.PingResponse;
 import rsoi.lab2.model.TicketInfo;
 import rsoi.lab2.services.TicketService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -74,12 +74,14 @@ public class TicketControllerTest {
         ticket.setIdFlight(1);
         ticket.setIdPassenger(0);
         ticket.setClassType("ECONOMIC");
+        UUID uid = UUID.randomUUID();
+        ticket.setUid(uid);
 
-        given(service.getTicketInfoById(16)).willReturn(ticket);
+        given(service.getTicketInfoByUid(uid)).willReturn(ticket);
 
         MvcResult mvcResult = mvc.perform(get("/ticket")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("idTicket", String.valueOf(ticket.getIdTicket())))
+                .param("uidTicket", ticket.getUid().toString()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -151,9 +153,9 @@ public class TicketControllerTest {
                 .andExpect(status().isOk())
                 .andReturn();
 
-        int idTicket = Integer.parseInt(mvcResult.getResponse().getContentAsString());
+        UUID uidTicket = UUID.fromString(mvcResult.getResponse().getContentAsString());
 
-        assertNotEquals(idTicket, -1);
+        assertNotEquals(uidTicket, "");
     }
 
     @Test
@@ -163,15 +165,17 @@ public class TicketControllerTest {
         ticketInfo.setIdTicket(16);
         ticketInfo.setClassType("ECONOMIC");
         ticketInfo.setIdFlight(5);
+        UUID uid = UUID.randomUUID();
+        ticketInfo.setUid(uid);
         ticketInfo.setIdPassenger(1);
 
         Ticket ticket = new Ticket();
         ticket.setClassType(ticketInfo.getClassType());
         ticket.setIdFlight(ticketInfo.getIdFlight());
         ticket.setIdPassenger(ticketInfo.getIdPassenger());
+        ticket.setUid(uid);
 
-
-        given(service.getTicketById(16)).willReturn(ticket);
+        given(service.getTicketByUid(uid)).willReturn(ticket);
         given(service.saveOrUpdate(ticket)).willReturn(ticket);
 
         mvc.perform(patch("/ticket")
@@ -183,9 +187,10 @@ public class TicketControllerTest {
     @Test
     public void deleteTicketTest() throws Exception {
 
-        doNothing().when(service).delete(16);
+        UUID uid = UUID.randomUUID();
+        doNothing().when(service).delete(uid);
         mvc.perform(delete("/ticket")
-                .content("16")
+                .content(uid.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }

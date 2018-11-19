@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 import rsoi.lab2.entity.Ticket;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
@@ -14,8 +15,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findAllByIdFlight(int idFlight);
 
-    @NonNull
     int countTicketsByIdFlightAndAndClassType(int idFlight, String classType);
 
+    void deleteByUid(UUID uid);
 
+    Ticket findByUid(UUID uid);
+
+    Ticket findById(int idTicket);
 }

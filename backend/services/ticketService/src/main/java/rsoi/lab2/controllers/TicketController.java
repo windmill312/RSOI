@@ -52,10 +52,11 @@ public class TicketController {
     }
 
     @GetMapping(value = "/ticket",
-            params = "idTicket")
-    public ResponseEntity getTicket(@RequestParam Integer idTicket) {
-        logger.info("Get \"ticket\" request with param (idTicket=" + idTicket + ").");
-        return ResponseEntity.ok(ticketService.getTicketInfoById(idTicket));
+            params = "uidTicket")
+    public ResponseEntity getTicket(@RequestParam String uidTicket) {
+        logger.info("Get \"ticket\" request with param (idTicket=" + uidTicket + ").");
+        UUID uid = UUID.fromString(uidTicket);
+        return ResponseEntity.ok(ticketService.getTicketInfoByUid(UUID.fromString(uidTicket)));
     }
 
     @PutMapping("/ticket")
@@ -71,7 +72,7 @@ public class TicketController {
             ticket.setClassType(ticketInfo.getClassType());
             ticket.setUid(UUID.randomUUID());
             ticketService.saveOrUpdate(ticket);
-            return ResponseEntity.ok(ticket.getIdTicket());
+            return ResponseEntity.ok(ticket.getUid().toString());
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -98,17 +99,18 @@ public class TicketController {
 
     @PatchMapping("/ticket")
     public ResponseEntity edit(@RequestBody TicketInfo ticketInfo) {
-        logger.info("Get PATCH request (edit) with params (idTicket=" + ticketInfo.getIdTicket() + ", classType=" + ticketInfo.getClassType() + ").");
-        Ticket ticket = ticketService.getTicketById(ticketInfo.getIdTicket());
+        logger.info("Get PATCH request (edit) with params (uidTicket=" + ticketInfo.getUid() + ", classType=" + ticketInfo.getClassType() + ").");
+        Ticket ticket = ticketService.getTicketByUid(ticketInfo.getUid());
         ticket.setClassType(ticketInfo.getClassType());
         ticketService.saveOrUpdate(ticket);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/ticket")
-    public ResponseEntity delete(@RequestBody int idTicket) {
-        logger.info("Get DELETE request (delete) with param (idTicket=" + idTicket + ").");
-        ticketService.delete(idTicket);
+    public ResponseEntity delete(@RequestBody String uidTicket) {
+        logger.info("Get DELETE request (delete) with param (uidTicket=" + uidTicket + ").");
+        UUID uid = UUID.fromString(uidTicket);
+        ticketService.delete(uid);
         return ResponseEntity.ok().build();
     }
 

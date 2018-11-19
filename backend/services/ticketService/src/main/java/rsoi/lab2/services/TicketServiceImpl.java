@@ -8,6 +8,7 @@ import rsoi.lab2.model.TicketInfo;
 import rsoi.lab2.repositories.TicketRepository;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,8 +38,18 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public TicketInfo getTicketInfoByUid(UUID uid) {
+        return buildTicketInfo(ticketRepository.findByUid(uid));
+    }
+
+    @Override
+    public Ticket getTicketById(int idTicket) {
+        return ticketRepository.findById(idTicket);
+    }
+
+    @Override
     public TicketInfo getTicketInfoById(int idTicket) {
-        return ticketRepository.findById(idTicket).map(this::buildTicketInfo).orElse(null);
+        return buildTicketInfo(ticketRepository.findById(idTicket));
     }
 
     @Override
@@ -52,8 +63,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket getTicketById(int id) {
-        return ticketRepository.findById(id).orElse(null);
+    public Ticket getTicketByUid(UUID uid) {
+        return ticketRepository.findByUid(uid);
     }
 
     @Override
@@ -63,8 +74,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public void delete(int id) {
-        ticketRepository.deleteById(id);
+    public void delete(UUID uid) {
+        ticketRepository.deleteByUid(uid);
     }
 
     @Override
