@@ -32,7 +32,7 @@ public class TicketServiceImpl implements TicketService {
         info.setIdTicket(ticket.getIdTicket());
         info.setClassType(ticket.getClassType());
         info.setIdPassenger(ticket.getIdPassenger());
-        info.setIdFlight(ticket.getIdFlight());
+        info.setUidFlight(ticket.getUidFlight());
         info.setUid(ticket.getUid());
         return info;
     }
@@ -43,23 +43,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public Ticket getTicketById(int idTicket) {
-        return ticketRepository.findById(idTicket);
+    public List<TicketInfo> listFlightTickets(UUID uidFlight) {
+        return ticketRepository.findAllByUidFlight(uidFlight).stream().map(this::buildTicketInfo).collect(Collectors.toList());
     }
 
     @Override
-    public TicketInfo getTicketInfoById(int idTicket) {
-        return buildTicketInfo(ticketRepository.findById(idTicket));
-    }
-
-    @Override
-    public List<TicketInfo> listFlightTickets(int idFlight) {
-        return ticketRepository.findAllByIdFlight(idFlight).stream().map(this::buildTicketInfo).collect(Collectors.toList());
-    }
-
-    @Override
-    public int countTicketsByFlightAndClassType(int idFlight, String classType) {
-        return ticketRepository.countTicketsByIdFlightAndAndClassType(idFlight, classType);
+    public int countTicketsByFlightAndClassType(UUID uidFlight, String classType) {
+        return ticketRepository.countTicketsByUidFlightAndClassType(uidFlight, classType);
     }
 
     @Override
@@ -79,13 +69,13 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public int countFlightTickets(int idFlight) {
-        return ticketRepository.countTicketsByIdFlight(idFlight);
+    public int countFlightTickets(UUID uidFlight) {
+        return ticketRepository.countTicketsByUidFlight(uidFlight);
     }
 
     @Override
-    public void deleteFlightTickets(int id) {
-        ticketRepository.deleteTicketsByIdFlight(id);
+    public void deleteFlightTickets(UUID uidFlight) {
+        ticketRepository.deleteTicketsByUidFlight(uidFlight);
     }
 
 }

@@ -69,7 +69,7 @@ public class RouteController {
                 newRoute.setIdRoute(route.getIdRoute());
             newRoute.setUid(UUID.randomUUID());
             routeService.saveOrUpdate(newRoute);
-            return ResponseEntity.ok(new Gson().toJson(newRoute.getIdRoute()));
+            return ResponseEntity.ok(new Gson().toJson(newRoute.getUid()));
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

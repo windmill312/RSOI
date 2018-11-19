@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
-    int countTicketsByIdFlight(int idFlight);
+    int countTicketsByUidFlight(UUID uidFlight);
 
-    void deleteTicketsByIdFlight(int idFlight);
+    void deleteTicketsByUidFlight(UUID uidFlight);
 
-    List<Ticket> findAllByIdFlight(int idFlight);
+    List<Ticket> findAllByUidFlight(UUID uidFlight);
 
-    int countTicketsByIdFlightAndAndClassType(int idFlight, String classType);
+    int countTicketsByUidFlightAndClassType(UUID uidFlight, String classType);
 
     void deleteByUid(UUID uid);
 

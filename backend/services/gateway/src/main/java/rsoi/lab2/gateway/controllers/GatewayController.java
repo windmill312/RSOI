@@ -101,6 +101,7 @@ public class GatewayController {
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
+    //todo get idFlight by UUID then add ticket
     @GetMapping(value = "/tickets",
             params = "idFlight")
     public ResponseEntity<?> getTickets(@RequestParam int idFlight, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
@@ -119,14 +120,15 @@ public class GatewayController {
     }
 
     @GetMapping(value = "/ticket",
-            params = {"idTicket"})
-    public ResponseEntity<?> getTicket(@RequestParam int idTicket) {
+            params = {"uidTicket"})
+    public ResponseEntity<?> getTicket(@RequestParam String uidTicket) {
         logger.info("Get request (getTicket)");
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8081/ticket?idTicket=" + idTicket;
+        String resourceUrl = "http://localhost:8081/ticket?uidTicket=" + uidTicket;
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
+    //todo get idFlight by UUID then add ticket
     @PutMapping(value = "/ticket")
     public ResponseEntity addTicket(@RequestBody TicketInfo ticketInfo) {
         try {
@@ -277,7 +279,7 @@ public class GatewayController {
     }
 
     @DeleteMapping(value = "/ticket")
-    public ResponseEntity deleteTicket(@RequestParam int idTicket) {
+    public ResponseEntity deleteTicket(@RequestParam String uidTicket) {
         try {
             logger.info("Get DELETE request (deleteTicket)");
             //get ticket
@@ -285,7 +287,7 @@ public class GatewayController {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String resourceUrl = "http://localhost:8081/ticket?idTicket=" + idTicket;
+            String resourceUrl = "http://localhost:8081/ticket?uidTicket=" + uidTicket;
             ResponseEntity responseTicket = restTemplate.getForEntity(resourceUrl, String.class);
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             TicketInfo ticketInfo = gson.fromJson(responseTicket.getBody().toString(), TicketInfo.class);
@@ -293,7 +295,7 @@ public class GatewayController {
             //remove ticket
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
-            HttpEntity<Integer> request = new HttpEntity<>(idTicket, headers);
+            HttpEntity<String> request = new HttpEntity<>(uidTicket, headers);
             ResponseEntity response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
             if (response.getStatusCode().equals(HttpStatus.OK)) {
                 //update flight
@@ -313,6 +315,7 @@ public class GatewayController {
         }
     }
 
+    //todo idFlight
     @DeleteMapping(value = "/tickets")
     public ResponseEntity deleteTickets(@RequestParam int idFlight) {
         try {
@@ -409,7 +412,7 @@ public class GatewayController {
         try {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8083/flights?idRoute=" + idRoute;
-            ResponseEntity responseFlights = restTemplate.getForEntity(resourceUrl, Object.class);
+            ResponseEntity responseFlights = restTemplate.getForEntity(resourceUrl, String.class);
 
             JSONArray jsonFlightArray = new JSONArray(responseFlights.getBody().toString());
             HttpHeaders headers = new HttpHeaders();
@@ -433,10 +436,11 @@ public class GatewayController {
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service error while removing tickets");
             }
             //removing route
+            logger.info("Flights successfully removed");
             resourceUrl = "http://localhost:8082/route";
             HttpEntity<Object> requestRoute = new HttpEntity<>(idRoute, headers);
             ResponseEntity responseRoute = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestRoute, Object.class);
-            if (responseRoute.getStatusCode() == HttpStatus.OK && responseRoute.getBody().equals("Done"))
+            if (responseRoute.getStatusCode() == HttpStatus.OK)
                 return responseRoute;
             else
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service error while removing route");

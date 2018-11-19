@@ -6,6 +6,7 @@ import rsoi.lab2.entity.Flight;
 import rsoi.lab2.model.FlightInfo;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface FlightService {
 
@@ -13,17 +14,17 @@ public interface FlightService {
     List<FlightInfo> listAll();
 
     @Nullable
-    FlightInfo getFlightInfoById(int idFlight);
+    FlightInfo getFlightInfoByUid(UUID uidFlight);
 
     @Nullable
-    List<FlightInfo> listRouteFlights(int idRoute);
+    List<FlightInfo> listRouteFlights(UUID uidRoute);
 
     Flight saveOrUpdate(Flight flight);
 
-    void delete(int id);
+    void delete(UUID uidFlight);
 
-    void deleteRouteFlights(int id);
+    void deleteRouteFlights(UUID uidRoute);
 
     @Nullable
-    Flight getFlightById(int id);
+    Flight getFlightByUid(UUID uidFlight);
 }

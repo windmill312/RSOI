@@ -6,7 +6,7 @@ public class TicketInfo {
 
     private int idTicket;
 
-    private int idFlight;
+    private UUID uidFlight;
 
     private int idPassenger;
 
@@ -20,14 +20,6 @@ public class TicketInfo {
 
     public void setIdTicket(int idTicket) {
         this.idTicket = idTicket;
-    }
-
-    public int getIdFlight() {
-        return idFlight;
-    }
-
-    public void setIdFlight(int idFlight) {
-        this.idFlight = idFlight;
     }
 
     public int getIdPassenger() {
@@ -52,5 +44,13 @@ public class TicketInfo {
 
     public void setUid(UUID uid) {
         this.uid = uid;
+    }
+
+    public UUID getUidFlight() {
+        return uidFlight;
+    }
+
+    public void setUidFlight(UUID uidFlight) {
+        this.uidFlight = uidFlight;
     }
 }

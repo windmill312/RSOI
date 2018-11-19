@@ -7,6 +7,7 @@ import rsoi.lab2.model.FlightInfo;
 import rsoi.lab2.repositories.FlightRepository;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,7 @@ public class FlightServiceImpl implements FlightService {
 
         FlightInfo info = new FlightInfo();
         info.setIdFlight(flight.getIdFlight());
-        info.setIdRoute(flight.getIdRoute());
+        info.setUidRoute(flight.getUidRoute());
         info.setDtFlight(flight.getDtFlight());
         info.setMaxTickets(flight.getMaxTickets());
         info.setNnTickets(flight.getNnTickets());
@@ -37,18 +38,18 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public Flight getFlightById(int id) {
-        return flightRepository.findById(id).orElse(null);
+    public Flight getFlightByUid(UUID uidFlight) {
+        return flightRepository.findByUid(uidFlight);
     }
 
     @Override
-    public FlightInfo getFlightInfoById(int idFlight) {
-        return flightRepository.findById(idFlight).map(this::buildTicketInfo).orElse(null);
+    public FlightInfo getFlightInfoByUid(UUID uidFlight) {
+        return buildTicketInfo(flightRepository.findByUid(uidFlight));
     }
 
     @Override
-    public List<FlightInfo> listRouteFlights(int idRoute) {
-        return flightRepository.findAllByIdRoute(idRoute).stream().map(this::buildTicketInfo).collect(Collectors.toList());
+    public List<FlightInfo> listRouteFlights(UUID uidRoute) {
+        return flightRepository.findAllByUidRoute(uidRoute).stream().map(this::buildTicketInfo).collect(Collectors.toList());
     }
 
     @Override
@@ -58,13 +59,13 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void delete(int id) {
-        flightRepository.deleteById(id);
+    public void delete(UUID uidFlight) {
+        flightRepository.deleteByUid(uidFlight);
     }
 
     @Override
-    public void deleteRouteFlights(int id) {
-        flightRepository.deleteFlightsByIdRoute(id);
+    public void deleteRouteFlights(UUID uidRoute) {
+        flightRepository.deleteFlightsByUidRoute(uidRoute);
     }
 
 }

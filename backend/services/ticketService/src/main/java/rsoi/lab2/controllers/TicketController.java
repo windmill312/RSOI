@@ -42,9 +42,9 @@ public class TicketController {
     }
 
     @GetMapping("/flightTickets")
-    public ResponseEntity getFlightTickets(@RequestParam Integer idFlight, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
-        logger.info("Get \"flightTickets\" request with param (idFlight=" + idFlight + ", page=" + page + ", size=" + size + ").");
-        List<TicketInfo> list = ticketService.listFlightTickets(idFlight);
+    public ResponseEntity getFlightTickets(@RequestParam String uidFlight, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"flightTickets\" request with param (uidFlight=" + uidFlight + ", page=" + page + ", size=" + size + ").");
+        List<TicketInfo> list = ticketService.listFlightTickets(UUID.fromString(uidFlight));
         if ((size * page) > list.size())
             return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
         else
@@ -62,12 +62,12 @@ public class TicketController {
     @PutMapping("/ticket")
     public ResponseEntity add(@RequestBody TicketInfo ticketInfo) {
         try {
-            logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", idFlight=" + ticketInfo.getIdFlight() +
+            logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", idFlight=" + ticketInfo.getUidFlight() +
                     ", idPassenger=" + ticketInfo.getIdPassenger() + ").");
             Ticket ticket = new Ticket();
             if (ticketInfo.getIdTicket() != 0)
                 ticket.setIdTicket(ticketInfo.getIdTicket());
-            ticket.setIdFlight(ticketInfo.getIdFlight());
+            ticket.setUidFlight(ticketInfo.getUidFlight());
             ticket.setIdPassenger(ticketInfo.getIdPassenger());
             ticket.setClassType(ticketInfo.getClassType());
             ticket.setUid(UUID.randomUUID());
@@ -81,20 +81,20 @@ public class TicketController {
 
     @GetMapping(
             value = "/countTickets",
-            params = "idFlight"
+            params = "uidFlight"
     )
-    public ResponseEntity countFlightTickets(@RequestParam int idFlight) {
-        logger.info("Get \"countTickets\" request with param (idFlight=" + idFlight + ").");
-        return ResponseEntity.ok(ticketService.countFlightTickets(idFlight));
+    public ResponseEntity countFlightTickets(@RequestParam UUID uidFlight) {
+        logger.info("Get \"countTickets\" request with param (uidFlight=" + uidFlight + ").");
+        return ResponseEntity.ok(ticketService.countFlightTickets(uidFlight));
     }
 
     @GetMapping(
             value = "/countTickets",
-            params = {"idFlight", "classType"}
+            params = {"uidFlight", "classType"}
     )
-    public ResponseEntity countTickets(@RequestParam int idFlight, @RequestParam String classType) {
-        logger.info("Get \"countTickets\" request with params (idFlight=" + idFlight + ", classType=" + classType + ").");
-        return ResponseEntity.ok(ticketService.countTicketsByFlightAndClassType(idFlight, classType));
+    public ResponseEntity countTickets(@RequestParam UUID uidFlight, @RequestParam String classType) {
+        logger.info("Get \"countTickets\" request with params (uidFlight=" + uidFlight + ", classType=" + classType + ").");
+        return ResponseEntity.ok(ticketService.countTicketsByFlightAndClassType(uidFlight, classType));
     }
 
     @PatchMapping("/ticket")
@@ -116,9 +116,9 @@ public class TicketController {
 
     @Transactional
     @DeleteMapping("/tickets")
-    public ResponseEntity deleteFlightTickets(@RequestBody int idFlight) {
-        logger.info("Get DELETE request (deleteFlightTickets) with param (idFlight=" + idFlight + ").");
-        ticketService.deleteFlightTickets(idFlight);
+    public ResponseEntity deleteFlightTickets(@RequestBody String uidFlight) {
+        logger.info("Get DELETE request (deleteFlightTickets) with param (idFlight=" + uidFlight + ").");
+        ticketService.deleteFlightTickets(UUID.fromString(uidFlight));
         return ResponseEntity.ok().build();
     }
 

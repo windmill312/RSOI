@@ -17,16 +17,10 @@ public interface TicketService {
     TicketInfo getTicketInfoByUid(UUID uid);
 
     @Nullable
-    Ticket getTicketById(int idTicket);
+    List<TicketInfo> listFlightTickets(UUID uidFlight);
 
     @Nullable
-    TicketInfo getTicketInfoById(int idTicket);
-
-    @Nullable
-    List<TicketInfo> listFlightTickets(int idFlight);
-
-    @Nullable
-    int countTicketsByFlightAndClassType(int idFlight, String classType);
+    int countTicketsByFlightAndClassType(UUID uidFlight, String classType);
 
     @Nullable
     Ticket getTicketByUid(UUID uid);
@@ -35,7 +29,7 @@ public interface TicketService {
 
     void delete(UUID uid);
 
-    int countFlightTickets(int idFlight);
+    int countFlightTickets(UUID uidFlight);
 
-    void deleteFlightTickets(int idFlight);
+    void deleteFlightTickets(UUID uidFlight);
 }

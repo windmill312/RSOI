@@ -10,8 +10,8 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int idTicket;
-    @Column(name = "idFlight")
-    private int idFlight;
+    @Column(name = "uidFlight")
+    private UUID uidFlight;
     @Column(name = "idPassenger")
     private int idPassenger;
     @Column(name = "class")
@@ -39,14 +39,6 @@ public class Ticket {
         this.idPassenger = idPassenger;
     }
 
-    public int getIdFlight() {
-        return idFlight;
-    }
-
-    public void setIdFlight(int idFlight) {
-        this.idFlight = idFlight;
-    }
-
     public int getIdTicket() {
         return idTicket;
     }
@@ -61,5 +53,13 @@ public class Ticket {
 
     public void setUid(UUID uid) {
         this.uid = uid;
+    }
+
+    public UUID getUidFlight() {
+        return uidFlight;
+    }
+
+    public void setUidFlight(UUID uidFlight) {
+        this.uidFlight = uidFlight;
     }
 }

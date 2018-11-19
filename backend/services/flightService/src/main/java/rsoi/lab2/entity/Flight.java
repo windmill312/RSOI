@@ -14,26 +14,20 @@ public class Flight {
     @Column(name = "uid")
     private UUID uuid;
 
-    @Column(name = "id_route")
-    private int idRoute;
+    @Column(name = "uidRoute")
+    private UUID uidRoute;
 
-    @Column(name = "dt_tm")
+    @Column(name = "dateTime")
     private String dtFlight;
 
-    @Column(name = "num_tickets")
+    @Column(name = "nnTickets")
     private int nnTickets;
 
-    @Column(name = "max_tickets")
+    @Column(name = "maxTickets")
     private int maxTickets;
 
     public Flight() {
 
-    }
-
-    public Flight(String dtFlight, int nnTickets, int maxTickets) {
-        this.dtFlight = dtFlight;
-        this.nnTickets = nnTickets;
-        this.maxTickets = maxTickets;
     }
 
     public int getIdFlight() {
@@ -42,14 +36,6 @@ public class Flight {
 
     public void setIdFlight(int idFlight) {
         this.idFlight = idFlight;
-    }
-
-    public int getIdRoute() {
-        return idRoute;
-    }
-
-    public void setIdRoute(int idRoute) {
-        this.idRoute = idRoute;
     }
 
     public String getDtFlight() {
@@ -82,5 +68,13 @@ public class Flight {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public UUID getUidRoute() {
+        return uidRoute;
+    }
+
+    public void setUidRoute(UUID uidRoute) {
+        this.uidRoute = uidRoute;
     }
 }

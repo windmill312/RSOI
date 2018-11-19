@@ -52,7 +52,8 @@ public class TicketControllerTest {
 
         TicketInfo ticket = new TicketInfo();
         ticket.setIdTicket(16);
-        ticket.setIdFlight(1);
+        UUID uidFlight = UUID.randomUUID();
+        ticket.setUidFlight(uidFlight);
         ticket.setIdPassenger(0);
         ticket.setClassType("ECONOMIC");
 
@@ -71,7 +72,8 @@ public class TicketControllerTest {
     public void getTicketTest() throws Exception {
         TicketInfo ticket = new TicketInfo();
         ticket.setIdTicket(16);
-        ticket.setIdFlight(1);
+        UUID uidFlight = UUID.randomUUID();
+        ticket.setUidFlight(uidFlight);
         ticket.setIdPassenger(0);
         ticket.setClassType("ECONOMIC");
         UUID uid = UUID.randomUUID();
@@ -93,21 +95,22 @@ public class TicketControllerTest {
     public void getFlightTicketsTest() throws Exception {
         TicketInfo ticket1 = new TicketInfo();
         ticket1.setIdTicket(16);
-        ticket1.setIdFlight(5);
+        UUID uidFlight = UUID.randomUUID();
+        ticket1.setUidFlight(uidFlight);
         ticket1.setIdPassenger(0);
         ticket1.setClassType("ECONOMIC");
 
         TicketInfo ticket2 = new TicketInfo();
         ticket2.setIdTicket(16);
-        ticket2.setIdFlight(5);
+        ticket2.setUidFlight(uidFlight);
         ticket2.setIdPassenger(0);
         ticket2.setClassType("LUXURY");
 
         List<TicketInfo> allTickets = Arrays.asList(ticket1, ticket2);
-        given(service.listFlightTickets(5)).willReturn(allTickets);
+        given(service.listFlightTickets(uidFlight)).willReturn(allTickets);
 
         MvcResult mvcResult = mvc.perform(get("/flightTickets")
-                .param("idFlight", "5")
+                .param("uidFlight", uidFlight.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -119,10 +122,11 @@ public class TicketControllerTest {
     @Test
     public void getFlightTicketsByClassTypeTest() throws Exception {
 
-        given(service.countTicketsByFlightAndClassType(5, "ECONOMIC")).willReturn(1);
+        UUID uidFlight = UUID.randomUUID();
+        given(service.countTicketsByFlightAndClassType(uidFlight, "ECONOMIC")).willReturn(1);
 
         MvcResult mvcResult = mvc.perform(get("/countTickets")
-                .param("idFlight", "5")
+                .param("uidFlight", uidFlight.toString())
                 .param("classType", "ECONOMIC")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -137,12 +141,13 @@ public class TicketControllerTest {
 
         TicketInfo ticketInfo = new TicketInfo();
         ticketInfo.setClassType("ECONOMIC");
-        ticketInfo.setIdFlight(5);
+        UUID uid = UUID.randomUUID();
+        ticketInfo.setUidFlight(uid);
         ticketInfo.setIdPassenger(1);
 
         Ticket ticket = new Ticket();
         ticket.setClassType(ticketInfo.getClassType());
-        ticket.setIdFlight(ticketInfo.getIdFlight());
+        ticket.setUidFlight(ticketInfo.getUidFlight());
         ticket.setIdPassenger(ticketInfo.getIdPassenger());
 
         given(service.saveOrUpdate(ticket)).willReturn(ticket);
@@ -164,14 +169,15 @@ public class TicketControllerTest {
         TicketInfo ticketInfo = new TicketInfo();
         ticketInfo.setIdTicket(16);
         ticketInfo.setClassType("ECONOMIC");
-        ticketInfo.setIdFlight(5);
+        UUID uidFlight = UUID.randomUUID();
+        ticketInfo.setUidFlight(uidFlight);
         UUID uid = UUID.randomUUID();
         ticketInfo.setUid(uid);
         ticketInfo.setIdPassenger(1);
 
         Ticket ticket = new Ticket();
         ticket.setClassType(ticketInfo.getClassType());
-        ticket.setIdFlight(ticketInfo.getIdFlight());
+        ticket.setUidFlight(ticketInfo.getUidFlight());
         ticket.setIdPassenger(ticketInfo.getIdPassenger());
         ticket.setUid(uid);
 
@@ -198,9 +204,10 @@ public class TicketControllerTest {
     @Test
     public void deleteFlightTicketsTest() throws Exception {
 
-        doNothing().when(service).deleteFlightTickets(5);
+        UUID uid = UUID.randomUUID();
+        doNothing().when(service).deleteFlightTickets(uid);
         mvc.perform(delete("/tickets")
-                .content("5")
+                .content(uid.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }

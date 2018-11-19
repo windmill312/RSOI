@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import rsoi.lab2.entity.Flight;
 import rsoi.lab2.model.FlightInfo;
-import rsoi.lab2.model.PingResponse;
 import rsoi.lab2.services.FlightService;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class FlightControllerTest {
         flightInfo.setIdFlight(10);
         flightInfo.setNnTickets(0);
         flightInfo.setMaxTickets(5);
-        flightInfo.setIdRoute(1);
+        flightInfo.setUidRoute(UUID.randomUUID());
         flightInfo.setUid(UUID.randomUUID());
         flightInfo.setDtFlight("2018-07-12 12:10");
 
@@ -79,26 +78,18 @@ public class FlightControllerTest {
     public void getFlight() throws Exception {
 
         FlightInfo flightInfo = new FlightInfo();
-        flightInfo.setIdFlight(10);
         flightInfo.setNnTickets(0);
         flightInfo.setMaxTickets(5);
-        flightInfo.setIdRoute(1);
-        flightInfo.setUid(UUID.randomUUID());
+        flightInfo.setUidRoute(UUID.randomUUID());
+        UUID uidFlight = UUID.randomUUID();
+        flightInfo.setUid(uidFlight);
         flightInfo.setDtFlight("2018-07-12 12:10");
 
-        /*Flight flight = new Flight();
-        flight.setIdFlight(10);
-        flight.setNnTickets(0);
-        flight.setMaxTickets(5);
-        flight.setIdRoute(1);
-        flight.setUuid(UUID.randomUUID());
-        flight.setDtFlight("01.05.2018 12:10:55");*/
-
-        given(service.getFlightInfoById(10)).willReturn(flightInfo);
+        given(service.getFlightInfoByUid(uidFlight)).willReturn(flightInfo);
 
         MvcResult mvcResult = mvc.perform(get("/flight")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("idFlight", String.valueOf(flightInfo.getIdFlight())))
+                .param("uidFlight", uidFlight.toString()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -113,7 +104,8 @@ public class FlightControllerTest {
         flightInfo1.setIdFlight(10);
         flightInfo1.setNnTickets(0);
         flightInfo1.setMaxTickets(5);
-        flightInfo1.setIdRoute(1);
+        UUID uidRoute = UUID.randomUUID();
+        flightInfo1.setUidRoute(uidRoute);
         flightInfo1.setUid(UUID.randomUUID());
         flightInfo1.setDtFlight("2018-07-12 12:10");
 
@@ -121,15 +113,15 @@ public class FlightControllerTest {
         flightInfo2.setIdFlight(11);
         flightInfo2.setNnTickets(0);
         flightInfo2.setMaxTickets(5);
-        flightInfo2.setIdRoute(1);
+        flightInfo2.setUidRoute(uidRoute);
         flightInfo2.setUid(UUID.randomUUID());
         flightInfo2.setDtFlight("2018-07-12 12:10");
 
         List<FlightInfo> allTickets = Arrays.asList(flightInfo1, flightInfo2);
-        given(service.listRouteFlights(1)).willReturn(allTickets);
+        given(service.listRouteFlights(uidRoute)).willReturn(allTickets);
 
         MvcResult mvcResult = mvc.perform(get("/flights")
-                .param("idRoute", "1")
+                .param("uidRoute", uidRoute.toString())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -149,16 +141,17 @@ public class FlightControllerTest {
         flightInfo.setIdFlight(10);
         flightInfo.setNnTickets(0);
         flightInfo.setMaxTickets(5);
-        flightInfo.setIdRoute(1);
-        flightInfo.setUid(UUID.randomUUID());
+        flightInfo.setUidRoute(UUID.randomUUID());
+        UUID uidFlight = UUID.randomUUID();
+        flightInfo.setUid(uidFlight);
         flightInfo.setDtFlight("2018-07-12 12:10");
 
         Flight flight = new Flight();
         flight.setIdFlight(10);
         flight.setNnTickets(0);
         flight.setMaxTickets(5);
-        flight.setIdRoute(1);
-        flight.setUuid(UUID.randomUUID());
+        flight.setUidRoute(UUID.randomUUID());
+        flight.setUuid(uidFlight);
         flight.setDtFlight("2018-07-12 12:10");
 
         given(service.saveOrUpdate(flight)).willReturn(flight);
@@ -166,8 +159,7 @@ public class FlightControllerTest {
         mvc.perform(put("/flight")
                 .content(gson.toJson(flightInfo))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().json(new Gson().toJson(flightInfo.getIdFlight())));
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -177,20 +169,21 @@ public class FlightControllerTest {
         flightInfo.setIdFlight(10);
         flightInfo.setNnTickets(0);
         flightInfo.setMaxTickets(5);
-        flightInfo.setIdRoute(1);
-        flightInfo.setUid(UUID.randomUUID());
+        flightInfo.setUidRoute(UUID.randomUUID());
+        UUID uidFlight = UUID.randomUUID();
+        flightInfo.setUid(uidFlight);
         flightInfo.setDtFlight("2018-07-12 12:10");
 
         Flight flight = new Flight();
         flight.setIdFlight(10);
         flight.setNnTickets(0);
         flight.setMaxTickets(5);
-        flight.setIdRoute(1);
-        flight.setUuid(UUID.randomUUID());
+        flight.setUidRoute(UUID.randomUUID());
+        flight.setUuid(uidFlight);
         flight.setDtFlight("2018-07-12 12:10");
 
 
-        given(service.getFlightById(10)).willReturn(flight);
+        given(service.getFlightByUid(uidFlight)).willReturn(flight);
         given(service.saveOrUpdate(flight)).willReturn(flight);
 
         mvc.perform(patch("/flight")
@@ -203,9 +196,10 @@ public class FlightControllerTest {
     @Test
     public void deleteFlight() throws Exception {
 
-        doNothing().when(service).delete(10);
+        UUID uidFlight = UUID.randomUUID();
+        doNothing().when(service).delete(uidFlight);
         mvc.perform(delete("/flight")
-                .content("10")
+                .content(uidFlight.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }
@@ -213,9 +207,10 @@ public class FlightControllerTest {
     @Test
     public void deleteRouteFlights() throws Exception {
 
-        doNothing().when(service).deleteRouteFlights(1);
+        UUID uidRoute = UUID.randomUUID();
+        doNothing().when(service).deleteRouteFlights(uidRoute);
         mvc.perform(delete("/flights")
-                .content("1")
+                .content(uidRoute.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }

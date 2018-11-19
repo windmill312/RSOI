@@ -22,6 +22,8 @@ import com.google.gson.Gson;
 public class FlightController {
     Logger logger = Logger.getLogger(FlightController.class.getName());
 
+    //todo remove ID from responses
+
     @Autowired
     private FlightService flightService;
 
@@ -49,19 +51,19 @@ public class FlightController {
     }
 
     @GetMapping(value = "/flight",
-            params = "idFlight",
+            params = "uidFlight",
             produces = "application/json")
-    public ResponseEntity<FlightInfo> getFlight(@RequestParam int idFlight) {
-        logger.info("Get \"show\" request with param (idFlight=" + idFlight + ").");
-        return ResponseEntity.ok(flightService.getFlightInfoById(idFlight));
+    public ResponseEntity<FlightInfo> getFlight(@RequestParam String uidFlight) {
+        logger.info("Get \"show\" request with param (uidFlight=" + uidFlight + ").");
+        return ResponseEntity.ok(flightService.getFlightInfoByUid(UUID.fromString(uidFlight)));
     }
 
     @GetMapping(value = "/flights",
-            params = "idRoute",
+            params = "uidRoute",
             produces = "application/json")
-    public ResponseEntity<List<FlightInfo>> getRouteFlights(@RequestParam int idRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
-        logger.info("Get \"routeFlights\" request with param (idRoute=" + idRoute + ", page=" + page + ", size=" + size + ").");
-        List<FlightInfo> list = flightService.listRouteFlights(idRoute);
+    public ResponseEntity<List<FlightInfo>> getRouteFlights(@RequestParam String uidRoute, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get \"routeFlights\" request with param (uidRoute=" + uidRoute + ", page=" + page + ", size=" + size + ").");
+        List<FlightInfo> list = flightService.listRouteFlights(UUID.fromString(uidRoute));
         if ((size * page) > list.size())
             return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
         else
@@ -69,8 +71,8 @@ public class FlightController {
     }
 
     @PutMapping("/flight")
-    public ResponseEntity<String> add(@RequestBody FlightInfo flight) {
-        logger.info("Get PUT request (add) with param (idRoute=" + flight.getIdRoute()
+    public ResponseEntity add(@RequestBody FlightInfo flight) {
+        logger.info("Get PUT request (add) with param (uidRoute=" + flight.getUidRoute()
                 + ", dtFlight=" + flight.getDtFlight() + ", maxTickets=" + flight.getMaxTickets() + ").");
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
@@ -79,13 +81,13 @@ public class FlightController {
             Flight newFlight = new Flight();
             if (flight.getIdFlight() != 0)
                 newFlight.setIdFlight(flight.getIdFlight());
-            newFlight.setIdRoute(flight.getIdRoute());
+            newFlight.setUidRoute(flight.getUidRoute());
             newFlight.setDtFlight(timestamp.toString());
             newFlight.setNnTickets(0);
             newFlight.setMaxTickets(flight.getMaxTickets());
             newFlight.setUuid(UUID.randomUUID());
             flightService.saveOrUpdate(newFlight);
-            return new ResponseEntity<>(new Gson().toJson(newFlight.getIdFlight()), HttpStatus.OK);
+            return ResponseEntity.ok(newFlight.getUuid());
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -95,9 +97,9 @@ public class FlightController {
     @PatchMapping("/flight")
     public ResponseEntity edit(@RequestBody FlightInfo newFlight) {
         try {
-            logger.info("Get PATCH request (edit) with param (idFlight=" + newFlight.getIdFlight()
+            logger.info("Get PATCH request (edit) with param (uidFlight=" + newFlight.getUid()
                     + ", nnTickets=" + newFlight.getNnTickets() + ").");
-            Flight flight = flightService.getFlightById(newFlight.getIdFlight());
+            Flight flight = flightService.getFlightByUid(newFlight.getUid());
             flight.setNnTickets(newFlight.getNnTickets());
             flightService.saveOrUpdate(flight);
             return ResponseEntity.ok().build();
@@ -109,10 +111,10 @@ public class FlightController {
     }
 
     @DeleteMapping("/flight")
-    public ResponseEntity delete(@RequestBody int idFlight) {
+    public ResponseEntity delete(@RequestBody String uidFlight) {
         try {
-            logger.info("Get DELETE request (flight) with param (idFlight=" + idFlight + ").");
-            flightService.delete(idFlight);
+            logger.info("Get DELETE request (flight) with param (uidFlight=" + uidFlight + ").");
+            flightService.delete(UUID.fromString(uidFlight));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
@@ -123,10 +125,10 @@ public class FlightController {
 
     @Transactional
     @DeleteMapping("/flights")
-    public ResponseEntity deleteRouteFlights(@RequestBody int idRoute) {
+    public ResponseEntity deleteRouteFlights(@RequestBody String uidRoute) {
         try {
-            logger.info("Get DELETE request (flights) with param (idRoute=" + idRoute + ").");
-            flightService.deleteRouteFlights(idRoute);
+            logger.info("Get DELETE request (flights) with param (uidRoute=" + uidRoute + ").");
+            flightService.deleteRouteFlights(UUID.fromString(uidRoute));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
