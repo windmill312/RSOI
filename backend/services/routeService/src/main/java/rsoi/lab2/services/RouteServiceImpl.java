@@ -7,6 +7,7 @@ import rsoi.lab2.model.RouteInfo;
 import rsoi.lab2.repositories.RouteRepository;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,13 +34,13 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public Route getRouteById(int id) {
-        return routeRepository.findById(id).orElse(null);
+    public Route getRouteByUid(UUID uidRoute) {
+        return routeRepository.findByUid(uidRoute);
     }
 
     @Override
-    public RouteInfo getRouteInfoById(int id) {
-        return routeRepository.findById(id).map(this::buildRouteInfo).orElse(null);
+    public RouteInfo getRouteInfoByUid(UUID uidRoute) {
+        return buildRouteInfo(routeRepository.findByUid(uidRoute));
     }
 
     @Override
@@ -54,8 +55,8 @@ public class RouteServiceImpl implements RouteService {
     }
 
     @Override
-    public void delete(int id) {
-        routeRepository.deleteById(id);
+    public void delete(UUID uidRoute) {
+        routeRepository.deleteByUid(uidRoute);
     }
 
 }

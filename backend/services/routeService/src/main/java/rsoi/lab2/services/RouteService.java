@@ -6,6 +6,7 @@ import rsoi.lab2.entity.Route;
 import rsoi.lab2.model.RouteInfo;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface RouteService {
 
@@ -13,16 +14,16 @@ public interface RouteService {
     List<RouteInfo> listAll();
 
     @Nullable
-    Route getRouteById(int id);
+    Route getRouteByUid(UUID uidRoute);
 
     @Nullable
-    RouteInfo getRouteInfoById(int id);
+    RouteInfo getRouteInfoByUid(UUID uidRoute);
 
     @Nullable
     List<RouteInfo> listAllByNmRoute(String nmRoute);
 
     Route saveOrUpdate(Route route);
 
-    void delete(int id);
+    void delete(UUID uidRoute);
 
 }

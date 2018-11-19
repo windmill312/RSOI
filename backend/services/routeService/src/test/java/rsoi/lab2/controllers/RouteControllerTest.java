@@ -96,13 +96,14 @@ public class RouteControllerTest {
         RouteInfo route = new RouteInfo();
         route.setIdRoute(1);
         route.setRouteName("Moscow/Paris");
-        route.setUid(UUID.randomUUID());
+        UUID uidRoute = UUID.randomUUID();
+        route.setUid(uidRoute);
 
-        given(service.getRouteInfoById(1)).willReturn(route);
+        given(service.getRouteInfoByUid(uidRoute)).willReturn(route);
 
         MvcResult mvcResult = mvc.perform(get("/route")
                 .contentType(MediaType.APPLICATION_JSON)
-                .param("idRoute", String.valueOf(route.getIdRoute())))
+                .param("uidRoute", uidRoute.toString()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -115,7 +116,6 @@ public class RouteControllerTest {
 
         RouteInfo routeInfo = new RouteInfo();
         routeInfo.setRouteName("Moscow/Paris");
-        routeInfo.setIdRoute(1);
         routeInfo.setUid(UUID.randomUUID());
 
         Route route = new Route();
@@ -128,15 +128,15 @@ public class RouteControllerTest {
         mvc.perform(put("/route")
                 .content(gson.toJson(routeInfo))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(status().isOk())
-                .andExpect(content().string("1"));
+                .andExpect(status().isOk());
     }
 
     @Test
     public void editRouteTest() throws Exception {
         RouteInfo routeInfo = new RouteInfo();
         routeInfo.setIdRoute(1);
-        routeInfo.setUid(UUID.randomUUID());
+        UUID uidRoute = UUID.randomUUID();
+        routeInfo.setUid(uidRoute);
         routeInfo.setRouteName("Moscow/Paris");
 
         Route route = new Route();
@@ -145,11 +145,11 @@ public class RouteControllerTest {
         route.setUid(routeInfo.getUid());
 
 
-        given(service.getRouteById(1)).willReturn(route);
+        given(service.getRouteByUid(uidRoute)).willReturn(route);
         given(service.saveOrUpdate(route)).willReturn(route);
 
         mvc.perform(patch("/route")
-                .content(gson.toJson(route))
+                .content(new Gson().toJson(route))
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }
@@ -157,9 +157,10 @@ public class RouteControllerTest {
     @Test
     public void deleteRouteTest() throws Exception {
 
-        doNothing().when(service).delete(1);
+        UUID uidRoute = UUID.randomUUID();
+        doNothing().when(service).delete(uidRoute);
         mvc.perform(delete("/route")
-                .content("1")
+                .content(uidRoute.toString())
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(status().isOk());
     }

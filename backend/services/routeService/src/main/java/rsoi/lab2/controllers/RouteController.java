@@ -41,11 +41,11 @@ public class RouteController {
     }
 
     @GetMapping(value = "/route",
-            params = "idRoute",
+            params = "uidRoute",
             produces = "application/json")
-    public ResponseEntity<RouteInfo> getRoute(@RequestParam Integer idRoute) {
-        logger.info("Get \"show\" request with param (idRoute=" + idRoute + ").");
-        return ResponseEntity.ok(routeService.getRouteInfoById(idRoute));
+    public ResponseEntity<RouteInfo> getRoute(@RequestParam String uidRoute) {
+        logger.info("Get \"show\" request with param (uidRoute=" + uidRoute + ").");
+        return ResponseEntity.ok(routeService.getRouteInfoByUid(UUID.fromString(uidRoute)));
     }
 
     @GetMapping(value = "/routes",
@@ -63,10 +63,8 @@ public class RouteController {
     @PutMapping("/route")
     public ResponseEntity<String> add(@RequestBody RouteInfo route) {
         try {
-            logger.info("Get PUT request (add) with params (routeName=" + route.getRouteName() + ", idRoute=" + route.getIdRoute() + ").");
+            logger.info("Get PUT request (add) with params (routeName=" + route.getRouteName() + ")" );
             Route newRoute = new Route(route.getRouteName());
-            if (route.getIdRoute() != 0)
-                newRoute.setIdRoute(route.getIdRoute());
             newRoute.setUid(UUID.randomUUID());
             routeService.saveOrUpdate(newRoute);
             return ResponseEntity.ok(new Gson().toJson(newRoute.getUid()));
@@ -79,8 +77,8 @@ public class RouteController {
     @PatchMapping("/route")
     public ResponseEntity edit(@RequestBody Route route) {
         try {
-            logger.info("Get PATCH request (edit) with param (idRoute=" + route.getIdRoute() + ", nmRoute=" + route.getNmRoute() + ").");
-            Route newRoute = routeService.getRouteById(route.getIdRoute());
+            logger.info("Get PATCH request (edit) with param (uidRoute=" + route.getUid() + ", nmRoute=" + route.getNmRoute() + ").");
+            Route newRoute = routeService.getRouteByUid(route.getUid());
             newRoute.setNmRoute(route.getNmRoute());
             routeService.saveOrUpdate(newRoute);
             return ResponseEntity.ok().build();
@@ -91,10 +89,10 @@ public class RouteController {
     }
 
     @DeleteMapping("/route")
-    public ResponseEntity delete(@RequestBody int idRoute) {
+    public ResponseEntity delete(@RequestBody String uidRoute) {
         try {
-            logger.info("Get DELETE request (delete) with param (idRoute=" + idRoute + ").");
-            routeService.delete(idRoute);
+            logger.info("Get DELETE request (delete) with param (uidRoute=" + uidRoute + ").");
+            routeService.delete(UUID.fromString(uidRoute));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
