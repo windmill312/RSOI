@@ -252,13 +252,7 @@ public class GatewayController {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
-            ResponseEntity response = restTemplate.postForObject(resourceUrl, request, ResponseEntity.class);
-            if (response.getStatusCode().equals(HttpStatus.OK))
-                return response;
-            else {
-                logger.info("Server error while updating flight");
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error while updating flight");
-            }
+            return restTemplate.postForObject(resourceUrl, request, ResponseEntity.class);
         } catch (Exception ex) {
             logger.info(ex.getLocalizedMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error because of exception (" + ex.getLocalizedMessage() + ")");

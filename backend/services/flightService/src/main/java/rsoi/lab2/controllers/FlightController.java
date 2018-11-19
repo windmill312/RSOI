@@ -100,7 +100,7 @@ public class FlightController {
             Flight flight = flightService.getFlightById(newFlight.getIdFlight());
             flight.setNnTickets(newFlight.getNnTickets());
             flightService.saveOrUpdate(flight);
-            return new ResponseEntity(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -113,7 +113,7 @@ public class FlightController {
         try {
             logger.info("Get DELETE request (flight) with param (idFlight=" + idFlight + ").");
             flightService.delete(idFlight);
-            return new ResponseEntity(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -127,7 +127,7 @@ public class FlightController {
         try {
             logger.info("Get DELETE request (flights) with param (idRoute=" + idRoute + ").");
             flightService.deleteRouteFlights(idRoute);
-            return new ResponseEntity(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } catch (Exception e) {
             logger.info(e.getLocalizedMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
