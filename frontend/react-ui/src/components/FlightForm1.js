@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Alert, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap';
+import {Table, Alert, Pagination, PaginationItem, PaginationLink, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap';
 import classnames from 'classnames';
 import axios from "axios";
 
@@ -10,7 +10,11 @@ class FlightForm extends React.Component {
         this.state = {
             activeSubTab: '0',
             flights: [],
-            serviceAvailable: true
+            serviceAvailable: true,
+            nnFlights: 0,
+            currentPage: 1,
+            pageSize: 5,
+            nnPages: 0
        }
     }
 
@@ -18,13 +22,20 @@ class FlightForm extends React.Component {
         axios.get(`http://localhost:8090/pingFlights`)
             .then((result) => {
                 if (result.status === 200) {
-                    axios.get('http://localhost:8090/flights?size=50')
-                        .then(
-                            response => this.setState({
-                                    flights: response.data,
-                                    serviceAvailable: true
-                                }
-                            ))
+                    axios.get(`http://localhost:8090/countFlights`)
+                        .then(result => {
+                            this.setState({
+                                nnRoutes: result.data,
+                                nnPages : result.data/this.state.pageSize
+                            });
+                            axios.get('http://localhost:8090/flights?size=' + this.state.pageSize + '&page=' + this.state.currentPage)
+                                .then(
+                                    response => this.setState({
+                                            flights: response.data,
+                                            serviceAvailable: true
+                                        }
+                                    ))
+                        })
                         .catch((error) => {
                             console.error(error);
                         });
@@ -38,6 +49,25 @@ class FlightForm extends React.Component {
                     serviceAvailable: false
                 })
             })
+    }
+
+    handleCurrentPageChange (e, index) {
+        if (index >= 0 && index<this.state.nnPages && index!=this.state.currentPage) {
+            e.preventDefault();
+            this.setState({currentPage: index});
+            axios.get('http://localhost:8090/flights?size=' + this.state.pageSize + '&page=' + (index+1))
+                .then(
+                    response => this.setState({
+                            flights: response.data
+                        }
+                    ))
+                .catch((error) => {
+                    console.error(error);
+                });
+            this.render();
+        } else {
+            return;
+        }
     }
 
     toggle1(tab) {
@@ -100,6 +130,27 @@ class FlightForm extends React.Component {
         }
     }
 
+    createPagination = () => {
+        const pages = [];
+        for (let i = 0; i < this.state.nnPages; i++) {
+            pages.push(
+                <PaginationItem key={i} >
+                    <PaginationLink onClick={e => {this.handleCurrentPageChange(e,i)}} key={i} >
+                        {i+1}
+                    </PaginationLink>
+                </PaginationItem>);
+        }
+        return <Pagination aria-label="Page navigation example">
+            <PaginationItem>
+                <PaginationLink previous onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage - 1)}} href="#"/>
+            </PaginationItem>
+            {pages}
+            <PaginationItem>
+                <PaginationLink next onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage + 1)}} href="#" />
+            </PaginationItem>
+        </Pagination>;
+    }
+
     render() {
         if (this.state.serviceAvailable) {
             return (
@@ -150,6 +201,7 @@ class FlightForm extends React.Component {
                                         )}
                                         </tbody>
                                     </Table>
+                                    {this.createPagination()}
                                 </Col>
                             </Row>
                         </TabPane>

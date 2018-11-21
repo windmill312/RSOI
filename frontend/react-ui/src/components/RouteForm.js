@@ -1,16 +1,21 @@
 import React from 'react';
-import {Table, Alert, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
+import {Table, Alert, TabContent, TabPane, Nav, Pagination, PaginationItem, PaginationLink, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
 import classnames from 'classnames';
 import axios from "axios";
 
 class RouteForm extends React.Component {
 
     constructor() {
-        super()
+        super();
         this.state = {
             activeSubTab: '0',
             routes: [],
-            serviceAvailable: true
+            serviceAvailable: true,
+            nnRoutes: 0,
+            currentPage: 1,
+            pageSize: 5,
+            nnPages: 0,
+            routeAggregation: []
         }
     }
 
@@ -18,13 +23,20 @@ class RouteForm extends React.Component {
         axios.get(`http://localhost:8090/pingRoutes`)
             .then((result) => {
                 if (result.status === 200) {
-                    axios.get('http://localhost:8090/routes?size=50')
-                        .then(
-                            response => this.setState({
-                                    routes: response.data,
-                                    serviceAvailable: true
-                                }
-                            ))
+                    axios.get(`http://localhost:8090/countRoutes`)
+                        .then(result => {
+                            this.setState({
+                                nnRoutes: result.data,
+                                nnPages : result.data/this.state.pageSize
+                            });
+                            axios.get('http://localhost:8090/routes?size=' + this.state.pageSize + '&page=' + this.state.currentPage)
+                                .then(
+                                    response => this.setState({
+                                            routes: response.data,
+                                            serviceAvailable: true
+                                        }
+                                    ))
+                        })
                         .catch((error) => {
                             console.error(error);
                         });
@@ -40,7 +52,56 @@ class RouteForm extends React.Component {
             })
     }
 
+    handleCurrentPageChange (e, index) {
+        if (index >= 0 && index<this.state.nnPages && index!=this.state.currentPage) {
+            e.preventDefault();
+            this.setState({currentPage: index});
+            axios.get('http://localhost:8090/flights?size=' + this.state.pageSize + '&page=' + (index+1))
+                .then(
+                    response => this.setState({
+                            routes: response.data
+                        }
+                    ))
+                .catch((error) => {
+                    console.error(error);
+                });
+            this.render();
+        } else {
+            return;
+        }
+    }
 
+    getTicketsAndFlights = event =>  {
+        event.preventDefault();
+        axios.get(`http://localhost:8090/flightsAndTicketsByRoute?uidRoute=` + this.state.uidRoute)
+            .then(result => {
+                this.setState({
+                    routeAggregation: result.data
+                })
+            });
+        alert(this.state.routeAggregation);
+    }
+
+    createPagination = () => {
+        const pages = [];
+        for (let i = 0; i < this.state.nnPages; i++) {
+            pages.push(
+                <PaginationItem key={i} >
+                    <PaginationLink onClick={e => {this.handleCurrentPageChange(e,i)}} key={i} >
+                        {i+1}
+                    </PaginationLink>
+                </PaginationItem>);
+        }
+        return <Pagination aria-label="Page navigation example">
+            <PaginationItem>
+                <PaginationLink previous onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage - 1)}} href="#"/>
+            </PaginationItem>
+            {pages}
+            <PaginationItem>
+                <PaginationLink next onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage + 1)}} href="#" />
+            </PaginationItem>
+        </Pagination>;
+    }
 
     toggle1(tab) {
         this.componentDidMount();
@@ -53,6 +114,10 @@ class RouteForm extends React.Component {
 
     handleRouteNmChange = event => {
         this.setState({ routeName: event.target.value })
+    }
+
+    handleRouteUidChange = event => {
+        this.setState({ uidRoute: event.target.value })
     }
 
     handleSubmitRoute = event => {
@@ -89,7 +154,6 @@ class RouteForm extends React.Component {
     }
 
     render() {
-
         if (this.state.serviceAvailable) {
             return (
                 <div>
@@ -112,6 +176,16 @@ class RouteForm extends React.Component {
                                 }}
                             >
                                 Добавить маршрут
+                            </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink
+                                className={classnames({active: this.state.activeSubTab === '2'})}
+                                onClick={() => {
+                                    this.toggle1('2');
+                                }}
+                            >
+                                Отчет
                             </NavLink>
                         </NavItem>
                     </Nav>
@@ -140,6 +214,7 @@ class RouteForm extends React.Component {
                                         )}
                                         </tbody>
                                     </Table>
+                                    {this.createPagination()}
                                 </Col>
                             </Row>
                         </TabPane>
@@ -157,6 +232,25 @@ class RouteForm extends React.Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Button id="btnCreateRoute" type="submit">Добавить</Button>
+                                        </FormGroup>
+                                    </Form>
+                                </Col>
+                            </Row>
+                        </TabPane>
+                        <TabPane tabId="2">
+                            <Row>
+                                <Col sm="6">
+                                    <Form onSubmit={this.getTicketsAndFlights}>
+                                        <FormGroup row>
+                                            <Label id="lblNmRoute" for="inputUidRoute" sm="5">Код маршрута</Label>
+                                            <Col>
+                                                <Input name="inputUidRoute" id="inputUidRoute"
+                                                       placeholder="Введите код маршрута"
+                                                       onChange={this.handleRouteUidChange}/>
+                                            </Col>
+                                        </FormGroup>
+                                        <FormGroup row>
+                                            <Button id="btnCreateRoute" type="submit">Вывести отчет</Button>
                                         </FormGroup>
                                     </Form>
                                 </Col>

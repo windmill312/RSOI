@@ -13,6 +13,7 @@ class TicketForm extends React.Component {
             tickets: [],
             serviceAvailable: true,
             currentPage: 1,
+            pageSize: 5,
             nnPages: 0
         }
     }
@@ -23,8 +24,11 @@ class TicketForm extends React.Component {
                 if (result.status === 200) {
                     axios.get(`http://localhost:8090/countTickets`)
                         .then(result => {
-                            this.setState({nnTickets: result.data, nnPages : result.data/10});
-                            axios.get('http://localhost:8090/tickets?size=10&page=1')
+                            this.setState({
+                                nnTickets: result.data,
+                                nnPages : result.data/this.state.pageSize
+                            });
+                            axios.get('http://localhost:8090/tickets?size=' + this.state.pageSize + '&page=' + this.state.currentPage)
                                 .then(
                                     response => this.setState({
                                             tickets: response.data,
@@ -56,19 +60,23 @@ class TicketForm extends React.Component {
         }
     }
 
-    handleCurrentPageChange = event => {
-        this.setState({ currentPage: event.target.value });
-        axios.get('http://localhost:8090/tickets?size=10&page=' + this.state.currentPage)
-            .then(
-                response => this.setState({
-                        tickets: response.data,
-                        serviceAvailable: true
-                    }
-                ))
-            .catch((error) => {
-                console.error(error);
-            });
-        this.render();
+    handleCurrentPageChange (e, index) {
+        if (index >= 0 && index<this.state.nnPages && index!=this.state.currentPage) {
+            e.preventDefault();
+            this.setState({currentPage: index});
+            axios.get('http://localhost:8090/tickets?size=' + this.state.pageSize + '&page=' + (index+1))
+                .then(
+                    response => this.setState({
+                            tickets: response.data
+                        }
+                    ))
+                .catch((error) => {
+                    console.error(error);
+                });
+            this.render();
+        } else {
+            return;
+        }
     }
 
     handleClassChange = event => {
@@ -133,22 +141,22 @@ class TicketForm extends React.Component {
     };
 
     createPagination = () => {
-        var pages = [];
-        for (var i = 0; i < this.state.nnPages; i++) {
+        const pages = [];
+        for (let i = 0; i < this.state.nnPages; i++) {
             pages.push(
                 <PaginationItem key={i} >
-                    <PaginationLink>
+                    <PaginationLink onClick={e => {this.handleCurrentPageChange(e,i)}} key={i} >
                         {i+1}
                     </PaginationLink>
                 </PaginationItem>);
         }
         return <Pagination aria-label="Page navigation example">
             <PaginationItem>
-                <PaginationLink previous href="#" />
+                <PaginationLink previous onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage - 1)}} href="#"/>
             </PaginationItem>
             {pages}
             <PaginationItem>
-                <PaginationLink next href="#" />
+                <PaginationLink next onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage + 1)}} href="#" />
             </PaginationItem>
         </Pagination>;
     }
