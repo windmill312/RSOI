@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap';
+import {Table, Alert, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap';
 import classnames from 'classnames';
 import axios from "axios";
 
@@ -9,23 +9,39 @@ class FlightForm extends React.Component {
         super()
         this.state = {
             activeSubTab: '0',
-            flights: []
+            flights: [],
+            serviceAvailable: true
        }
     }
 
     componentDidMount() {
-        axios.get('http://localhost:8090/flights?size=50')
-            .then(
-                response => this.setState({
-                        flights: response.data
-                    }
-                ))
-            .catch((error) => {
+        axios.get(`http://localhost:8090/pingFlights`)
+            .then((result) => {
+                if (result.status === 200) {
+                    axios.get('http://localhost:8090/flights?size=50')
+                        .then(
+                            response => this.setState({
+                                    flights: response.data,
+                                    serviceAvailable: true
+                                }
+                            ))
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                } else {
+                    console.log('Ошибка при получении рейсов (status = ' + result.status + ')');
+                }
+            })
+            .catch(error => {
                 console.error(error);
-            });
+                this.setState({
+                    serviceAvailable: false
+                })
+            })
     }
 
     toggle1(tab) {
+        this.componentDidMount();
         if (this.state.activeSubTab !== tab) {
             this.setState({
                 activeSubTab: tab
@@ -77,6 +93,7 @@ class FlightForm extends React.Component {
     }
 
     render() {
+        if (this.state.serviceAvailable) {
             return (
                 <div>
                     <Nav>
@@ -116,7 +133,7 @@ class FlightForm extends React.Component {
                                         <tbody>
                                         {this.state.flights.map((flight, i) =>
                                             <tr>
-                                                <th id="thIdFlight" key = {flight.idFlight}> {flight.idFlight}</th>
+                                                <th id="thIdFlight" hidden key = {flight.idFlight}> {flight.idFlight}</th>
                                                 <td> {flight.idRoute}</td>
                                                 <td> {flight.dtFlight}</td>
                                                 <td> {flight.nnTickets}</td>
@@ -162,7 +179,14 @@ class FlightForm extends React.Component {
                         </TabPane>
                     </TabContent>
                 </div>
+            )} else {
+            return (
+                <div>
+                    <Alert color="danger">Сервис временно недоступен</Alert>
+                    <Button outline onClick={()=> {this.componentDidMount(); this.render();}}>Обновить</Button>
+                </div>
             )
+        }
     }
 }
 

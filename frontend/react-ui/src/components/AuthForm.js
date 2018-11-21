@@ -13,7 +13,7 @@ class AuthForm extends React.Component {
                 <hr className="my-2" />
                 <p>Для продолжения нажми кнопку Далее</p>
                 <p className="lead">
-                    <Button color="primary" onClick={this.props.onOpen}>Далее</Button>
+                    <Button color="primary" onClick={this.props.transition}>Далее</Button>
                 </p>
             </Jumbotron>
         )

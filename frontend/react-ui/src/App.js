@@ -8,17 +8,18 @@ import TicketForm from './components/TicketForm';
 import FlightForm from './components/FlightForm1';
 import RouteForm from './components/RouteForm';
 import AuthForm from './components/AuthForm'
+import './images/update.png'
 
 class App extends React.Component {
 
     constructor() {
         super()
         this.state = {
-            activeTab: '0'
+            activeTab: '0',
+            disabled: false
         }
 
         this.toggle = this.toggle.bind(this);
-        this.onOpen = this.onOpen.bind(this);
     }
 
     toggle(tab) {
@@ -27,12 +28,6 @@ class App extends React.Component {
                 activeTab: tab
             });
         }
-    }
-
-    onOpen() {
-        this.setState({
-            activeTab: 1
-        })
     }
 
     render() {
@@ -47,7 +42,7 @@ class App extends React.Component {
                         </NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink  id="ticketTab"
+                        <NavLink disabled={!this.state.disabled} id="ticketTab"
                             className={classnames({ active: this.state.activeTab === '1' })}
                                 onClick={() => {this.toggle('1')}}
                         >
@@ -55,7 +50,7 @@ class App extends React.Component {
                         </NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink
+                        <NavLink disabled={!this.state.disabled}
                             className={classnames({ active: this.state.activeTab === '2' })}
                                  onClick={() => { this.toggle('2')}}
                         >
@@ -63,7 +58,7 @@ class App extends React.Component {
                         </NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink
+                        <NavLink disabled={!this.state.disabled}
                             className={classnames({ active: this.state.activeTab === '3' })}
                             onClick={() => { this.toggle('3')}}
                         >
@@ -74,7 +69,7 @@ class App extends React.Component {
                 <TabContent activeTab={this.state.activeTab}>
 
                     <TabPane tabId="0">
-                        <AuthForm onOpen={this.onOpen}/>
+                        <AuthForm transition={() => {this.toggle('1'); this.setState({disabled: true})}}/>
                     </TabPane>
                     <TabPane tabId="1">
                         <div className="content_container">
