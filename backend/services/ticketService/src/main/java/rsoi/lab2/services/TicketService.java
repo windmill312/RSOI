@@ -31,5 +31,7 @@ public interface TicketService {
 
     int countFlightTickets(UUID uidFlight);
 
+    int countAll();
+
     void deleteFlightTickets(UUID uidFlight);
 }

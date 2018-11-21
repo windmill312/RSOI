@@ -59,4 +59,9 @@ public class RouteServiceImpl implements RouteService {
         routeRepository.deleteByUid(uidRoute);
     }
 
+    @Override
+    public int countAll() {
+        return routeRepository.findAll().size();
+    }
+
 }

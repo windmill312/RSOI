@@ -26,4 +26,5 @@ public interface RouteService {
 
     void delete(UUID uidRoute);
 
+    int countAll();
 }

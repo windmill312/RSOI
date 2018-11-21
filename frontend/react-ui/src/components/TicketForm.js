@@ -1,5 +1,5 @@
 import React from 'react';
-import {Table, Alert, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
+import {Table, Alert, TabContent, Pagination, PaginationItem, PaginationLink, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
 import classnames from 'classnames';
 import axios from "axios";
 
@@ -9,8 +9,11 @@ class TicketForm extends React.Component {
         super()
         this.state = {
             activeSubTab: '0',
+            nnTickets: 0,
             tickets: [],
-            serviceAvailable: true
+            serviceAvailable: true,
+            currentPage: 1,
+            nnPages: 0
         }
     }
 
@@ -18,15 +21,19 @@ class TicketForm extends React.Component {
         axios.get(`http://localhost:8090/pingTickets`)
             .then((result) => {
                 if (result.status === 200) {
-                    axios.get('http://localhost:8090/tickets?size=50')
-                        .then(
-                            response => this.setState({
-                                    tickets: response.data,
-                                serviceAvailable: true
-                                }
-                            ))
-                        .catch((error) => {
-                            console.error(error);
+                    axios.get(`http://localhost:8090/countTickets`)
+                        .then(result => {
+                            this.setState({nnTickets: result.data, nnPages : result.data/10});
+                            axios.get('http://localhost:8090/tickets?size=10&page=1')
+                                .then(
+                                    response => this.setState({
+                                            tickets: response.data,
+                                            serviceAvailable: true
+                                        }
+                                    ))
+                                .catch((error) => {
+                                    console.error(error);
+                                })
                         })
                 } else {
                     console.log('Ошибка при получении билетов (status = ' + result.status + ')');
@@ -47,6 +54,21 @@ class TicketForm extends React.Component {
                 activeSubTab: tab
             });
         }
+    }
+
+    handleCurrentPageChange = event => {
+        this.setState({ currentPage: event.target.value });
+        axios.get('http://localhost:8090/tickets?size=10&page=' + this.state.currentPage)
+            .then(
+                response => this.setState({
+                        tickets: response.data,
+                        serviceAvailable: true
+                    }
+                ))
+            .catch((error) => {
+                console.error(error);
+            });
+        this.render();
     }
 
     handleClassChange = event => {
@@ -110,7 +132,26 @@ class TicketForm extends React.Component {
         }
     };
 
-    componentWillMount
+    createPagination = () => {
+        var pages = [];
+        for (var i = 0; i < this.state.nnPages; i++) {
+            pages.push(
+                <PaginationItem key={i} >
+                    <PaginationLink>
+                        {i+1}
+                    </PaginationLink>
+                </PaginationItem>);
+        }
+        return <Pagination aria-label="Page navigation example">
+            <PaginationItem>
+                <PaginationLink previous href="#" />
+            </PaginationItem>
+            {pages}
+            <PaginationItem>
+                <PaginationLink next href="#" />
+            </PaginationItem>
+        </Pagination>;
+    }
 
     render() {
         if (this.state.serviceAvailable) {
@@ -167,6 +208,7 @@ class TicketForm extends React.Component {
                                             )}
                                             </tbody>
                                         </Table>
+                                        {this.createPagination()}
                                     </Col>
                                 </Row>
                             </Form>

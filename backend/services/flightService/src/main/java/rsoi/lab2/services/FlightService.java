@@ -27,4 +27,6 @@ public interface FlightService {
 
     @Nullable
     Flight getFlightByUid(UUID uidFlight);
+
+    int countAll();
 }

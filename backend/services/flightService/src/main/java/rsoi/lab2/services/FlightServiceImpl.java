@@ -43,6 +43,11 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
+    public int countAll() {
+        return flightRepository.findAll().size();
+    }
+
+    @Override
     public FlightInfo getFlightInfoByUid(UUID uidFlight) {
         return buildTicketInfo(flightRepository.findByUuid(uidFlight));
     }

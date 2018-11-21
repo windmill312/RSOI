@@ -31,6 +31,12 @@ public class TicketController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/countAll")
+    public ResponseEntity countAll() {
+        logger.info("Get \"countTickets\" request.");
+        return ResponseEntity.ok(ticketService.countAll());
+    }
+
     @GetMapping("/tickets")
     public ResponseEntity listTickets(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get \"tickets\" request with params (page=" + page + ", size=" + size + ").");

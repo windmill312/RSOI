@@ -50,6 +50,14 @@ public class GatewayController {
         return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
+    @GetMapping(value = "/countFlights")
+    public ResponseEntity<?> countFlights() {
+        logger.info("Get request (countFlights)");
+        RestTemplate restTemplate = new RestTemplate();
+        String resourceUrl = "http://localhost:8083/countAll";
+        return restTemplate.getForEntity(resourceUrl, String.class);
+    }
+
     @GetMapping(value = "/flight",
             params = {"uidFlight"})
     public ResponseEntity<?> getFlight(@RequestParam String uidFlight) {
@@ -73,6 +81,14 @@ public class GatewayController {
         RestTemplate restTemplate = new RestTemplate();
         String resourceUrl = "http://localhost:8082/ping";
         return restTemplate.getForEntity(resourceUrl, Object.class);
+    }
+
+    @GetMapping(value = "/countRoutes")
+    public ResponseEntity<?> countRoutes() {
+        logger.info("Get request (countRoutes)");
+        RestTemplate restTemplate = new RestTemplate();
+        String resourceUrl = "http://localhost:8082/countAll";
+        return restTemplate.getForEntity(resourceUrl, String.class);
     }
 
     @GetMapping(value = "/route",
@@ -116,6 +132,14 @@ public class GatewayController {
         RestTemplate restTemplate = new RestTemplate();
         String resourceUrl = "http://localhost:8081/ping";
         return restTemplate.getForEntity(resourceUrl, Object.class);
+    }
+
+    @GetMapping(value = "/countTickets")
+    public ResponseEntity<?> countTickets() {
+        logger.info("Get request (countTickets)");
+        RestTemplate restTemplate = new RestTemplate();
+        String resourceUrl = "http://localhost:8081/countAll";
+        return restTemplate.getForEntity(resourceUrl, String.class);
     }
 
     @GetMapping(value = "/ticket",

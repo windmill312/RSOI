@@ -31,6 +31,12 @@ public class RouteController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/countAll")
+    public ResponseEntity countAll() {
+        logger.info("Get \"countRoutes\" request.");
+        return ResponseEntity.ok(routeService.countAll());
+    }
+
     @GetMapping("/routes")
     public ResponseEntity<List<RouteInfo>> getRoutes(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get \"routes\" request with params (page=" + page + ", size=" + size + ").");

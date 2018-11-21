@@ -38,6 +38,11 @@ public class FlightController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/countAll")
+    public ResponseEntity countAll() {
+        logger.info("Get \"countRoutes\" request.");
+        return ResponseEntity.ok(flightService.countAll());
+    }
 
     @GetMapping(value = "/flights",
             produces = "application/json")

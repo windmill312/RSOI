@@ -74,6 +74,11 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public int countAll() {
+        return ticketRepository.findAll().size();
+    }
+
+    @Override
     public void deleteFlightTickets(UUID uidFlight) {
         ticketRepository.deleteTicketsByUidFlight(uidFlight);
     }
