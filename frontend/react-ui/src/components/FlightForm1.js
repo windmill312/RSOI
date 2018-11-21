@@ -112,6 +112,10 @@ class FlightForm extends React.Component {
                     alert('Произошла ошибка при создании рейса!');
                 }
             })
+            .catch(error => {
+                console.info(error);
+                alert('Произошла ошибка при создании рейса! Проверьте правильность кода маршрута');
+            });
     }
 
     handleDeleteFlight(flight) {

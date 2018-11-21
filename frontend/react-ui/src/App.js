@@ -8,7 +8,6 @@ import TicketForm from './components/TicketForm';
 import FlightForm from './components/FlightForm1';
 import RouteForm from './components/RouteForm';
 import AuthForm from './components/AuthForm'
-import './images/update.png'
 
 class App extends React.Component {
 

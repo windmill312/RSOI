@@ -1,5 +1,6 @@
 import React from 'react';
-import {Table, Alert, TabContent, TabPane, Nav, Pagination, PaginationItem, PaginationLink, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
+import {Table, Alert, TabContent, ListGroup, ListGroupItem, TabPane, Nav, Pagination, PaginationItem, PaginationLink, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import classnames from 'classnames';
 import axios from "axios";
 
@@ -79,7 +80,7 @@ class RouteForm extends React.Component {
                     routeAggregation: result.data
                 })
             });
-        alert(this.state.routeAggregation);
+        this.createAggregatedReport();
     }
 
     createPagination = () => {
@@ -101,6 +102,63 @@ class RouteForm extends React.Component {
                 <PaginationLink next onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage + 1)}} href="#" />
             </PaginationItem>
         </Pagination>;
+    }
+
+
+    /*[
+        {
+            "idFlight": 12,
+            "uid": "0de0139c-b09e-4c0c-be01-854f5b439083",
+            "uidRoute": "abb88b8f-1ce0-4c60-b609-b7e1bb48acd6",
+            "dtFlight": "2018-08-02 19:45",
+            "nnTickets": 1,
+            "maxTickets": 50,
+            "tickets": [
+                {
+                    "idTicket": 18,
+                    "uidFlight": "0de0139c-b09e-4c0c-be01-854f5b439083",
+                    "idPassenger": 45,
+                    "classType": "Бизнес",
+                    "uid": "55ec141d-65bb-406f-8211-a2f031f78b33"
+                }
+            ]
+        },
+{
+    "idFlight": 13,
+    "uid": "23581242-f010-4148-a3a9-2f18131cad07",
+    "uidRoute": "abb88b8f-1ce0-4c60-b609-b7e1bb48acd6",
+    "dtFlight": "2015-02-20 15:15",
+    "nnTickets": 1,
+    "nnTickets": 15,
+    "tickets": [
+        {
+            "idTicket": 19,
+            "uidFlight": "23581242-f010-4148-a3a9-2f18131cad07",
+            "idPassenger": 1,
+            "classType": "Бизнес",
+            "uid": "a5b1028d-5812-490d-8935-03ee1ad71b13"
+        }
+        ]
+}
+]*/
+
+    createAggregatedReport = () => {
+        const aggrArray = [];
+        this.state.routeAggregation.map(record => {
+
+            aggrArray.push(
+                <tr>
+                    <td> {record.uid}</td>
+                    <td> {record.routeName} </td>
+                    <td> {record.dtFlight} </td>
+                    <td> {record.nnTickets} </td>
+                    <td> {record.nnTickets} </td>
+                </tr>
+            );
+
+            return aggrArray;
+
+        })
     }
 
     toggle1(tab) {
@@ -178,16 +236,6 @@ class RouteForm extends React.Component {
                                 Добавить маршрут
                             </NavLink>
                         </NavItem>
-                        <NavItem>
-                            <NavLink
-                                className={classnames({active: this.state.activeSubTab === '2'})}
-                                onClick={() => {
-                                    this.toggle1('2');
-                                }}
-                            >
-                                Отчет
-                            </NavLink>
-                        </NavItem>
                     </Nav>
                     <TabContent activeTab={this.state.activeSubTab}>
                         <TabPane tabId="0">
@@ -232,25 +280,6 @@ class RouteForm extends React.Component {
                                         </FormGroup>
                                         <FormGroup row>
                                             <Button id="btnCreateRoute" type="submit">Добавить</Button>
-                                        </FormGroup>
-                                    </Form>
-                                </Col>
-                            </Row>
-                        </TabPane>
-                        <TabPane tabId="2">
-                            <Row>
-                                <Col sm="6">
-                                    <Form onSubmit={this.getTicketsAndFlights}>
-                                        <FormGroup row>
-                                            <Label id="lblNmRoute" for="inputUidRoute" sm="5">Код маршрута</Label>
-                                            <Col>
-                                                <Input name="inputUidRoute" id="inputUidRoute"
-                                                       placeholder="Введите код маршрута"
-                                                       onChange={this.handleRouteUidChange}/>
-                                            </Col>
-                                        </FormGroup>
-                                        <FormGroup row>
-                                            <Button id="btnCreateRoute" type="submit">Вывести отчет</Button>
                                         </FormGroup>
                                     </Form>
                                 </Col>

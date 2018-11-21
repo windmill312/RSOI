@@ -1,0 +1,66 @@
+/*<NavItem>
+                            <NavLink
+                                className={classnames({active: this.state.activeSubTab === '2'})}
+                                onClick={() => {
+                                    this.toggle1('2');
+                                }}
+                            >
+                                Отчет
+                            </NavLink>
+                        </NavItem>*/
+
+
+
+                        /*<TabPane tabId="2">
+                                                    <Row>
+                                                        <Col sm="6">
+                                                            <Form onSubmit={this.getTicketsAndFlights}>
+                                                                <FormGroup row>
+                                                                    <Label id="lblNmRoute" for="inputUidRoute" sm="5">Код маршрута</Label>
+                                                                    <Col>
+                                                                        <Input name="inputUidRoute" id="inputUidRoute"
+                                                                               placeholder="Введите код маршрута"
+                                                                               onChange={this.handleRouteUidChange}/>
+                                                                    </Col>
+                                                                </FormGroup>
+                                                                <FormGroup row>
+                                                                    <Button id="btnCreateRoute" type="submit">Вывести отчет</Button>
+                                                                </FormGroup>
+
+                                                                <FormGroup>
+                                                                    <Table id="tableReport" className="tableReport" size="sm">
+                                                                        <thead>
+                                                                        <ListGroup>
+                                                                            <ListGroupItem active tag="a" href="#" action>
+                                                                                <tr>
+                                                                                    <th> Код рейса </th>
+                                                                                    <th> Код маршрута  </th>
+                                                                                    <th> Дата и время </th>
+                                                                                    <th> Количество купленных билетов </th>
+                                                                                    <th> Максимальное количество билетов </th>
+                                                                                    <th></th>
+                                                                                </tr>
+                                                                            </ListGroupItem>
+                                                                        </ListGroup>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        <ListGroup>
+                                                                            <ListGroupItem active tag="a" href="#" action>
+                                                                                {this.state.routeAggregation.map((record) =>
+                                                                                    <tr>
+                                                                                        <td> {record.uid}</td>
+                                                                                        <td> {record.uidRoute}</td>
+                                                                                        <td> {record.dtFlight}</td>
+                                                                                        <td> {record.nnTickets}</td>
+                                                                                        <td> {record.maxTickets}</td>
+                                                                                    </tr>
+                                                                                )}
+                                                                            </ListGroupItem>
+                                                                        </ListGroup>
+                                                                        </tbody>
+                                                                    </Table>
+                                                                </FormGroup>
+                                                            </Form>
+                                                        </Col>
+                                                    </Row>
+                                                </TabPane>*/

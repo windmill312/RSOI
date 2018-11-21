@@ -107,6 +107,10 @@ class TicketForm extends React.Component {
                     console.info('status = ' + result.status);
                     alert('Произошла ошибка при создании билета!');
                 }
+            })
+            .catch(error => {
+                console.info(error);
+                alert('Произошла ошибка при создании билета! Проверьте правильность кода рейса');
             });
     };
 
