@@ -123,18 +123,16 @@ class RouteForm extends React.Component {
                                     <Table id="tableId" className="table" size="sm">
                                         <thead>
                                         <tr>
-                                            <th> № маршрута</th>
+                                            <th> Уникальный номер маршрута</th>
                                             <th> Направление</th>
-                                            <th> Уникальный номер</th>
                                             <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         {this.state.routes.map((route) =>
                                             <tr>
-                                                <th id="thIdRoute" hidden key={route.idRoute}> {route.idRoute}</th>
-                                                <td> {route.routeName} </td>
                                                 <td> {route.uid}</td>
+                                                <td> {route.routeName} </td>
                                                 <td><Button color="danger"
                                                             onClick={this.handleDeleteRoute(route)}>Удалить</Button>
                                                 </td>
@@ -150,7 +148,7 @@ class RouteForm extends React.Component {
                                 <Col sm="6">
                                     <Form onSubmit={this.handleSubmitRoute}>
                                         <FormGroup row>
-                                            <Label id="lblNmRoute" for="inputNmRoute" sm="5">№ пассажира</Label>
+                                            <Label id="lblNmRoute" for="inputNmRoute" sm="5">Направление</Label>
                                             <Col>
                                                 <Input name="inputNmRoute" id="inputNmRoute"
                                                        placeholder="Введите направление маршрута"

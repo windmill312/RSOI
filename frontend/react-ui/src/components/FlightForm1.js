@@ -50,7 +50,7 @@ class FlightForm extends React.Component {
     }
 
     handleFlightRouteChange = event => {
-        this.setState({ idRoute: event.target.value });
+        this.setState({ uidRoute: event.target.value });
     }
 
     handleFlightDateChange = event => {
@@ -68,7 +68,7 @@ class FlightForm extends React.Component {
     handleSubmitFlight = event => {
         event.preventDefault();
         const requestData = {
-            idRoute: this.state.idRoute,
+            uidRoute: this.state.uidRoute,
             dtFlight: this.state.dtFlight + ' ' + this.state.tmFlight,
             maxTickets: this.state.maxTickets
         };
@@ -82,7 +82,7 @@ class FlightForm extends React.Component {
     handleDeleteFlight(flight) {
         return event => {
             event.preventDefault();
-            axios.delete(`http://localhost:8090/flight`, {params: {idFlight: flight.idFlight}})
+            axios.delete(`http://localhost:8090/flight`, {data: flight.uid})
                 .then(result => {
                     console.log(result);
                 })
@@ -121,24 +121,22 @@ class FlightForm extends React.Component {
                                     <Table id = "tableId" className = "table" size="sm">
                                         <thead>
                                         <tr>
-                                            <th> № рейса  </th>
-                                            <th> № маршрута  </th>
+                                            <th> Код рейса </th>
+                                            <th> Код маршрута  </th>
                                             <th> Дата и время </th>
                                             <th> Количество купленных билетов </th>
                                             <th> Максимальное количество билетов </th>
-                                            <th> Уникальный номер рейса </th>
                                             <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {this.state.flights.map((flight, i) =>
+                                        {this.state.flights.map((flight) =>
                                             <tr>
-                                                <th id="thIdFlight" hidden key = {flight.idFlight}> {flight.idFlight}</th>
-                                                <td> {flight.idRoute}</td>
+                                                <td> {flight.uid}</td>
+                                                <td> {flight.uidRoute}</td>
                                                 <td> {flight.dtFlight}</td>
                                                 <td> {flight.nnTickets}</td>
                                                 <td> {flight.maxTickets}</td>
-                                                <td> {flight.uid}</td>
                                                 <td><Button color="danger" onClick={this.handleDeleteFlight(flight)}>Удалить</Button></td>
                                             </tr>
                                         )}
@@ -152,9 +150,9 @@ class FlightForm extends React.Component {
                                 <Col sm="6">
                                     <Form onSubmit={this.handleSubmitFlight}>
                                         <FormGroup row>
-                                            <Label id="lblIdRoute" for="inputIdRoute" sm="5">№ маршрута</Label>
+                                            <Label id="lblUidRoute" for="inputUidRoute" sm="5">Код маршрута</Label>
                                             <Col>
-                                                <Input type="number" name="inputIdRoute" id="inputIdRoute" placeholder="Введите ID маршрута" onChange={this.handleFlightRouteChange}/>
+                                                <Input name="inputUidRoute" id="inputUidRoute" placeholder="Введите код маршрута" onChange={this.handleFlightRouteChange}/>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>

@@ -58,13 +58,13 @@ class TicketForm extends React.Component {
     }
 
     handleFlightChange = event => {
-        this.setState({ idFlight: event.target.value });
+        this.setState({ uidFlight: event.target.value });
     }
 
     handleSubmitTicket = event => {
         event.preventDefault();
         const requestData = {
-            idFlight: this.state.idFlight,
+            uidFlight: this.state.uidFlight,
             idPassenger: this.state.idPassenger,
             classType: this.state.classType
         };
@@ -83,7 +83,7 @@ class TicketForm extends React.Component {
     handleDeleteTicket(ticket) {
         return event => {
             event.preventDefault();
-            axios.delete(`http://localhost:8090/ticket`, {params: {uidTicket: ticket.uidTicket}})
+            axios.delete(`http://localhost:8090/ticket`, {data: ticket.uid})
                 .then(result => {
                     if (result.status === 200) {
                         console.info('status = 200');
@@ -146,24 +146,22 @@ class TicketForm extends React.Component {
                                         <Table id="tableId" className="table" size="sm">
                                             <thead>
                                             <tr>
-                                                <th> Ticket ID</th>
-                                                <th> Flight ID</th>
-                                                <th> Passenger ID</th>
-                                                <th> Class</th>
-                                                <th> UUID</th>
+                                                <th> Код билета</th>
+                                                <th> Код рейса</th>
+                                                <th> Пассажир</th>
+                                                <th> Класс</th>
                                                 <th></th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {this.state.tickets.map((ticket, i) =>
                                                     <tr key={i}>
-                                                        <td hidden key={ticket.idTicket} id="thIdTicket" name="thIdTicket" value={ticket.idTicket}>{ticket.idTicket}</td>
-                                                        <td key={i}> {ticket.idFlight}</td>
+                                                        <td key={i}> {ticket.uid}</td>
+                                                        <td key={i}> {ticket.uidFlight}</td>
                                                         <td key={i}> {ticket.idPassenger}</td>
                                                         <td key={i} contentEditable={true}
                                                             onBlur={event => {console.log(event);
                                                                 this.handleChangeTicket(ticket)}}> {ticket.classType}</td>
-                                                        <td key={i}> {ticket.uid}</td>
                                                         <td key={ticket.idTicket}><Button color="danger" onClick={this.handleDeleteTicket(ticket)}>Удалить</Button></td>
                                                     </tr>
                                             )}
@@ -178,18 +176,18 @@ class TicketForm extends React.Component {
                                 <Col sm="6">
                                     <Form onSubmit={this.handleSubmitTicket}>
                                         <FormGroup row>
-                                            <Label id="lblIdPassenger" for="inputIdPassenger" sm="5">№ пассажира</Label>
+                                            <Label id="lblIdPassenger" for="inputIdPassenger" sm="5">Код пассажира</Label>
                                             <Col>
                                                 <Input type="number" name="inputIdPassenger" id="inputIdPassenger"
-                                                       placeholder="Введите ID пассажира"
+                                                       placeholder="Введите код пассажира"
                                                        onChange={this.handlePassengerChange}/>
                                             </Col>
                                         </FormGroup>
                                         <FormGroup row>
-                                            <Label id="lbl" for="inputIdFlight" sm="5">№ рейса</Label>
+                                            <Label id="lbl" for="inputUidFlight" sm="5">Код рейса</Label>
                                             <Col>
-                                                <Input type="number" name="inputIdFlight" id="inputIdFlight"
-                                                       placeholder="Введите ID рейса"
+                                                <Input name="inputUidFlight" id="inputUidFlight"
+                                                       placeholder="Введите код рейса"
                                                        onChange={this.handleFlightChange}/>
                                             </Col>
                                         </FormGroup>

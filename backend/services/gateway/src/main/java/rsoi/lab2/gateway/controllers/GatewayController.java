@@ -312,7 +312,7 @@ public class GatewayController {
     }
 
     @DeleteMapping(value = "/tickets")
-    public ResponseEntity deleteTickets(@RequestParam String uidFlight) {
+    public ResponseEntity deleteTickets(@RequestBody String uidFlight) {
         try {
             logger.info("Get DELETE request (deleteTickets)");
             RestTemplate restTemplate = new RestTemplate();
