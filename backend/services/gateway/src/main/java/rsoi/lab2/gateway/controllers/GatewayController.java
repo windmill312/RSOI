@@ -275,7 +275,7 @@ public class GatewayController {
     }
 
     @DeleteMapping(value = "/ticket")
-    public ResponseEntity deleteTicket(@RequestParam String uidTicket) {
+    public ResponseEntity deleteTicket(@RequestBody String uidTicket) {
         try {
             logger.info("Get DELETE request (deleteTicket)");
             //get ticket
@@ -296,7 +296,7 @@ public class GatewayController {
             if (response.getStatusCode().equals(HttpStatus.OK)) {
                 //update flight
                 resourceUrl = "http://localhost:8083/flight?uidFlight=" + uidFlight;
-                ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, Object.class);
+                ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, String.class);
                 FlightInfo flightInfo = new Gson().fromJson(responseFlight.getBody().toString(), FlightInfo.class);
                 flightInfo.setNnTickets(flightInfo.getNnTickets() - 1);
                 editFlight(flightInfo);

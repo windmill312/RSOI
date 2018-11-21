@@ -75,7 +75,7 @@ class TicketForm extends React.Component {
                     alert('Билет успешно создан!');
                 } else {
                     console.info('status = ' + result.status);
-                    alert('Билет успешно создан!');
+                    alert('Произошла ошибка при создании билета!');
                 }
             });
     };

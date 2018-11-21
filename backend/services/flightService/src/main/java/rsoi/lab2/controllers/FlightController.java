@@ -75,14 +75,14 @@ public class FlightController {
         logger.info("Get PUT request (add) with param (uidRoute=" + flight.getUidRoute()
                 + ", dtFlight=" + flight.getDtFlight() + ", maxTickets=" + flight.getMaxTickets() + ").");
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            /*SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             Date parsedDate = dateFormat.parse(flight.getDtFlight());
-            Timestamp timestamp = new Timestamp(parsedDate.getTime());
+            Timestamp timestamp = new Timestamp(parsedDate.getTime());*/
             Flight newFlight = new Flight();
             if (flight.getIdFlight() != 0)
                 newFlight.setIdFlight(flight.getIdFlight());
             newFlight.setUidRoute(flight.getUidRoute());
-            newFlight.setDtFlight(timestamp.toString());
+            newFlight.setDtFlight(flight.getDtFlight());
             newFlight.setNnTickets(0);
             newFlight.setMaxTickets(flight.getMaxTickets());
             newFlight.setUuid(UUID.randomUUID());

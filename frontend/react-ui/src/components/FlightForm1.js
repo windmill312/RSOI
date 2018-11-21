@@ -74,8 +74,13 @@ class FlightForm extends React.Component {
         };
         axios.put(`http://localhost:8090/flight`, requestData)
             .then(result => {
-                console.info(result);
-                console.info(result.data);
+                if (result.status === 200) {
+                    console.info('status = 200');
+                    alert('Рейс успешно создан!');
+                } else {
+                    console.info('status = ' + result.status);
+                    alert('Произошла ошибка при создании рейса!');
+                }
             })
     }
 
@@ -84,11 +89,14 @@ class FlightForm extends React.Component {
             event.preventDefault();
             axios.delete(`http://localhost:8090/flight`, {data: flight.uid})
                 .then(result => {
-                    console.log(result);
+                    if (result.status === 200) {
+                        console.info('status = 200');
+                        alert('Билет успешно удален!');
+                    } else {
+                        console.info('status = ' + result.status);
+                        alert('Произошла ошибка при удалении рейса!');
+                    }
                 })
-                .catch((error) => {
-                    console.log(error);
-                });
         }
     }
 
