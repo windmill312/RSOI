@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/backend/services/gateway" />
             <option value="$PROJECT_DIR$/backend/services/routeService" />
             <option value="$PROJECT_DIR$/backend/services/ticketService" />
+            <option value="$PROJECT_DIR$/backend/services/userService" />
             <option value="$PROJECT_DIR$/frontend/ui" />
           </set>
         </option>

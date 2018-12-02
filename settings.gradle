@@ -4,5 +4,6 @@ include 'backend/services/flightService'
 include 'backend/services/ticketService'
 include 'backend/services/routeService'
 include 'backend/services/gateway'
+include 'backend/services/userService'
 include 'frontend/ui'
 
