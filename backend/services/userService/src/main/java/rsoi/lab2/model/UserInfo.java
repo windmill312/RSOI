@@ -1,5 +1,6 @@
 package rsoi.lab2.model;
 
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class UserInfo {
@@ -17,6 +18,12 @@ public class UserInfo {
     private String password;
 
     private UUID uid;
+
+    private UUID token;
+
+    private UUID refreshToken;
+
+    private Timestamp dttmCurrentToken;
 
     public int getIdUser() {
         return idUser;
@@ -72,5 +79,29 @@ public class UserInfo {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UUID getToken() {
+        return token;
+    }
+
+    public void setToken(UUID token) {
+        this.token = token;
+    }
+
+    public UUID getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(UUID refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public Timestamp getDttmCurrentToken() {
+        return dttmCurrentToken;
+    }
+
+    public void setDttmCurrentToken(Timestamp dttmCurrentToken) {
+        this.dttmCurrentToken = dttmCurrentToken;
     }
 }

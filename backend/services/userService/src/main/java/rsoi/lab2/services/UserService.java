@@ -25,5 +25,12 @@ public interface UserService {
     @Nullable
     User getUserByLogin(String login);
 
+    @Nullable
+    UserInfo getUserInfoByToken(UUID token);
+
+    @Nullable
+    User getUserByToken(UUID token);
+
     User saveOrUpdate(User user);
+
 }

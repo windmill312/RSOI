@@ -7,6 +7,8 @@ import rsoi.lab2.entity.User;
 import rsoi.lab2.model.UserInfo;
 import rsoi.lab2.repositories.UserRepository;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -33,9 +35,12 @@ public class UserServiceImpl implements UserService {
         info.setFirstName(user.getFirstName());
         info.setSecondName(user.getSecondName());
         info.setBirthDate(user.getBirthDate());
+        info.setDttmCurrentToken(user.getDttmCreateToken());
         info.setLogin(user.getLogin());
         info.setPassword(user.getPassword());
         info.setUid(user.getUid());
+        info.setToken(user.getToken());
+        info.setRefreshToken(user.getRefreshToken());
         return info;
     }
 
@@ -57,6 +62,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByLogin(String login) {
         return userRepository.findByLogin(login);
+    }
+
+    @Override
+    public UserInfo getUserInfoByToken(UUID token) {
+        return buildUserInfo(userRepository.findByToken(token));
+    }
+
+    @Override
+    public User getUserByToken(UUID token) {
+        return userRepository.findByToken(token);
     }
 
     @Override

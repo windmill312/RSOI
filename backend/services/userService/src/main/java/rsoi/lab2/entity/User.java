@@ -1,6 +1,9 @@
 package rsoi.lab2.entity;
 
+import org.hibernate.id.GUIDGenerator;
+
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
@@ -18,10 +21,17 @@ public class User {
     private String birthDate;
     @Column(name = "password")
     private String password;
+    @Id
     @Column(name = "login")
     private String login;
     @Column
     private UUID uid;
+    @Column
+    private UUID token;
+    @Column
+    private UUID refreshToken;
+    @Column
+    private Timestamp dttmCreateToken;
 
     public User() {
 
@@ -81,5 +91,29 @@ public class User {
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public UUID getToken() {
+        return token;
+    }
+
+    public void setToken(UUID token) {
+        this.token = token;
+    }
+
+    public UUID getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(UUID refreshToken) {
+        this.refreshToken = refreshToken;
+    }
+
+    public Timestamp getDttmCreateToken() {
+        return dttmCreateToken;
+    }
+
+    public void setDttmCreateToken(Timestamp dttmCreateToken) {
+        this.dttmCreateToken = dttmCreateToken;
     }
 }
