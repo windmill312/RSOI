@@ -1,6 +1,7 @@
 package rsoi.lab2.entity;
 
 import org.hibernate.id.GUIDGenerator;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -21,7 +22,6 @@ public class User {
     private String birthDate;
     @Column(name = "password")
     private String password;
-    @Id
     @Column(name = "login")
     private String login;
     @Column

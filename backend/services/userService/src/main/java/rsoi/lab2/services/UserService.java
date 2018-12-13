@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface UserService {
 
-    @NonNull
+    @Nullable
     List<UserInfo> listAll();
 
     @Nullable

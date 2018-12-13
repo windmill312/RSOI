@@ -1,6 +1,5 @@
 package rsoi.lab2.controllers;
 
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,6 @@ import rsoi.lab2.entity.User;
 import rsoi.lab2.model.UserInfo;
 import rsoi.lab2.services.UserService;
 
-import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Calendar;
@@ -46,47 +44,51 @@ public class UserController {
             return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
     }
 
-    @GetMapping(value = "/user")
-    public ResponseEntity auth(@RequestBody String login, @RequestBody String password) {
-        logger.info("Auth request with param (login=" + login + ", password=" + password + ").");
-        User user = userService.getUserByLogin(login);
-        if (user.getLogin().equals(login) && user.getPassword().equals(password)) {
+    @PostMapping(value = "/user")
+    public ResponseEntity auth(@RequestBody UserInfo userInfo) {
+        logger.info("Auth request with param (login=" + userInfo.getLogin() + ", password=" + userInfo.getPassword() + ").");
+        if (userInfo.getPassword() != null && userInfo.getLogin() != null) {
+            User user = userService.getUserByLogin(userInfo.getLogin());
+            if (user.getLogin().equals(userInfo.getLogin()) && user.getPassword().equals(userInfo.getPassword())) {
 
-            user.setDttmCreateToken(Timestamp.valueOf(LocalDateTime.now()));
-            user.setToken(UUID.randomUUID());
-            user.setRefreshToken(UUID.randomUUID());
-            userService.saveOrUpdate(user);
+                user.setDttmCreateToken(Timestamp.valueOf(LocalDateTime.now()));
+                user.setToken(UUID.randomUUID());
+                user.setRefreshToken(UUID.randomUUID());
+                userService.saveOrUpdate(user);
 
-            String jsonString = new JSONObject()
-                    .put("token", user.getToken())
-                    .put("refreshToken", user.getRefreshToken()).toString();
+                String jsonString = new JSONObject()
+                        .put("token", user.getToken())
+                        .put("refreshToken", user.getRefreshToken()).toString();
 
-            return ResponseEntity.status(HttpStatus.OK).body(jsonString);
+                return ResponseEntity.status(HttpStatus.OK).body(jsonString);
+            } else
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); //клиент не найден
         }
         else
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); //клиент не найден
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @GetMapping(value = "/user",
             params = "token")
     public ResponseEntity checkToken(@RequestParam String token) {
         logger.info("Check token request with param (token=" + token + ").");
-        UserInfo userInfo = userService.getUserInfoByToken(UUID.fromString(token));
-        if (! userInfo.equals(null)) {
-
+        try {
+            UserInfo userInfo = userService.getUserInfoByToken(UUID.fromString(token));
             Timestamp original = userInfo.getDttmCurrentToken();
             Calendar cal = Calendar.getInstance();
             cal.setTimeInMillis(original.getTime());
             cal.add(Calendar.MINUTE, 30);
             Timestamp later = new Timestamp(cal.getTime().getTime());
 
-            if (later.before(Timestamp.valueOf(LocalDateTime.now())))
+            if (later.after(Timestamp.valueOf(LocalDateTime.now())))
                 return ResponseEntity.status(HttpStatus.FOUND).build();//клиент найден
             else
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build(); //token просрочился
         }
-        else
+        catch (Exception e) {
+            logger.info(e.getLocalizedMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); //клиент не найден
+        }
     }
 
     @PutMapping("/user")
@@ -95,7 +97,7 @@ public class UserController {
             logger.info("Get PUT request (add) with params (login=" + userInfo.getLogin() + ", password=" + userInfo.getPassword() + ").");
 
             UserInfo checkUser = userService.getUserInfoByLogin(userInfo.getLogin());
-            if (checkUser.equals(null)) {
+            if (checkUser == null) {
                 User user = new User();
                 if (userInfo.getIdUser() != 0)
                     user.setIdUser(userInfo.getIdUser());
@@ -120,7 +122,7 @@ public class UserController {
     public ResponseEntity edit(@RequestBody UserInfo userInfo) {
         logger.info("Get PATCH request (edit) with params (login=" + userInfo.getLogin() + ", password=" + userInfo.getPassword() + ").");
         User user = userService.getUserByUid(userInfo.getUid());
-        if (! user.equals(null)) {
+        if (user != null) {
             if (!userInfo.getFirstName().isEmpty()) {
                 user.setFirstName(userInfo.getFirstName());
             }
