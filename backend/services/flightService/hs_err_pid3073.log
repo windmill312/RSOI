@@ -24,7 +24,7 @@
 
 ---------------  T H R E A D  ---------------
 
-Current thread (0x00007f72d8085800):  VMThread [stack: 0x00007f72b4cec000,0x00007f72b4dec000] [id=3081]
+Current thread (0x00007f72d8085800):  VMThread [stack: 0x00007f72b4cec000,0x00007f72b4dec000] [uuid=3081]
 
 Stack: [0x00007f72b4cec000,0x00007f72b4dec000],  sp=0x00007f72b4dea040,  free space=1016k
 Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
@@ -52,25 +52,25 @@ VM_Operation (0x00007f72e0ed4ad0): ParallelGCFailedAllocation, mode: safepoint, 
 ---------------  P R O C E S S  ---------------
 
 Java Threads: ( => current thread )
-  0x00007f72d9b54800 JavaThread "HikariPool-1 housekeeper" daemon [_thread_blocked, id=3112, stack(0x00007f727df3a000,0x00007f727e03b000)]
-  0x00007f72d9b4d800 JavaThread "PostgreSQL-JDBC-SharedTimer-1" daemon [_thread_blocked, id=3111, stack(0x00007f727e23b000,0x00007f727e33c000)]
-  0x00007f72d9a20800 JavaThread "container-0" [_thread_blocked, id=3109, stack(0x00007f727eb9b000,0x00007f727ec9c000)]
-  0x00007f72d9a1e000 JavaThread "ContainerBackgroundProcessor[StandardEngine[Tomcat]]" daemon [_thread_blocked, id=3108, stack(0x00007f727eebf000,0x00007f727efc0000)]
-  0x00007f72d80e3000 JavaThread "Service Thread" daemon [_thread_blocked, id=3093, stack(0x00007f72b40dd000,0x00007f72b41de000)]
-  0x00007f72d80df800 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, id=3092, stack(0x00007f72b41df000,0x00007f72b42df000)]
-  0x00007f72d80dd800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=3091, stack(0x00007f72b42e0000,0x00007f72b43e0000)]
-  0x00007f72d80da800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=3090, stack(0x00007f72b43e1000,0x00007f72b44e1000)]
-  0x00007f72a4001000 JavaThread "JDWP Command Reader" daemon [_thread_in_native, id=3089, stack(0x00007f72b44e1000,0x00007f72b45e2000)]
-  0x00007f72d80d8800 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=3088, stack(0x00007f72b45e2000,0x00007f72b46e3000)]
-  0x00007f72d80d5000 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, id=3086, stack(0x00007f72b46e3000,0x00007f72b47e4000)]
-  0x00007f72d80c4000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=3084, stack(0x00007f72b49e8000,0x00007f72b4ae9000)]
-  0x00007f72d8092000 JavaThread "Finalizer" daemon [_thread_blocked, id=3083, stack(0x00007f72b4ae9000,0x00007f72b4bea000)]
-  0x00007f72d808f800 JavaThread "Reference Handler" daemon [_thread_blocked, id=3082, stack(0x00007f72b4bea000,0x00007f72b4ceb000)]
-  0x00007f72d8017800 JavaThread "main" [_thread_blocked, id=3076, stack(0x00007f72e0ddc000,0x00007f72e0edc000)]
+  0x00007f72d9b54800 JavaThread "HikariPool-1 housekeeper" daemon [_thread_blocked, uuid=3112, stack(0x00007f727df3a000,0x00007f727e03b000)]
+  0x00007f72d9b4d800 JavaThread "PostgreSQL-JDBC-SharedTimer-1" daemon [_thread_blocked, uuid=3111, stack(0x00007f727e23b000,0x00007f727e33c000)]
+  0x00007f72d9a20800 JavaThread "container-0" [_thread_blocked, uuid=3109, stack(0x00007f727eb9b000,0x00007f727ec9c000)]
+  0x00007f72d9a1e000 JavaThread "ContainerBackgroundProcessor[StandardEngine[Tomcat]]" daemon [_thread_blocked, uuid=3108, stack(0x00007f727eebf000,0x00007f727efc0000)]
+  0x00007f72d80e3000 JavaThread "Service Thread" daemon [_thread_blocked, uuid=3093, stack(0x00007f72b40dd000,0x00007f72b41de000)]
+  0x00007f72d80df800 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, uuid=3092, stack(0x00007f72b41df000,0x00007f72b42df000)]
+  0x00007f72d80dd800 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, uuid=3091, stack(0x00007f72b42e0000,0x00007f72b43e0000)]
+  0x00007f72d80da800 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, uuid=3090, stack(0x00007f72b43e1000,0x00007f72b44e1000)]
+  0x00007f72a4001000 JavaThread "JDWP Command Reader" daemon [_thread_in_native, uuid=3089, stack(0x00007f72b44e1000,0x00007f72b45e2000)]
+  0x00007f72d80d8800 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, uuid=3088, stack(0x00007f72b45e2000,0x00007f72b46e3000)]
+  0x00007f72d80d5000 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, uuid=3086, stack(0x00007f72b46e3000,0x00007f72b47e4000)]
+  0x00007f72d80c4000 JavaThread "Signal Dispatcher" daemon [_thread_blocked, uuid=3084, stack(0x00007f72b49e8000,0x00007f72b4ae9000)]
+  0x00007f72d8092000 JavaThread "Finalizer" daemon [_thread_blocked, uuid=3083, stack(0x00007f72b4ae9000,0x00007f72b4bea000)]
+  0x00007f72d808f800 JavaThread "Reference Handler" daemon [_thread_blocked, uuid=3082, stack(0x00007f72b4bea000,0x00007f72b4ceb000)]
+  0x00007f72d8017800 JavaThread "main" [_thread_blocked, uuid=3076, stack(0x00007f72e0ddc000,0x00007f72e0edc000)]
 
 Other Threads:
-=>0x00007f72d8085800 VMThread [stack: 0x00007f72b4cec000,0x00007f72b4dec000] [id=3081]
-  0x00007f72d80e8000 WatcherThread [stack: 0x00007f7287f00000,0x00007f7288000000] [id=3094]
+=>0x00007f72d8085800 VMThread [stack: 0x00007f72b4cec000,0x00007f72b4dec000] [uuid=3081]
+  0x00007f72d80e8000 WatcherThread [stack: 0x00007f7287f00000,0x00007f7288000000] [uuid=3094]
 
 VM state:at safepoint (normal execution)
 
@@ -726,9 +726,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2746.219
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 0
+core uuid		: 0
 cpu cores	: 2
 apicid		: 0
 initial apicid	: 0
@@ -753,9 +753,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2750.201
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 0
+core uuid		: 0
 cpu cores	: 2
 apicid		: 1
 initial apicid	: 1
@@ -780,9 +780,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2790.264
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 1
+core uuid		: 1
 cpu cores	: 2
 apicid		: 2
 initial apicid	: 2
@@ -807,9 +807,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2788.023
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 1
+core uuid		: 1
 cpu cores	: 2
 apicid		: 3
 initial apicid	: 3

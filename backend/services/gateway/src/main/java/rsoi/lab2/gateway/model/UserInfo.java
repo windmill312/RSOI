@@ -6,9 +6,9 @@ public class UserInfo {
 
     private int idUser;
 
-    private String firstName;
+    private String name;
 
-    private String secondName;
+    private String username;
 
     private String birthDate;
 
@@ -26,12 +26,12 @@ public class UserInfo {
         this.idUser = idUser;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public UUID getUid() {
@@ -42,12 +42,12 @@ public class UserInfo {
         this.uid = uid;
     }
 
-    public String getSecondName() {
-        return secondName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getBirthDate() {

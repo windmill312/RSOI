@@ -2,13 +2,14 @@ package rsoi.lab2.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rsoi.lab2.entity.User;
 import rsoi.lab2.model.UserInfo;
 import rsoi.lab2.repositories.UserRepository;
+import rsoi.lab2.security.UserPrincipal;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,49 +30,36 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll().stream().map(this::buildUserInfo).collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public UserPrincipal loadUserByUsername(String usernameOrEmail)
+            throws UsernameNotFoundException {
+        // Let people login with either username or email
+        User user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail)
+                );
+
+        return UserPrincipal.create(user);
+    }
+
+    @Transactional
+    public UserPrincipal loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with id : " + id)
+        );
+
+        return UserPrincipal.create(user);
+    }
+
     private UserInfo buildUserInfo(User user) {
         UserInfo info = new UserInfo();
-        info.setIdUser(user.getIdUser());
-        info.setFirstName(user.getFirstName());
-        info.setSecondName(user.getSecondName());
-        info.setBirthDate(user.getBirthDate());
-        info.setDttmCurrentToken(user.getDttmCreateToken());
-        info.setLogin(user.getLogin());
+        info.setIdUser(user.getId());
+        info.setName(user.getName());
+        info.setUsername(user.getUsername());
+        info.setLogin(user.getEmail());
         info.setPassword(user.getPassword());
-        info.setUid(user.getUid());
-        info.setToken(user.getToken());
-        info.setRefreshToken(user.getRefreshToken());
         return info;
-    }
-
-    @Override
-    public UserInfo getUserInfoByUid(UUID uid) {
-        return buildUserInfo(userRepository.findByUid(uid));
-    }
-
-    @Override
-    public User getUserByUid(UUID uid) {
-        return userRepository.findByUid(uid);
-    }
-
-    @Override
-    public UserInfo getUserInfoByLogin(String login) {
-        return null;
-    }
-
-    @Override
-    public User getUserByLogin(String login) {
-        return userRepository.findByLogin(login);
-    }
-
-    @Override
-    public UserInfo getUserInfoByToken(UUID token) {
-        return buildUserInfo(userRepository.findByToken(token));
-    }
-
-    @Override
-    public User getUserByToken(UUID token) {
-        return userRepository.findByToken(token);
     }
 
     @Override

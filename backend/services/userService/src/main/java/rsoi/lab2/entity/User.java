@@ -1,80 +1,91 @@
 package rsoi.lab2.entity;
 
-import org.hibernate.id.GUIDGenerator;
-import org.hibernate.validator.constraints.UniqueElements;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "username"
+        }),
+        @UniqueConstraint(columnNames = {
+                "email"
+        })
+})
+
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int idUser;
-    @Column(name = "firstName")
-    private String firstName;
-    @Column(name = "secondName")
-    private String secondName;
-    @Column(name = "birthDate")
-    private String birthDate;
+    private Long id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "username")
+    private String username;
+
     @Column(name = "password")
     private String password;
-    @Column(name = "login")
-    private String login;
-    @Column
-    private UUID uid;
-    @Column
-    private UUID token;
-    @Column
-    private UUID refreshToken;
-    @Column
-    private Timestamp dttmCreateToken;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "access_token")
+    private String accessToken;
+
+    @Column(name = "refresh_token")
+    private String refreshToken;
+
+    @Column(name = "dttm_token")
+    private Timestamp dttmToken;
+
+    @Column(name = "user_uid")
+    private UUID uuid;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
+
+    public User(String name, String username, String email, String password) {
+        this.setName(name);
+        this.setUsername(username);
+        this.setEmail(email);
+        this.setPassword(password);
+        this.setUuid(UUID.randomUUID());
+    }
 
     public User() {
 
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getIdUser() {
-        return idUser;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdUser(int idUser) {
-        this.idUser = idUser;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public UUID getUid() {
-        return uid;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUid(UUID uid) {
-        this.uid = uid;
-    }
-
-    public String getSecondName() {
-        return secondName;
-    }
-
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
-    }
-
-    public String getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(String birthDate) {
-        this.birthDate = birthDate;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -85,35 +96,51 @@ public class User {
         this.password = password;
     }
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public UUID getToken() {
-        return token;
+    public Set<Role> getRoles() {
+        return roles;
     }
 
-    public void setToken(UUID token) {
-        this.token = token;
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 
-    public UUID getRefreshToken() {
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public String getRefreshToken() {
         return refreshToken;
     }
 
-    public void setRefreshToken(UUID refreshToken) {
+    public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
     }
 
-    public Timestamp getDttmCreateToken() {
-        return dttmCreateToken;
+    public Timestamp getDttmToken() {
+        return dttmToken;
     }
 
-    public void setDttmCreateToken(Timestamp dttmCreateToken) {
-        this.dttmCreateToken = dttmCreateToken;
+    public void setDttmToken(Timestamp dttmToken) {
+        this.dttmToken = dttmToken;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 }

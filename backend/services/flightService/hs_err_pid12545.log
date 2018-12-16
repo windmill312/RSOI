@@ -24,7 +24,7 @@
 
 ---------------  T H R E A D  ---------------
 
-Current thread (0x00007ff9ac07c000):  VMThread [stack: 0x00007ff98c683000,0x00007ff98c783000] [id=12556]
+Current thread (0x00007ff9ac07c000):  VMThread [stack: 0x00007ff98c683000,0x00007ff98c783000] [uuid=12556]
 
 Stack: [0x00007ff98c683000,0x00007ff98c783000],  sp=0x00007ff98c781020,  free space=1016k
 Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
@@ -52,26 +52,26 @@ VM_Operation (0x00007ff970183a30): CollectForMetadataAllocation, mode: safepoint
 ---------------  P R O C E S S  ---------------
 
 Java Threads: ( => current thread )
-  0x00007ff94d47d000 JavaThread "HikariPool-1 housekeeper" daemon [_thread_blocked, id=12585, stack(0x00007ff952b5e000,0x00007ff952c5f000)]
-  0x00007ff94d8f4800 JavaThread "PostgreSQL-JDBC-SharedTimer-1" daemon [_thread_blocked, id=12583, stack(0x00007ff9534fd000,0x00007ff9535fe000)]
-  0x00007ff9ac7de000 JavaThread "/0:0:0:0:0:0:0:1:40082 to /0:0:0:0:0:0:0:1:36027 workers Thread 3" [_thread_in_native, id=12576, stack(0x00007ff953dfe000,0x00007ff953eff000)]
-  0x00007ff9ac7e2000 JavaThread "/0:0:0:0:0:0:0:1:40082 to /0:0:0:0:0:0:0:1:36027 workers Thread 2" [_thread_blocked, id=12575, stack(0x00007ff953eff000,0x00007ff954000000)]
-  0x00007ff9ac732000 JavaThread "Test worker" [_thread_blocked, id=12574, stack(0x00007ff97008e000,0x00007ff97018f000)]
-  0x00007ff9ac11a800 JavaThread "Service Thread" daemon [_thread_blocked, id=12568, stack(0x00007ff9739fa000,0x00007ff973afb000)]
-  0x00007ff9ac117000 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, id=12567, stack(0x00007ff973afc000,0x00007ff973bfc000)]
-  0x00007ff9ac115000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=12566, stack(0x00007ff973bfd000,0x00007ff973cfd000)]
-  0x00007ff9ac113000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=12565, stack(0x00007ff973cfe000,0x00007ff973dfe000)]
-  0x00007ff978001000 JavaThread "JDWP Command Reader" daemon [_thread_in_native, id=12564, stack(0x00007ff973dfe000,0x00007ff973eff000)]
-  0x00007ff9ac110000 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, id=12563, stack(0x00007ff973eff000,0x00007ff974000000)]
-  0x00007ff9ac10c800 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, id=12560, stack(0x00007ff98c07a000,0x00007ff98c17b000)]
-  0x00007ff9ac0ec800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=12559, stack(0x00007ff98c37f000,0x00007ff98c480000)]
-  0x00007ff9ac088800 JavaThread "Finalizer" daemon [_thread_blocked, id=12558, stack(0x00007ff98c480000,0x00007ff98c581000)]
-  0x00007ff9ac086000 JavaThread "Reference Handler" daemon [_thread_blocked, id=12557, stack(0x00007ff98c581000,0x00007ff98c682000)]
-  0x00007ff9ac00e000 JavaThread "main" [_thread_blocked, id=12547, stack(0x00007ff9b46fb000,0x00007ff9b47fb000)]
+  0x00007ff94d47d000 JavaThread "HikariPool-1 housekeeper" daemon [_thread_blocked, uuid=12585, stack(0x00007ff952b5e000,0x00007ff952c5f000)]
+  0x00007ff94d8f4800 JavaThread "PostgreSQL-JDBC-SharedTimer-1" daemon [_thread_blocked, uuid=12583, stack(0x00007ff9534fd000,0x00007ff9535fe000)]
+  0x00007ff9ac7de000 JavaThread "/0:0:0:0:0:0:0:1:40082 to /0:0:0:0:0:0:0:1:36027 workers Thread 3" [_thread_in_native, uuid=12576, stack(0x00007ff953dfe000,0x00007ff953eff000)]
+  0x00007ff9ac7e2000 JavaThread "/0:0:0:0:0:0:0:1:40082 to /0:0:0:0:0:0:0:1:36027 workers Thread 2" [_thread_blocked, uuid=12575, stack(0x00007ff953eff000,0x00007ff954000000)]
+  0x00007ff9ac732000 JavaThread "Test worker" [_thread_blocked, uuid=12574, stack(0x00007ff97008e000,0x00007ff97018f000)]
+  0x00007ff9ac11a800 JavaThread "Service Thread" daemon [_thread_blocked, uuid=12568, stack(0x00007ff9739fa000,0x00007ff973afb000)]
+  0x00007ff9ac117000 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, uuid=12567, stack(0x00007ff973afc000,0x00007ff973bfc000)]
+  0x00007ff9ac115000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, uuid=12566, stack(0x00007ff973bfd000,0x00007ff973cfd000)]
+  0x00007ff9ac113000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, uuid=12565, stack(0x00007ff973cfe000,0x00007ff973dfe000)]
+  0x00007ff978001000 JavaThread "JDWP Command Reader" daemon [_thread_in_native, uuid=12564, stack(0x00007ff973dfe000,0x00007ff973eff000)]
+  0x00007ff9ac110000 JavaThread "JDWP Event Helper Thread" daemon [_thread_blocked, uuid=12563, stack(0x00007ff973eff000,0x00007ff974000000)]
+  0x00007ff9ac10c800 JavaThread "JDWP Transport Listener: dt_socket" daemon [_thread_blocked, uuid=12560, stack(0x00007ff98c07a000,0x00007ff98c17b000)]
+  0x00007ff9ac0ec800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, uuid=12559, stack(0x00007ff98c37f000,0x00007ff98c480000)]
+  0x00007ff9ac088800 JavaThread "Finalizer" daemon [_thread_blocked, uuid=12558, stack(0x00007ff98c480000,0x00007ff98c581000)]
+  0x00007ff9ac086000 JavaThread "Reference Handler" daemon [_thread_blocked, uuid=12557, stack(0x00007ff98c581000,0x00007ff98c682000)]
+  0x00007ff9ac00e000 JavaThread "main" [_thread_blocked, uuid=12547, stack(0x00007ff9b46fb000,0x00007ff9b47fb000)]
 
 Other Threads:
-=>0x00007ff9ac07c000 VMThread [stack: 0x00007ff98c683000,0x00007ff98c783000] [id=12556]
-  0x00007ff9ac120000 WatcherThread [stack: 0x00007ff9738fa000,0x00007ff9739fa000] [id=12569]
+=>0x00007ff9ac07c000 VMThread [stack: 0x00007ff98c683000,0x00007ff98c783000] [uuid=12556]
+  0x00007ff9ac120000 WatcherThread [stack: 0x00007ff9738fa000,0x00007ff9739fa000] [uuid=12569]
 
 VM state:at safepoint (normal execution)
 
@@ -708,9 +708,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2760.144
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 0
+core uuid		: 0
 cpu cores	: 2
 apicid		: 0
 initial apicid	: 0
@@ -735,9 +735,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2771.980
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 0
+core uuid		: 0
 cpu cores	: 2
 apicid		: 1
 initial apicid	: 1
@@ -762,9 +762,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2780.198
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 1
+core uuid		: 1
 cpu cores	: 2
 apicid		: 2
 initial apicid	: 2
@@ -789,9 +789,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2781.890
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 1
+core uuid		: 1
 cpu cores	: 2
 apicid		: 3
 initial apicid	: 3

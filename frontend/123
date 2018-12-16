@@ -16,19 +16,19 @@
                                                         <Col sm="6">
                                                             <Form onSubmit={this.getTicketsAndFlights}>
                                                                 <FormGroup row>
-                                                                    <Label id="lblNmRoute" for="inputUidRoute" sm="5">Код маршрута</Label>
+                                                                    <Label uuid="lblNmRoute" for="inputUidRoute" sm="5">Код маршрута</Label>
                                                                     <Col>
-                                                                        <Input name="inputUidRoute" id="inputUidRoute"
+                                                                        <Input name="inputUidRoute" uuid="inputUidRoute"
                                                                                placeholder="Введите код маршрута"
                                                                                onChange={this.handleRouteUidChange}/>
                                                                     </Col>
                                                                 </FormGroup>
                                                                 <FormGroup row>
-                                                                    <Button id="btnCreateRoute" type="submit">Вывести отчет</Button>
+                                                                    <Button uuid="btnCreateRoute" type="submit">Вывести отчет</Button>
                                                                 </FormGroup>
 
                                                                 <FormGroup>
-                                                                    <Table id="tableReport" className="tableReport" size="sm">
+                                                                    <Table uuid="tableReport" className="tableReport" size="sm">
                                                                         <thead>
                                                                         <ListGroup>
                                                                             <ListGroupItem active tag="a" href="#" action>

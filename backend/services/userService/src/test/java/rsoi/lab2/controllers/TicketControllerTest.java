@@ -51,11 +51,11 @@ public class TicketControllerTest {
             throws Exception {
 
         UserInfo ticket = new UserInfo();
-        ticket.setIdUser(16);
+        ticket.setUuid(16);
         UUID uidFlight = UUID.randomUUID();
         ticket.setUidUser(uidFlight);
         ticket.setIdPassenger(0);
-        ticket.setFirstName("ECONOMIC");
+        ticket.setName("ECONOMIC");
 
         List<UserInfo> allTickets = Arrays.asList(ticket);
 
@@ -65,17 +65,17 @@ public class TicketControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].idTicket", is(ticket.getIdUser())));
+                .andExpect(jsonPath("$[0].idTicket", is(ticket.getUuid())));
     }
 
     @Test
     public void getTicketTest() throws Exception {
         UserInfo ticket = new UserInfo();
-        ticket.setIdUser(16);
+        ticket.setUuid(16);
         UUID uidFlight = UUID.randomUUID();
         ticket.setUidUser(uidFlight);
         ticket.setIdPassenger(0);
-        ticket.setFirstName("ECONOMIC");
+        ticket.setName("ECONOMIC");
         UUID uid = UUID.randomUUID();
         ticket.setUid(uid);
 
@@ -88,23 +88,23 @@ public class TicketControllerTest {
                 .andReturn();
 
         UserInfo newTicket = gson.fromJson(mvcResult.getResponse().getContentAsString(), UserInfo.class);
-        assertEquals(ticket.getIdUser(), newTicket.getIdUser());
+        assertEquals(ticket.getUuid(), newTicket.getUuid());
     }
 
     @Test
     public void getFlightTicketsTest() throws Exception {
         UserInfo ticket1 = new UserInfo();
-        ticket1.setIdUser(16);
+        ticket1.setUuid(16);
         UUID uidFlight = UUID.randomUUID();
         ticket1.setUidUser(uidFlight);
         ticket1.setIdPassenger(0);
-        ticket1.setFirstName("ECONOMIC");
+        ticket1.setName("ECONOMIC");
 
         UserInfo ticket2 = new UserInfo();
-        ticket2.setIdUser(16);
+        ticket2.setUuid(16);
         ticket2.setUidUser(uidFlight);
         ticket2.setIdPassenger(0);
-        ticket2.setFirstName("LUXURY");
+        ticket2.setName("LUXURY");
 
         List<UserInfo> allTickets = Arrays.asList(ticket1, ticket2);
         given(service.listFlightTickets(uidFlight)).willReturn(allTickets);
@@ -140,13 +140,13 @@ public class TicketControllerTest {
     public void addTicketTest() throws Exception {
 
         UserInfo ticketInfo = new UserInfo();
-        ticketInfo.setFirstName("ECONOMIC");
+        ticketInfo.setName("ECONOMIC");
         UUID uid = UUID.randomUUID();
         ticketInfo.setUidUser(uid);
         ticketInfo.setIdPassenger(1);
 
         User ticket = new User();
-        ticket.setFirstName(ticketInfo.getFirstName());
+        ticket.setName(ticketInfo.getName());
         ticket.setUidUser(ticketInfo.getUidUser());
         ticket.setIdPassenger(ticketInfo.getIdPassenger());
 
@@ -167,8 +167,8 @@ public class TicketControllerTest {
     public void editTicketTest() throws Exception {
 
         UserInfo ticketInfo = new UserInfo();
-        ticketInfo.setIdUser(16);
-        ticketInfo.setFirstName("ECONOMIC");
+        ticketInfo.setUuid(16);
+        ticketInfo.setName("ECONOMIC");
         UUID uidFlight = UUID.randomUUID();
         ticketInfo.setUidUser(uidFlight);
         UUID uid = UUID.randomUUID();
@@ -176,7 +176,7 @@ public class TicketControllerTest {
         ticketInfo.setIdPassenger(1);
 
         User ticket = new User();
-        ticket.setFirstName(ticketInfo.getFirstName());
+        ticket.setName(ticketInfo.getName());
         ticket.setUidUser(ticketInfo.getUidUser());
         ticket.setIdPassenger(ticketInfo.getIdPassenger());
         ticket.setUid(uid);

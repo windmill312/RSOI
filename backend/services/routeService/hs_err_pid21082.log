@@ -24,7 +24,7 @@
 
 ---------------  T H R E A D  ---------------
 
-Current thread (0x00007fa11807e000):  VMThread [stack: 0x00007fa108afc000,0x00007fa108bfc000] [id=21090]
+Current thread (0x00007fa11807e000):  VMThread [stack: 0x00007fa108afc000,0x00007fa108bfc000] [uuid=21090]
 
 Stack: [0x00007fa108afc000,0x00007fa108bfc000],  sp=0x00007fa108bfa020,  free space=1016k
 Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
@@ -52,37 +52,37 @@ VM_Operation (0x00007fa0c1f92550): CollectForMetadataAllocation, mode: safepoint
 ---------------  P R O C E S S  ---------------
 
 Java Threads: ( => current thread )
-  0x00007fa118010000 JavaThread "DestroyJavaVM" [_thread_blocked, id=21085, stack(0x00007fa1215d1000,0x00007fa1216d1000)]
-  0x00007fa119663800 JavaThread "http-nio-8082-AsyncTimeout" daemon [_thread_blocked, id=21132, stack(0x00007fa0c148e000,0x00007fa0c158f000)]
-  0x00007fa119662000 JavaThread "http-nio-8082-Acceptor-0" daemon [_thread_in_native, id=21131, stack(0x00007fa0c158f000,0x00007fa0c1690000)]
-  0x00007fa11965f800 JavaThread "http-nio-8082-ClientPoller-1" daemon [_thread_blocked, id=21130, stack(0x00007fa0c1690000,0x00007fa0c1791000)]
-  0x00007fa119644800 JavaThread "http-nio-8082-ClientPoller-0" daemon [_thread_blocked, id=21129, stack(0x00007fa0c1791000,0x00007fa0c1892000)]
-  0x00007fa119629800 JavaThread "http-nio-8082-exec-10" daemon [_thread_blocked, id=21128, stack(0x00007fa0c1892000,0x00007fa0c1993000)]
-  0x00007fa119627800 JavaThread "http-nio-8082-exec-9" daemon [_thread_blocked, id=21127, stack(0x00007fa0c1993000,0x00007fa0c1a94000)]
-  0x00007fa119626000 JavaThread "http-nio-8082-exec-8" daemon [_thread_blocked, id=21126, stack(0x00007fa0c1a94000,0x00007fa0c1b95000)]
-  0x00007fa119624000 JavaThread "http-nio-8082-exec-7" daemon [_thread_blocked, id=21125, stack(0x00007fa0c1b95000,0x00007fa0c1c96000)]
-  0x00007fa119622000 JavaThread "http-nio-8082-exec-6" daemon [_thread_blocked, id=21124, stack(0x00007fa0c1c96000,0x00007fa0c1d97000)]
-  0x00007fa119620000 JavaThread "http-nio-8082-exec-5" daemon [_thread_blocked, id=21123, stack(0x00007fa0c1d97000,0x00007fa0c1e98000)]
-  0x00007fa11961e000 JavaThread "http-nio-8082-exec-4" daemon [_thread_blocked, id=21122, stack(0x00007fa0c1e98000,0x00007fa0c1f99000)]
-  0x00007fa11961c000 JavaThread "http-nio-8082-exec-3" daemon [_thread_blocked, id=21121, stack(0x00007fa0c1f99000,0x00007fa0c209a000)]
-  0x00007fa11961a000 JavaThread "http-nio-8082-exec-2" daemon [_thread_blocked, id=21120, stack(0x00007fa0c209a000,0x00007fa0c219b000)]
-  0x00007fa119618800 JavaThread "http-nio-8082-exec-1" daemon [_thread_blocked, id=21119, stack(0x00007fa0c219b000,0x00007fa0c229c000)]
-  0x00007fa119616800 JavaThread "NioBlockingSelector.BlockPoller-1" daemon [_thread_blocked, id=21118, stack(0x00007fa0c229c000,0x00007fa0c239d000)]
-  0x00007fa118f81800 JavaThread "HikariPool-1 housekeeper" daemon [_thread_blocked, id=21107, stack(0x00007fa0c329e000,0x00007fa0c339f000)]
-  0x00007fa118f7a000 JavaThread "PostgreSQL-JDBC-SharedTimer-1" daemon [_thread_blocked, id=21106, stack(0x00007fa0c339f000,0x00007fa0c34a0000)]
-  0x00007fa118e5c800 JavaThread "container-0" [_thread_blocked, id=21104, stack(0x00007fa0c3cff000,0x00007fa0c3e00000)]
-  0x00007fa118e5a800 JavaThread "ContainerBackgroundProcessor[StandardEngine[Tomcat]]" daemon [_thread_blocked, id=21103, stack(0x00007fa0f809f000,0x00007fa0f81a0000)]
-  0x00007fa1180d9000 JavaThread "Service Thread" daemon [_thread_blocked, id=21097, stack(0x00007fa1010ef000,0x00007fa1011f0000)]
-  0x00007fa1180c3800 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, id=21096, stack(0x00007fa1080e7000,0x00007fa1081e7000)]
-  0x00007fa1180c2000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, id=21095, stack(0x00007fa1081e8000,0x00007fa1082e8000)]
-  0x00007fa1180bf000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, id=21094, stack(0x00007fa1082e9000,0x00007fa1083e9000)]
-  0x00007fa1180bd800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, id=21093, stack(0x00007fa1083e9000,0x00007fa1084ea000)]
-  0x00007fa11808a800 JavaThread "Finalizer" daemon [_thread_blocked, id=21092, stack(0x00007fa1088f9000,0x00007fa1089fa000)]
-  0x00007fa118088000 JavaThread "Reference Handler" daemon [_thread_blocked, id=21091, stack(0x00007fa1089fa000,0x00007fa108afb000)]
+  0x00007fa118010000 JavaThread "DestroyJavaVM" [_thread_blocked, uuid=21085, stack(0x00007fa1215d1000,0x00007fa1216d1000)]
+  0x00007fa119663800 JavaThread "http-nio-8082-AsyncTimeout" daemon [_thread_blocked, uuid=21132, stack(0x00007fa0c148e000,0x00007fa0c158f000)]
+  0x00007fa119662000 JavaThread "http-nio-8082-Acceptor-0" daemon [_thread_in_native, uuid=21131, stack(0x00007fa0c158f000,0x00007fa0c1690000)]
+  0x00007fa11965f800 JavaThread "http-nio-8082-ClientPoller-1" daemon [_thread_blocked, uuid=21130, stack(0x00007fa0c1690000,0x00007fa0c1791000)]
+  0x00007fa119644800 JavaThread "http-nio-8082-ClientPoller-0" daemon [_thread_blocked, uuid=21129, stack(0x00007fa0c1791000,0x00007fa0c1892000)]
+  0x00007fa119629800 JavaThread "http-nio-8082-exec-10" daemon [_thread_blocked, uuid=21128, stack(0x00007fa0c1892000,0x00007fa0c1993000)]
+  0x00007fa119627800 JavaThread "http-nio-8082-exec-9" daemon [_thread_blocked, uuid=21127, stack(0x00007fa0c1993000,0x00007fa0c1a94000)]
+  0x00007fa119626000 JavaThread "http-nio-8082-exec-8" daemon [_thread_blocked, uuid=21126, stack(0x00007fa0c1a94000,0x00007fa0c1b95000)]
+  0x00007fa119624000 JavaThread "http-nio-8082-exec-7" daemon [_thread_blocked, uuid=21125, stack(0x00007fa0c1b95000,0x00007fa0c1c96000)]
+  0x00007fa119622000 JavaThread "http-nio-8082-exec-6" daemon [_thread_blocked, uuid=21124, stack(0x00007fa0c1c96000,0x00007fa0c1d97000)]
+  0x00007fa119620000 JavaThread "http-nio-8082-exec-5" daemon [_thread_blocked, uuid=21123, stack(0x00007fa0c1d97000,0x00007fa0c1e98000)]
+  0x00007fa11961e000 JavaThread "http-nio-8082-exec-4" daemon [_thread_blocked, uuid=21122, stack(0x00007fa0c1e98000,0x00007fa0c1f99000)]
+  0x00007fa11961c000 JavaThread "http-nio-8082-exec-3" daemon [_thread_blocked, uuid=21121, stack(0x00007fa0c1f99000,0x00007fa0c209a000)]
+  0x00007fa11961a000 JavaThread "http-nio-8082-exec-2" daemon [_thread_blocked, uuid=21120, stack(0x00007fa0c209a000,0x00007fa0c219b000)]
+  0x00007fa119618800 JavaThread "http-nio-8082-exec-1" daemon [_thread_blocked, uuid=21119, stack(0x00007fa0c219b000,0x00007fa0c229c000)]
+  0x00007fa119616800 JavaThread "NioBlockingSelector.BlockPoller-1" daemon [_thread_blocked, uuid=21118, stack(0x00007fa0c229c000,0x00007fa0c239d000)]
+  0x00007fa118f81800 JavaThread "HikariPool-1 housekeeper" daemon [_thread_blocked, uuid=21107, stack(0x00007fa0c329e000,0x00007fa0c339f000)]
+  0x00007fa118f7a000 JavaThread "PostgreSQL-JDBC-SharedTimer-1" daemon [_thread_blocked, uuid=21106, stack(0x00007fa0c339f000,0x00007fa0c34a0000)]
+  0x00007fa118e5c800 JavaThread "container-0" [_thread_blocked, uuid=21104, stack(0x00007fa0c3cff000,0x00007fa0c3e00000)]
+  0x00007fa118e5a800 JavaThread "ContainerBackgroundProcessor[StandardEngine[Tomcat]]" daemon [_thread_blocked, uuid=21103, stack(0x00007fa0f809f000,0x00007fa0f81a0000)]
+  0x00007fa1180d9000 JavaThread "Service Thread" daemon [_thread_blocked, uuid=21097, stack(0x00007fa1010ef000,0x00007fa1011f0000)]
+  0x00007fa1180c3800 JavaThread "C1 CompilerThread2" daemon [_thread_blocked, uuid=21096, stack(0x00007fa1080e7000,0x00007fa1081e7000)]
+  0x00007fa1180c2000 JavaThread "C2 CompilerThread1" daemon [_thread_blocked, uuid=21095, stack(0x00007fa1081e8000,0x00007fa1082e8000)]
+  0x00007fa1180bf000 JavaThread "C2 CompilerThread0" daemon [_thread_blocked, uuid=21094, stack(0x00007fa1082e9000,0x00007fa1083e9000)]
+  0x00007fa1180bd800 JavaThread "Signal Dispatcher" daemon [_thread_blocked, uuid=21093, stack(0x00007fa1083e9000,0x00007fa1084ea000)]
+  0x00007fa11808a800 JavaThread "Finalizer" daemon [_thread_blocked, uuid=21092, stack(0x00007fa1088f9000,0x00007fa1089fa000)]
+  0x00007fa118088000 JavaThread "Reference Handler" daemon [_thread_blocked, uuid=21091, stack(0x00007fa1089fa000,0x00007fa108afb000)]
 
 Other Threads:
-=>0x00007fa11807e000 VMThread [stack: 0x00007fa108afc000,0x00007fa108bfc000] [id=21090]
-  0x00007fa1180dd800 WatcherThread [stack: 0x00007fa100fef000,0x00007fa1010ef000] [id=21098]
+=>0x00007fa11807e000 VMThread [stack: 0x00007fa108afc000,0x00007fa108bfc000] [uuid=21090]
+  0x00007fa1180dd800 WatcherThread [stack: 0x00007fa100fef000,0x00007fa1010ef000] [uuid=21098]
 
 VM state:at safepoint (normal execution)
 
@@ -704,9 +704,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2729.090
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 0
+core uuid		: 0
 cpu cores	: 2
 apicid		: 0
 initial apicid	: 0
@@ -731,9 +731,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2911.907
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 0
+core uuid		: 0
 cpu cores	: 2
 apicid		: 1
 initial apicid	: 1
@@ -758,9 +758,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2736.695
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 1
+core uuid		: 1
 cpu cores	: 2
 apicid		: 2
 initial apicid	: 2
@@ -785,9 +785,9 @@ stepping	: 1
 microcode	: 0x1c
 cpu MHz		: 2748.617
 cache size	: 4096 KB
-physical id	: 0
+physical uuid	: 0
 siblings	: 4
-core id		: 1
+core uuid		: 1
 cpu cores	: 2
 apicid		: 3
 initial apicid	: 3
