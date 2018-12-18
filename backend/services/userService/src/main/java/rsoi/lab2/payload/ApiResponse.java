@@ -1,6 +1,5 @@
 package rsoi.lab2.payload;
 
-
 public class ApiResponse {
     private Boolean success;
     private String message;

@@ -1,10 +1,12 @@
 package rsoi.lab2.entity;
 
 import org.hibernate.annotations.Type;
+import org.hibernate.mapping.Map;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -37,12 +39,6 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "access_token", length = 2048)
-    private String accessToken;
-
-    @Column(name = "refresh_token", length = 2048)
-    private String refreshToken;
-
     @Column(name = "user_uid")
     private UUID uuid;
 
@@ -51,6 +47,12 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_tokens",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "token_id"))
+    private Map tokens = new HashMap();
 
     public User(String name, String username, String email, String password) {
         this.setName(name);
@@ -112,27 +114,19 @@ public class User {
         this.roles = roles;
     }
 
-    public String getAccessToken() {
-        return accessToken;
-    }
-
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public String getRefreshToken() {
-        return refreshToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
-
     public UUID getUuid() {
         return uuid;
     }
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public HashSet<Token> getTokens() {
+        return tokens;
+    }
+
+    public void setTokens(HashSet<Token> tokens) {
+        this.tokens = tokens;
     }
 }
