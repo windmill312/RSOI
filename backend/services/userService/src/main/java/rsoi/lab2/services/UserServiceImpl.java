@@ -44,9 +44,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public UserPrincipal loadUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with id : " + id)
+    public UserPrincipal loadUserByUuid(UUID uuid) {
+        User user = userRepository.findByUuid(uuid).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with id : " + uuid)
         );
 
         return UserPrincipal.create(user);

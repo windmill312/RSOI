@@ -11,6 +11,7 @@ import rsoi.lab2.security.UserPrincipal;
 @RestController
 @RequestMapping("/api")
 public class UserController {
+
     @GetMapping("/user/me")
     @PreAuthorize("hasRole('USER')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {

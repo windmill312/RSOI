@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import rsoi.lab2.entity.User;
 import rsoi.lab2.repositories.UserRepository;
 
+import java.util.UUID;
+
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -30,9 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // This method is used by JWTAuthenticationFilter
     @Transactional
-    public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with id : " + id)
+    public UserDetails loadUserByUuid(UUID uuid) {
+        User user = userRepository.findByUuid(uuid).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with id : " + uuid)
         );
 
         return UserPrincipal.create(user);

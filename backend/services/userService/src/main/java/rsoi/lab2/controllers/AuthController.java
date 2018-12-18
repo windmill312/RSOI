@@ -7,11 +7,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import rsoi.lab2.entity.Role;
 import rsoi.lab2.entity.User;
@@ -48,6 +46,30 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String headerAuth, @RequestBody LoginRequest loginRequest) {
+
+        User user = userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail()).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username or email: " + loginRequest.getUsernameOrEmail())
+        );
+
+        if (user.getRefreshToken().equals(headerAuth)) {
+
+            String jwtAccess = tokenProvider.generateToken(user.getEmail());
+            String jwtRefresh = tokenProvider.generateToken(user.getEmail());
+
+            user.setAccessToken(jwtAccess);
+            user.setRefreshToken(jwtRefresh);
+            userRepository.save(user);
+
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwtAccess, jwtRefresh, 30000));
+        }
+        else
+        {
+            throw new UsernameNotFoundException("Token is invalid");
+        }
+    }
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -60,9 +82,18 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        //впилить токен в юзера
-        String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        String jwtAccess = tokenProvider.generateToken(loginRequest.getUsernameOrEmail());
+        String jwtRefresh = tokenProvider.generateToken(loginRequest.getUsernameOrEmail());
+
+        User user = userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
+                .orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username or email : " + loginRequest.getUsernameOrEmail())
+        );
+        user.setAccessToken(jwtAccess);
+        user.setRefreshToken(jwtRefresh);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwtAccess, jwtRefresh, 30000));
     }
 
     @PostMapping("/signup")
@@ -77,7 +108,6 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Creating user's account
         User user = new User(signUpRequest.getName(), signUpRequest.getUsername(),
                 signUpRequest.getEmail(), signUpRequest.getPassword());
 

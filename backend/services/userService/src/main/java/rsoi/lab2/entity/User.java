@@ -1,6 +1,9 @@
 package rsoi.lab2.entity;
 
+import org.hibernate.annotations.Type;
+
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,14 +37,11 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "access_token")
+    @Column(name = "access_token", length = 2048)
     private String accessToken;
 
-    @Column(name = "refresh_token")
+    @Column(name = "refresh_token", length = 2048)
     private String refreshToken;
-
-    @Column(name = "dttm_token")
-    private Timestamp dttmToken;
 
     @Column(name = "user_uid")
     private UUID uuid;
@@ -126,14 +126,6 @@ public class User {
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
-    }
-
-    public Timestamp getDttmToken() {
-        return dttmToken;
-    }
-
-    public void setDttmToken(Timestamp dttmToken) {
-        this.dttmToken = dttmToken;
     }
 
     public UUID getUuid() {

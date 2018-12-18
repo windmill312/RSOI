@@ -10,6 +10,7 @@ import rsoi.lab2.entity.User;
 import rsoi.lab2.repositories.UserRepository;
 import rsoi.lab2.services.UserServiceImpl;
 
+import java.security.KeyFactory;
 import java.util.Date;
 import java.util.UUID;
 
@@ -21,31 +22,31 @@ public class JwtTokenProvider {
     @Value("${app.jwtSecret}")
     private String jwtSecret;
 
-    @Value("${app.jwtExpirationInMs}")
-    private int jwtExpirationInMs;
+    @Value("${app.jwtAccessExpirationInMs}")
+    private int jwtAccessExpirationInMs;
+    @Value("${app.jwtRefreshExpirationInMs}")
+    private int jwtRefreshExpirationInMs;
 
-    public String generateToken(Authentication authentication) {
-
-        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+    public String generateToken(String emailOrUsername) {
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + jwtExpirationInMs);
+        Date expiryDate = new Date(now.getTime() + jwtAccessExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getUuid().toString())
+                .setSubject(emailOrUsername.concat(UUID.randomUUID().toString()))
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
-    public Long getUserIdFromJWT(String token) {
+    public String getUserUuidFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
 
-        return Long.parseLong(claims.getSubject());
+        return claims.getSubject();
     }
 
     public boolean validateToken(String authToken) {
