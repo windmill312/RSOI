@@ -32,9 +32,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     // This method is used by JWTAuthenticationFilter
     @Transactional
-    public UserDetails loadUserByUuid(UUID uuid) {
-        User user = userRepository.findByUuid(uuid).orElseThrow(
-                () -> new UsernameNotFoundException("User not found with id : " + uuid)
+    public UserDetails loadUserByEmailOrUsername(String emailOrUsername) {
+        User user = userRepository.findByUsernameOrEmail(emailOrUsername, emailOrUsername).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with email or username : " + emailOrUsername)
         );
 
         return UserPrincipal.create(user);

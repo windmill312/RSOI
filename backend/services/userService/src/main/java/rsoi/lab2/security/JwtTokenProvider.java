@@ -33,14 +33,15 @@ public class JwtTokenProvider {
         Date expiryDate = new Date(now.getTime() + jwtAccessExpirationInMs);
 
         return Jwts.builder()
-                .setSubject(emailOrUsername.concat(UUID.randomUUID().toString()))
+                .setSubject(emailOrUsername)
+                .setId(UUID.randomUUID().toString())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
 
-    public String getUserUuidFromJWT(String token) {
+    public String getEmailOrUsernameFromJWT(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
