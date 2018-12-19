@@ -7,9 +7,9 @@ import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-@Table(name = "tokens",
+@Table(name = "tokens"/*,
         uniqueConstraints=
-        @UniqueConstraint(columnNames={"serviceUuid", "userId", "tokenType"}))
+        @UniqueConstraint(columnNames={"serviceUuid", "userId", "tokenType"})*/)
 public class Token implements Serializable {
 
     @Id

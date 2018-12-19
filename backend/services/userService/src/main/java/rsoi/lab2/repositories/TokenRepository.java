@@ -14,5 +14,6 @@ import java.util.UUID;
 @Repository
 public interface TokenRepository extends JpaRepository<Token, Long> {
     Optional<Token> findByTokenType (TokenType tokenType);
-    boolean existsByTokenTypeAndUserAndServiceUuidAndValue (TokenType tokenType, User user, UUID serviceUuid, String value);
+    boolean existsByUserAndServiceUuidAndValue (User user, UUID serviceUuid, String value);
+    void deleteAllByUserAndServiceUuid (User user, UUID serviceUuid);
 }

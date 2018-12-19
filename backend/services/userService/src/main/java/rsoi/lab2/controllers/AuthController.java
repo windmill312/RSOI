@@ -30,10 +30,10 @@ import rsoi.lab2.repositories.TokenRepository;
 import rsoi.lab2.repositories.UserRepository;
 import rsoi.lab2.security.JwtTokenProvider;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
-import java.util.HashSet;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -65,6 +65,7 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Transactional
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String headerAuth, @RequestBody LoginRequest loginRequest) {
 
@@ -74,18 +75,21 @@ public class AuthController {
                 new UsernameNotFoundException("User not found with username or email: " + loginRequest.getUsernameOrEmail())
         );
 
-        boolean contains = tokenRepository.existsByTokenTypeAndUserAndServiceUuidAndValue(TokenType.REFRESH_TOKEN, user, loginRequest.getServiceUuid(), headerAuth);
+        boolean contains = tokenRepository.existsByUserAndServiceUuidAndValue(user, loginRequest.getServiceUuid(), headerAuth);
 
         if (contains) {
+
+            tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
+
             String jwtAccess = tokenProvider.generateToken(user.getEmail());
             String jwtRefresh = tokenProvider.generateToken(user.getEmail());
 
-            Token accessToken = new Token();
+            /*Token accessToken = new Token();
             accessToken.setServiceUuid(loginRequest.getServiceUuid());
             accessToken.setUser(user);
             accessToken.setTokenType(TokenType.ACCESS_TOKEN);
             accessToken.setValue(jwtAccess);
-            tokenRepository.save(accessToken);
+            tokenRepository.save(accessToken);*/
 
             Token refreshToken = new Token();
             refreshToken.setServiceUuid(loginRequest.getServiceUuid());
@@ -104,6 +108,7 @@ public class AuthController {
         }
     }
 
+    @Transactional
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -125,6 +130,8 @@ public class AuthController {
                 .orElseThrow(() ->
                 new UsernameNotFoundException("User not found with username or email : " + loginRequest.getUsernameOrEmail())
         );
+
+        tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
         Token token = new Token();
         token.setServiceUuid(loginRequest.getServiceUuid());
