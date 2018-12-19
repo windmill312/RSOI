@@ -1,10 +1,13 @@
 package rsoi.lab2.payload;
 
+import org.springframework.lang.NonNull;
+
 import javax.validation.constraints.NotBlank;
 import java.util.UUID;
 
 public class ServiceRequest {
-    @NotBlank
+
+    @NonNull
     private UUID uuid;
 
     @NotBlank

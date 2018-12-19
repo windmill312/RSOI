@@ -4,8 +4,7 @@ package rsoi.lab2.payload;
 import java.util.UUID;
 
 public class ServiceResponse extends ApiResponse {
-    private Boolean success;
-    private String message;
+
     private UUID uuid;
     private String secretKey;
 
@@ -13,22 +12,6 @@ public class ServiceResponse extends ApiResponse {
         super(success, message);
         this.uuid = uuid;
         this.secretKey = secretKey;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
     }
 
     public UUID getUuid() {
