@@ -27,7 +27,7 @@ public class Token implements Serializable {
     private TokenType tokenType;
 
     @ManyToOne
-    @JoinColumn(name = "userId", nullable = false)
+    @JoinColumn(name = "uuid", nullable = false)
     private User user;
 
     public Token() {

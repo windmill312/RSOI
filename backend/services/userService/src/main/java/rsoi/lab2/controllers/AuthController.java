@@ -1,6 +1,5 @@
 package rsoi.lab2.controllers;
 
-import org.hibernate.mapping.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +20,7 @@ import rsoi.lab2.entity.User;
 import rsoi.lab2.exception.AppException;
 import rsoi.lab2.model.RoleName;
 import rsoi.lab2.model.TokenType;
-import rsoi.lab2.payload.ApiResponse;
-import rsoi.lab2.payload.JwtAuthenticationResponse;
-import rsoi.lab2.payload.LoginRequest;
-import rsoi.lab2.payload.SignUpUserRequest;
+import rsoi.lab2.payload.*;
 import rsoi.lab2.repositories.RoleRepository;
 import rsoi.lab2.repositories.TokenRepository;
 import rsoi.lab2.repositories.UserRepository;
@@ -147,6 +143,20 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs));
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<?> validation (@RequestBody UserRequest userRequest) {
+
+        User user = userRepository.findByUuid(userRequest.getUserUuid())
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with UUID : " + userRequest.getUserUuid())
+                );
+        if (tokenRepository.existsByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken()))
+            return new ResponseEntity<>(new ApiResponse(true,"Token is valid"), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(new ApiResponse(true,"Token is valid"), HttpStatus.FORBIDDEN);
+
     }
 
     @PostMapping("/signup")
