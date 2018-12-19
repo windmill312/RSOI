@@ -1,12 +1,7 @@
 package rsoi.lab2.entity;
 
-import org.hibernate.annotations.Type;
-import org.hibernate.mapping.Map;
-
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import java.sql.Timestamp;
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -21,7 +16,7 @@ import java.util.UUID;
         })
 })
 
-public class User {
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -48,11 +43,8 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_tokens",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "token_id"))
-    private Map tokens = new HashMap();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private Set<Token> tokens;
 
     public User(String name, String username, String email, String password) {
         this.setName(name);
@@ -122,11 +114,11 @@ public class User {
         this.uuid = uuid;
     }
 
-    public HashSet<Token> getTokens() {
+    public Set<Token> getTokens() {
         return tokens;
     }
 
-    public void setTokens(HashSet<Token> tokens) {
+    public void setTokens(Set<Token> tokens) {
         this.tokens = tokens;
     }
 }

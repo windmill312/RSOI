@@ -26,6 +26,7 @@ import rsoi.lab2.payload.JwtAuthenticationResponse;
 import rsoi.lab2.payload.LoginRequest;
 import rsoi.lab2.payload.SignUpUserRequest;
 import rsoi.lab2.repositories.RoleRepository;
+import rsoi.lab2.repositories.TokenRepository;
 import rsoi.lab2.repositories.UserRepository;
 import rsoi.lab2.security.JwtTokenProvider;
 
@@ -56,6 +57,9 @@ public class AuthController {
     RoleRepository roleRepository;
 
     @Autowired
+    TokenRepository tokenRepository;
+
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -70,30 +74,25 @@ public class AuthController {
                 new UsernameNotFoundException("User not found with username or email: " + loginRequest.getUsernameOrEmail())
         );
 
-        HashSet<Token> tokenSet = (HashSet<Token>) user.getTokens();
-        boolean contains = false;
-        Token checkToken = new Token();
-        checkToken.setValue(headerAuth);
-
-        for (Token token: tokenSet) {
-            if (token.getValue().equals(checkToken.getValue())) {
-                contains = true;
-            }
-        }
+        boolean contains = tokenRepository.existsByTokenTypeAndUserAndServiceUuidAndValue(TokenType.REFRESH_TOKEN, user, loginRequest.getServiceUuid(), headerAuth);
 
         if (contains) {
             String jwtAccess = tokenProvider.generateToken(user.getEmail());
             String jwtRefresh = tokenProvider.generateToken(user.getEmail());
 
-            for (Token token: tokenSet) {
-                if (token.getServiceUuid().equals(loginRequest.getServiceUuid())) {
-                    if (token.getTokenType().equals(TokenType.ACCESS_TOKEN)) {
-                        token.setValue(jwtAccess);
-                    }
-                    else
-                        token.setValue(jwtRefresh);
-                }
-            }
+            Token accessToken = new Token();
+            accessToken.setServiceUuid(loginRequest.getServiceUuid());
+            accessToken.setUser(user);
+            accessToken.setTokenType(TokenType.ACCESS_TOKEN);
+            accessToken.setValue(jwtAccess);
+            tokenRepository.save(accessToken);
+
+            Token refreshToken = new Token();
+            refreshToken.setServiceUuid(loginRequest.getServiceUuid());
+            refreshToken.setUser(user);
+            refreshToken.setTokenType(TokenType.REFRESH_TOKEN);
+            refreshToken.setValue(jwtRefresh);
+            tokenRepository.save(refreshToken);
 
             userRepository.save(user);
 
@@ -127,22 +126,17 @@ public class AuthController {
                 new UsernameNotFoundException("User not found with username or email : " + loginRequest.getUsernameOrEmail())
         );
 
-        //todo опасно
-        HashSet<Token> tokenSet = user.getTokens();
+        Token token = new Token();
+        token.setServiceUuid(loginRequest.getServiceUuid());
+        token.setUser(user);
+        token.setTokenType(TokenType.ACCESS_TOKEN);
+        token.setValue(jwtAccess);
+        tokenRepository.save(token);
 
-        Token accessToken = new Token();
-        accessToken.setTokenType(TokenType.ACCESS_TOKEN);
-        accessToken.setValue(jwtAccess);
-        accessToken.setServiceUuid(loginRequest.getServiceUuid());
-        tokenSet.add(accessToken);
+        token.setTokenType(TokenType.REFRESH_TOKEN);
+        token.setValue(jwtRefresh);
+        tokenRepository.save(token);
 
-        Token refreshToken = new Token();
-        accessToken.setTokenType(TokenType.REFRESH_TOKEN);
-        accessToken.setValue(jwtRefresh);
-        accessToken.setServiceUuid(loginRequest.getServiceUuid());
-        tokenSet.add(refreshToken);
-
-        user.setTokens(tokenSet);
         userRepository.save(user);
 
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs));
