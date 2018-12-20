@@ -61,7 +61,7 @@ class TicketForm extends React.Component {
     }
 
     handleCurrentPageChange (e, index) {
-        if (index >= 0 && index<this.state.nnPages && index!=this.state.currentPage) {
+        if (index >= 0 && index<this.state.nnPages && index!==this.state.currentPage) {
             e.preventDefault();
             this.setState({currentPage: index});
             axios.get('http://localhost:8090/tickets?size=' + this.state.pageSize + '&page=' + (index+1))

@@ -1,12 +1,13 @@
 import React from 'react'
-import {Button, Jumbotron, Input, Label} from 'reactstrap'
+import {Row, Button, Jumbotron, Input, Label} from 'reactstrap'
 import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
+import "../styles/Auth.css";
 
 class AuthForm extends React.Component {
 
-    authorize(login, password) {
+    /*authorize(login, password) {
         return event => {
                     event.preventDefault();
                     axios.get(`http://localhost:8090/flight`, {data: flight.uid})
@@ -23,14 +24,14 @@ class AuthForm extends React.Component {
 
 
         this.props.transition;
-    }
+    }*/
 
     render() {
         return (
-            <Jumbotron>
+            <Jumbotron className="jumbo">
                 <h1 className="display-3">Привет, Пользователь!</h1>
                 <p className="lead">Пришла пора авторизовываться!</p>
-                <Row>
+                <Row className="text_row">
                     <Label>Логин</Label>
                     <Input></Input>
                     <Label>Пароль</Label>
@@ -38,7 +39,7 @@ class AuthForm extends React.Component {
                 </Row>
                 <hr className="my-2" />
                 <p className="lead">
-                    <Button color="primary" onClick={() -> { this.authorize; }}>Вход</Button>
+                    <Button color="primary" /*onClick={() => { this.authorize; }}*/>Вход</Button>
                 </p>
             </Jumbotron>
         )

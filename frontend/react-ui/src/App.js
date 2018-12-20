@@ -5,14 +5,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import classnames from 'classnames';
 import 'bootstrap/dist/css/bootstrap.css'
 import TicketForm from './components/TicketForm';
-import FlightForm from './components/FlightForm1';
+import FlightForm from './components/FlightForm';
 import RouteForm from './components/RouteForm';
 import AuthForm from './components/AuthForm'
 
 class App extends React.Component {
 
     constructor() {
-        super()
+        super();
         this.state = {
             activeTab: '0',
             disabled: false
@@ -31,7 +31,7 @@ class App extends React.Component {
 
     render() {
         return (
-            <div>
+            <div id="root">
                 <Nav tabs>
                     <NavItem>
                         <NavLink disabled={this.state.disabled} id="authTab"

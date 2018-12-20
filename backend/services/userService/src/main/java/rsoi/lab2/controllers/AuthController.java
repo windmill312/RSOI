@@ -35,7 +35,7 @@ import java.util.Collections;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    Logger logger = LoggerFactory.getLogger(AuthController.class);
+    private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Value("${app.jwtAccessExpirationInMs}")
     private int jwtAccessExpirationInMs;
@@ -43,23 +43,27 @@ public class AuthController {
     @Value("${app.ourServiceUuid}")
     private String ourServiceUuid;
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
+
+    private final TokenRepository tokenRepository;
+
+    private final PasswordEncoder passwordEncoder;
+
+    private final JwtTokenProvider tokenProvider;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    TokenRepository tokenRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    JwtTokenProvider tokenProvider;
+    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, TokenRepository tokenRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.tokenRepository = tokenRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenProvider = tokenProvider;
+    }
 
     @Transactional
     @PostMapping("/refresh-token")
@@ -79,13 +83,6 @@ public class AuthController {
 
             String jwtAccess = tokenProvider.generateToken(user.getEmail());
             String jwtRefresh = tokenProvider.generateToken(user.getEmail());
-
-            /*Token accessToken = new Token();
-            accessToken.setServiceUuid(loginRequest.getServiceUuid());
-            accessToken.setUser(user);
-            accessToken.setTokenType(TokenType.ACCESS_TOKEN);
-            accessToken.setValue(jwtAccess);
-            tokenRepository.save(accessToken);*/
 
             Token refreshToken = new Token();
             refreshToken.setServiceUuid(loginRequest.getServiceUuid());
@@ -129,16 +126,19 @@ public class AuthController {
 
         tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
-        Token token = new Token();
-        token.setServiceUuid(loginRequest.getServiceUuid());
-        token.setUser(user);
-        token.setTokenType(TokenType.ACCESS_TOKEN);
-        token.setValue(jwtAccess);
-        tokenRepository.save(token);
+        Token token1 = new Token();
+        token1.setServiceUuid(loginRequest.getServiceUuid());
+        token1.setUser(user);
+        token1.setTokenType(TokenType.ACCESS_TOKEN);
+        token1.setValue(jwtAccess);
+        tokenRepository.save(token1);
 
-        token.setTokenType(TokenType.REFRESH_TOKEN);
-        token.setValue(jwtRefresh);
-        tokenRepository.save(token);
+        Token token2 = new Token();
+        token2.setServiceUuid(loginRequest.getServiceUuid());
+        token2.setUser(user);
+        token2.setTokenType(TokenType.REFRESH_TOKEN);
+        token2.setValue(jwtRefresh);
+        tokenRepository.save(token2);
 
         userRepository.save(user);
 
@@ -155,10 +155,12 @@ public class AuthController {
         if (tokenRepository.existsByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken()))
             return new ResponseEntity<>(new ApiResponse(true,"Token is valid"), HttpStatus.OK);
         else
-            return new ResponseEntity<>(new ApiResponse(true,"Token is valid"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(new ApiResponse(false,"Token is invalid"), HttpStatus.FORBIDDEN);
 
     }
 
+
+    //todo lol за счет того что акксесс токенов нет в базе, невозможно получить данные с сервисов (проверка токена через базу)
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
         if(userRepository.existsByUsername(signUpUserRequest.getUsername())) {

@@ -10,14 +10,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import rsoi.lab2.entity.ExternalService;
-import rsoi.lab2.payload.*;
+import rsoi.lab2.payload.ApiResponse;
+import rsoi.lab2.payload.ServiceRequest;
+import rsoi.lab2.payload.ServiceResponse;
+import rsoi.lab2.payload.SignUpServiceRequest;
 import rsoi.lab2.repositories.ExternalServiceRepository;
 import rsoi.lab2.security.JwtTokenProvider;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping("/oauth")
@@ -46,29 +48,22 @@ public class OauthController {
      * todo на фронте проверять body на наличие RedirectUri
      **/
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateService(@Valid @RequestBody ServiceRequest serviceRequest) {
+    public ResponseEntity authenticateService(@Valid @RequestBody ServiceRequest serviceRequest) {
 
         if (externalServiceRepository.existsByUuid(serviceRequest.getUuid()))
-            return ResponseEntity.status(HttpStatus.FOUND).header("Location", projectUrl).body(serviceRequest.getRedirectUri());
+            return ResponseEntity.status(HttpStatus.FOUND).header("Location", projectUrl).body(serviceRequest);
         else
-            return new ResponseEntity<>(new ApiResponse(false, "Service not found!"), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Service not found!"));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerService(@Valid @RequestBody SignUpServiceRequest signUpServiceRequest) {
+    public ResponseEntity registerService(@Valid @RequestBody SignUpServiceRequest signUpServiceRequest) {
         if(externalServiceRepository.existsByName(signUpServiceRequest.getName())) {
-            return new ResponseEntity<>(new ApiResponse(false, "Service name is already taken!"),
-                    HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(new ApiResponse(false, "Service name is already taken!"));
         }
 
         ExternalService externalService = new ExternalService(signUpServiceRequest.getName());
-
         ExternalService result = externalServiceRepository.save(externalService);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/services/{name}")
-                .buildAndExpand(result.getName()).toUri();
-
-        return ResponseEntity.created(location).body(new ServiceResponse(true, "Service registered successfully", result.getUuid(), result.getSecretKey()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ServiceResponse(true, "Service registered successfully", result.getUuid(), result.getSecretKey()));
     }
 }

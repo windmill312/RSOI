@@ -1,6 +1,6 @@
 import React from 'react';
-import {Table, Alert, TabContent, ListGroup, ListGroupItem, TabPane, Nav, Pagination, PaginationItem, PaginationLink, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import {Table, Alert, TabContent, TabPane, Nav, Pagination, PaginationItem, PaginationLink, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
+//import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import classnames from 'classnames';
 import axios from "axios";
 
@@ -54,7 +54,7 @@ class RouteForm extends React.Component {
     }
 
     handleCurrentPageChange (e, index) {
-        if (index >= 0 && index<this.state.nnPages && index!=this.state.currentPage) {
+        if (index >= 0 && index<this.state.nnPages && index!==this.state.currentPage) {
             e.preventDefault();
             this.setState({currentPage: index});
             axios.get('http://localhost:8090/flights?size=' + this.state.pageSize + '&page=' + (index+1))
