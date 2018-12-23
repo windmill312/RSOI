@@ -18,6 +18,7 @@
     "react-datetime-picker": "^2.0.0",
     "react-dom": "^16.6.1",
     "react-router": "^4.3.1",
+    "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
     "react-widgets": "^4.4.6",
     "react-widgets-globalize": "^5.0.15",

@@ -1,5 +1,5 @@
 import React from 'react'
-import './App.css'
+import './styles/App.css'
 import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap'
 import "react-datepicker/dist/react-datepicker.css";
 import classnames from 'classnames';
@@ -7,7 +7,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import TicketForm from './components/TicketForm';
 import FlightForm from './components/FlightForm';
 import RouteForm from './components/RouteForm';
-import AuthForm from './components/AuthForm'
+import AuthForm from './components/Login'
+import RegForm from "./components/RegForm";
 
 class App extends React.Component {
 
@@ -68,7 +69,7 @@ class App extends React.Component {
                 <TabContent activeTab={this.state.activeTab}>
 
                     <TabPane tabId="0">
-                        <AuthForm transition={() => {this.toggle('1'); this.setState({disabled: true})}}/>
+                        <AuthForm transition={() => {this.toggle('4')}}/>
                     </TabPane>
                     <TabPane tabId="1">
                         <div className="content_container">
@@ -84,6 +85,13 @@ class App extends React.Component {
                         <TabPane tabId="1">
                             <div className="content_container">
                                 <RouteForm/>
+                            </div>
+                        </TabPane>
+                    </TabPane>
+                    <TabPane tabId="4">
+                        <TabPane tabId="1">
+                            <div className="content_container">
+                                <RegForm/>
                             </div>
                         </TabPane>
                     </TabPane>

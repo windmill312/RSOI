@@ -3,14 +3,15 @@ import {Row, Button, Jumbotron, Input, Label} from 'reactstrap'
 import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
-import "../styles/Auth.css";
+import "../styles/Login.css";
+import { Router, Redirect, Route, Switch } from 'react-router'
 
-class AuthForm extends React.Component {
+class RegForm extends React.Component {
 
     /*authorize(login, password) {
         return event => {
                     event.preventDefault();
-                    axios.get(`http://localhost:8090/flight`, {data: flight.uid})
+                    axios.get(`http://localhost:8090/user/`, {data: flight.uid})
                         .then(result => {
                             if (result.status === 200) {
                                 console.info('status = 200');
@@ -23,12 +24,16 @@ class AuthForm extends React.Component {
                 }
 
 
-        this.props.transition;
+        //this.props.transition;
+    }
+
+    renderRedirect = () => {
+            return <Redirect to='/target' />
     }*/
 
     render() {
-        return (
-            <Jumbotron className="jumbo">
+        return (<h1>123</h1>
+            /*<Jumbotron className="jumbo">
                 <h1 className="display-3">Привет, Пользователь!</h1>
                 <p className="lead">Пришла пора авторизовываться!</p>
                 <Row className="text_row">
@@ -39,11 +44,23 @@ class AuthForm extends React.Component {
                 </Row>
                 <hr className="my-2" />
                 <p className="lead">
-                    <Button color="primary" /*onClick={() => { this.authorize; }}*/>Вход</Button>
+                    <Button color="primary" onClick={() => { this.authorize()}}>Вход</Button>
                 </p>
-            </Jumbotron>
+                <p className="lead">
+
+                    <Router>
+                        <div>
+                            <Switch>
+                                <Route exact path="/" component={RegForm} />
+                            </Switch>
+                        </div>
+                    </Router>
+
+
+                </p>
+            </Jumbotron>*/
         )
     }
 }
 
-export default AuthForm;
+export default RegForm;
