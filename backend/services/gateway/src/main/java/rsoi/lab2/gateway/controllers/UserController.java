@@ -34,7 +34,7 @@ public class UserController {
         headers.set("Authorization", headerAuth);
         HttpEntity<SignUpServiceRequest> request = new HttpEntity<>(headers);
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/api/user/me", request, Object.class);
+            ResponseEntity<?> response = restTemplate.exchange("http://localhost:8084/api/user/me", HttpMethod.GET, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
         }
         catch (HttpClientErrorException ex) {
