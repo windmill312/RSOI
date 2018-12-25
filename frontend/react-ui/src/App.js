@@ -9,6 +9,7 @@ import FlightForm from './components/FlightForm';
 import RouteForm from './components/RouteForm';
 import AuthForm from './components/Login'
 import RegForm from "./components/RegForm";
+import axios from "axios";
 
 class App extends React.Component {
 
@@ -16,7 +17,10 @@ class App extends React.Component {
         super();
         this.state = {
             activeTab: '0',
-            disabled: false
+            disabled: false,
+            userUuid: '',
+            userName: '',
+            userInfo: []
         }
 
         this.toggle = this.toggle.bind(this);
@@ -28,6 +32,27 @@ class App extends React.Component {
                 activeTab: tab
             });
         }
+    }
+
+    //todo остановился на этом, запрос улетает с плохим header'ом
+    getInfo() {
+        axios.get(`http://localhost:8090/api/me`,
+            {
+                headers: {'Authorization': this.state.userInfo.tokenType + ' ' + this.state.userInfo.accessToken}
+            })
+            .then((result) => {
+                if (result.status === 200) {
+                    console.info('status = 200');
+                    this.setState({
+                        userUuid: result.data.uuid,
+                        userName: result.data.username
+                    })
+                }
+            })
+            .catch(error => {
+                console.info(error);
+                alert('Произошла ошибка при получении данных пользователя!');
+            });
     }
 
     render() {
@@ -69,11 +94,11 @@ class App extends React.Component {
                 <TabContent activeTab={this.state.activeTab}>
 
                     <TabPane tabId="0">
-                        <AuthForm transition={() => {this.toggle('4')}}/>
+                        <AuthForm regTransition={() => {this.toggle('4')}} routeTransition={(page) => {this.getInfo(); this.toggle(page); this.setState({disabled: true}) }} userInfo={(userInfo) => this.setState(userInfo)} />
                     </TabPane>
                     <TabPane tabId="1">
                         <div className="content_container">
-                            <TicketForm />
+                            <TicketForm userInfo={this.userInfo}/>
                         </div>
                     </TabPane>
                     <TabPane tabId="2">
@@ -84,14 +109,14 @@ class App extends React.Component {
                     <TabPane tabId="3">
                         <TabPane tabId="1">
                             <div className="content_container">
-                                <RouteForm/>
+                                <RouteForm userUuid={this.state.userUuid} accessToken={this.state.userInfo.accessToken}/>
                             </div>
                         </TabPane>
                     </TabPane>
                     <TabPane tabId="4">
                         <TabPane tabId="1">
                             <div className="content_container">
-                                <RegForm/>
+                                <RegForm authTransition={this.toggle}/>
                             </div>
                         </TabPane>
                     </TabPane>

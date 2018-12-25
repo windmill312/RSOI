@@ -16,12 +16,23 @@ class RouteForm extends React.Component {
             currentPage: 1,
             pageSize: 5,
             nnPages: 0,
-            routeAggregation: []
+            routeAggregation: [],
+            userInfo:[]
         }
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:8090/pingRoutes`)
+        axios.get(`http://localhost:8090/pingRoutes`,
+            {
+                //todo send correct array with info
+                headers:
+                {
+                    'Content-Type':'application/json',
+                    'Authentication':this.props.accessToken ? this.props.accessToken : null,
+                    'User':this.props.userUuid,
+                    'Service':"ede4bfb8-2acb-441e-9b00-4b786309fcd2"
+                }
+            })
             .then((result) => {
                 if (result.status === 200) {
                     axios.get(`http://localhost:8090/countRoutes`)

@@ -1,64 +1,111 @@
 import React from 'react'
-import {Row, Button, Jumbotron, Input, Label} from 'reactstrap'
 import "react-datepicker/dist/react-datepicker.css";
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
-import "../styles/Login.css";
-import { Router, Redirect, Route, Switch } from 'react-router'
+import "../styles/Register.css";
+import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+
 
 class RegForm extends React.Component {
 
-    /*authorize(login, password) {
-        return event => {
-                    event.preventDefault();
-                    axios.get(`http://localhost:8090/user/`, {data: flight.uid})
-                        .then(result => {
-                            if (result.status === 200) {
-                                console.info('status = 200');
-                                alert('Билет успешно удален!');
-                            } else {
-                                console.info('status = ' + result.status);
-                                alert('Произошла ошибка при удалении рейса!');
-                            }
-                        })
-                }
+    constructor(props) {
+        super(props);
 
-
-        //this.props.transition;
+        this.state = {
+            email: "",
+            password: "",
+            name: "",
+            username: ""
+        };
     }
 
-    renderRedirect = () => {
-            return <Redirect to='/target' />
-    }*/
+    validateForm() {
+        return this.state.email.length > 0 && this.state.password.length >= 6;
+    };
+
+    handleChange = event => {
+        this.setState({
+            [event.target.id]: event.target.value
+        });
+    };
+
+    handleSubmit = async event => {
+            event.preventDefault();
+            const requestData = {
+                name:this.state.name,
+                username:this.state.username,
+                email:this.state.email,
+                password:this.state.password
+            };
+            axios.post(`http://localhost:8090/api/auth/signup`, requestData,
+                {
+                    headers: {'Content-Type': 'application/json'}
+                })
+                .then((result) => {
+                    if (result.status === 201) {
+                        console.info('status = 201');
+                        alert('Регистрация прошла успешно!');
+                    }
+                })
+                .catch(error => {
+                    if (error.response.status === 400) {
+                        console.info('status = 400');
+                        alert('Такой пользователь уже существует!');
+                    }
+                    else {
+                        console.info(error);
+                        alert('Произошла ошибка при регистрации!');
+                    }
+                });
+        this.props.authTransition('0');
+    };
 
     render() {
-        return (<h1>123</h1>
-            /*<Jumbotron className="jumbo">
-                <h1 className="display-3">Привет, Пользователь!</h1>
-                <p className="lead">Пришла пора авторизовываться!</p>
-                <Row className="text_row">
-                    <Label>Логин</Label>
-                    <Input></Input>
-                    <Label>Пароль</Label>
-                    <Input></Input>
-                </Row>
-                <hr className="my-2" />
-                <p className="lead">
-                    <Button color="primary" onClick={() => { this.authorize()}}>Вход</Button>
-                </p>
-                <p className="lead">
-
-                    <Router>
-                        <div>
-                            <Switch>
-                                <Route exact path="/" component={RegForm} />
-                            </Switch>
-                        </div>
-                    </Router>
-
-
-                </p>
-            </Jumbotron>*/
+        return (
+            <div className="Register">
+                <form onSubmit={this.handleSubmit}>
+                    <FormGroup controlId="email" bsSize="large">
+                        <ControlLabel>Email*</ControlLabel>
+                        <FormControl
+                            autoFocus
+                            type="email"
+                            value={this.state.email}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="password" bsSize="large">
+                        <ControlLabel>Пароль*(min 6 символов)</ControlLabel>
+                        <FormControl
+                            value={this.state.password}
+                            onChange={this.handleChange}
+                            type="password"
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="username" bsSize="large">
+                        <ControlLabel>Никнейм</ControlLabel>
+                        <FormControl
+                            value={this.state.username}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <FormGroup controlId="name" bsSize="large">
+                        <ControlLabel>Полное имя</ControlLabel>
+                        <FormControl
+                            value={this.state.name}
+                            onChange={this.handleChange}
+                        />
+                    </FormGroup>
+                    <Button
+                        block
+                        bsSize="large"
+                        bsStyle="danger"
+                        disabled={!this.validateForm()}
+                        type="submit"
+                    >
+                        Зарегистрироваться
+                    </Button>
+                </form>
+            </div>
         )
     }
 }
