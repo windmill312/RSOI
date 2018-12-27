@@ -13,8 +13,8 @@ import axios from "axios";
 
 class App extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
             activeTab: '0',
             disabled: false,
@@ -31,28 +31,11 @@ class App extends React.Component {
             this.setState({
                 activeTab: tab
             });
+            if (tab === '0')
+                this.setState({
+                    disabled: false
+                })
         }
-    }
-
-    //todo остановился на этом, запрос улетает с плохим header'ом
-    getInfo() {
-        axios.get(`http://localhost:8090/api/me`,
-            {
-                headers: {'Authorization': this.state.userInfo.tokenType + ' ' + this.state.userInfo.accessToken}
-            })
-            .then((result) => {
-                if (result.status === 200) {
-                    console.info('status = 200');
-                    this.setState({
-                        userUuid: result.data.uuid,
-                        userName: result.data.username
-                    })
-                }
-            })
-            .catch(error => {
-                console.info(error);
-                alert('Произошла ошибка при получении данных пользователя!');
-            });
     }
 
     render() {
@@ -77,7 +60,7 @@ class App extends React.Component {
                     <NavItem>
                         <NavLink disabled={!this.state.disabled}
                             className={classnames({ active: this.state.activeTab === '2' })}
-                                 onClick={() => { this.toggle('2')}}
+                                 onClick={() => {this.toggle('2')}}
                         >
                             Рейсы
                         </NavLink>
@@ -85,31 +68,32 @@ class App extends React.Component {
                     <NavItem>
                         <NavLink disabled={!this.state.disabled}
                             className={classnames({ active: this.state.activeTab === '3' })}
-                            onClick={() => { this.toggle('3')}}
+                            onClick={() => {this.toggle('3')}}
                         >
                             Маршруты
                         </NavLink>
                     </NavItem>
                 </Nav>
                 <TabContent activeTab={this.state.activeTab}>
-
                     <TabPane tabId="0">
-                        <AuthForm regTransition={() => {this.toggle('4')}} routeTransition={(page) => {this.getInfo(); this.toggle(page); this.setState({disabled: true}) }} userInfo={(userInfo) => this.setState(userInfo)} />
+                        <AuthForm
+                            regTransition={() => {this.toggle('4')}}
+                            routeTransition={(page) => {this.toggle(page); this.setState({disabled: true}) }}/>
                     </TabPane>
                     <TabPane tabId="1">
                         <div className="content_container">
-                            <TicketForm userInfo={this.userInfo}/>
+                            <TicketForm />
                         </div>
                     </TabPane>
                     <TabPane tabId="2">
                         <div className="content_container">
-                            <FlightForm/>
+                            <FlightForm />
                         </div>
                     </TabPane>
                     <TabPane tabId="3">
                         <TabPane tabId="1">
                             <div className="content_container">
-                                <RouteForm userUuid={this.state.userUuid} accessToken={this.state.userInfo.accessToken}/>
+                                <RouteForm />
                             </div>
                         </TabPane>
                     </TabPane>
