@@ -166,7 +166,7 @@ public class AuthController {
         if (tokenRepository.existsByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken()))
             return new ResponseEntity<>(new ApiResponse(true,"Token is valid"), HttpStatus.OK);
         else
-            return new ResponseEntity<>(new ApiResponse(false,"Token is invalid"), HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(new ApiResponse(false,"Token is invalid"), HttpStatus.UNAUTHORIZED);
 
     }
 
