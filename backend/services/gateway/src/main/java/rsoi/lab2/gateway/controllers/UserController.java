@@ -1,21 +1,14 @@
 package rsoi.lab2.gateway.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import rsoi.lab2.gateway.common.*;
-import rsoi.lab2.gateway.model.FlightInfo;
 import rsoi.lab2.gateway.model.UserRequest;
 
 import javax.validation.Valid;
-import java.util.LinkedHashMap;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 @CrossOrigin(maxAge = 3600)
@@ -24,7 +17,6 @@ public class UserController {
 
     private Logger logger = Logger.getLogger(TicketController.class.getName());
 
-    //todo fix HTTP METHOD (GET required)
     @GetMapping("/api/me")
     public ResponseEntity getCurrentUser(@RequestHeader(name = "Authorization") String headerAuth) {
         logger.info("Get getCurrentUser request with access token: " + headerAuth + "\n");
@@ -96,7 +88,7 @@ public class UserController {
         } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
             //todo fix this foo
-            return new ResponseEntity<>(new ApiResponse(false, "User not found with username or email: " + loginRequest.getUsernameOrEmail() ),
+            return new ResponseEntity<>(new ApiResponse(false, "User not found with username or email: " + loginRequest.getIdentifier() ),
                     HttpStatus.BAD_REQUEST);
         }
     }

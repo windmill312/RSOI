@@ -1,8 +1,7 @@
 import React from 'react'
 import "react-datepicker/dist/react-datepicker.css";
-import 'bootstrap/dist/css/bootstrap.css';
 import axios from "axios";
-import "../styles/Register.css";
+import "../../styles/Register.css";
 import { Button, FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 
 

@@ -71,8 +71,8 @@ public class AuthController {
 
         logger.info("Get refresh-token request from: " + loginRequest.getServiceUuid() + "\n");
 
-        User user = userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail()).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email: " + loginRequest.getUsernameOrEmail())
+        User user = userRepository.findByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier()).orElseThrow(() ->
+                new UsernameNotFoundException("User not found with username or email: " + loginRequest.getIdentifier())
         );
 
         boolean contains = tokenRepository.existsByUserAndServiceUuidAndValue(user, loginRequest.getServiceUuid(), headerAuth);
@@ -109,19 +109,19 @@ public class AuthController {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequest.getUsernameOrEmail(),
+                        loginRequest.getIdentifier(),
                         loginRequest.getPassword()
                 )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwtAccess = tokenProvider.generateToken(loginRequest.getUsernameOrEmail());
-        String jwtRefresh = tokenProvider.generateToken(loginRequest.getUsernameOrEmail());
+        String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier());
+        String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier());
 
-        User user = userRepository.findByUsernameOrEmail(loginRequest.getUsernameOrEmail(), loginRequest.getUsernameOrEmail())
+        User user = userRepository.findByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier())
                 .orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email : " + loginRequest.getUsernameOrEmail())
+                new UsernameNotFoundException("User not found with username or email : " + loginRequest.getIdentifier())
         );
 
         tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());

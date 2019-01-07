@@ -1,15 +1,14 @@
 import React from 'react'
-import './styles/App.css'
-import {TabContent, TabPane, Nav, NavItem, NavLink} from 'reactstrap'
+import '../styles/App.css'
 import "react-datepicker/dist/react-datepicker.css";
 import classnames from 'classnames';
-import 'bootstrap/dist/css/bootstrap.css'
-import TicketForm from './components/TicketForm';
-import FlightForm from './components/FlightForm';
-import RouteForm from './components/RouteForm';
-import AuthForm from './components/Login'
-import RegForm from "./components/RegForm";
-import axios from "axios";
+import NavigationBar from './common/NavigationBar'
+// import TicketForm from './components/TicketForm';
+// import FlightForm from './components/FlightForm';
+// import RouteForm from './components/RouteForm';
+// import AuthForm from './components/LoginForm'
+// import RegForm from "./components/RegForm";
+// import axios from "axios";
 
 class App extends React.Component {
 
@@ -40,6 +39,12 @@ class App extends React.Component {
 
     render() {
         return (
+            <div className="container">
+                <NavigationBar />
+                {this.props.children}
+            </div>
+        )
+        /*return (
             <div id="root">
                 <Nav tabs>
                     <NavItem>
@@ -106,8 +111,8 @@ class App extends React.Component {
                     </TabPane>
                 </TabContent>
             </div>
-        )
+        )*/
     }
 }
 
-export default App
+export default App;

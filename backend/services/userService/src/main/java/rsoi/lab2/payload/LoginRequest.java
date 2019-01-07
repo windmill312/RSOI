@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class LoginRequest {
     @NotBlank
-    private String usernameOrEmail;
+    private String identifier;
 
     @NotBlank
     private String password;
@@ -15,12 +15,12 @@ public class LoginRequest {
     //todo не забыть выставить на морде
     private UUID serviceUuid;
 
-    public String getUsernameOrEmail() {
-        return usernameOrEmail;
+    public String getIdentifier() {
+        return identifier;
     }
 
-    public void setUsernameOrEmail(String usernameOrEmail) {
-        this.usernameOrEmail = usernameOrEmail;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
     }
 
     public String getPassword() {
