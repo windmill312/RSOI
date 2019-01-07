@@ -9,7 +9,7 @@ export default function(ComposedComponent) {
             if (!this.props.isAuthenticated) {
                 this.props.addFlashMessage({
                     type: 'error',
-                    text: 'You need to login to access this page'
+                    text: 'Для доступа необходимо войти в систему!'
                 });
                 this.context.router.push('/login');
             }
@@ -31,11 +31,11 @@ export default function(ComposedComponent) {
     Authenticate.propTypes = {
         isAuthenticated: PropTypes.bool.isRequired,
         addFlashMessage: PropTypes.func.isRequired
-    }
+    };
 
     Authenticate.contextTypes = {
         router: PropTypes.object.isRequired
-    }
+    };
 
     function mapStateToProps(state) {
         return {

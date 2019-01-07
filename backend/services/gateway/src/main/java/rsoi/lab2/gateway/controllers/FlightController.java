@@ -18,7 +18,7 @@ public class FlightController {
     private Logger logger = Logger.getLogger(FlightController.class.getName());
 
     @GetMapping(value = "/pingFlights")
-    public ResponseEntity<?> pingFlights(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> pingFlights(@RequestHeader(name = "Authorization") String accessToken,
                                          @RequestHeader(name = "User") String userUuid,
                                          @RequestHeader(name = "Service") String serviceUuid) {
         logger.info("Get request (pingFlights)");
@@ -31,7 +31,7 @@ public class FlightController {
     }
 
     @GetMapping(value = "/flights")
-    public ResponseEntity<?> getFlights(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getFlights(@RequestHeader(name = "Authorization") String accessToken,
                                         @RequestHeader(name = "User") String userUuid,
                                         @RequestHeader(name = "Service") String serviceUuid,
                                         @RequestParam(value = "page", defaultValue = "1") int page,
@@ -47,7 +47,7 @@ public class FlightController {
 
     @GetMapping(value = "/flights",
             params = "uidRoute")
-    public ResponseEntity<?> getFlightsByRoute(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getFlightsByRoute(@RequestHeader(name = "Authorization") String accessToken,
                                                @RequestHeader(name = "User") String userUuid,
                                                @RequestHeader(name = "Service") String serviceUuid,
                                                @RequestParam String uidRoute,
@@ -63,7 +63,7 @@ public class FlightController {
     }
 
     @GetMapping(value = "/countFlights")
-    public ResponseEntity<?> countFlights(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> countFlights(@RequestHeader(name = "Authorization") String accessToken,
                                           @RequestHeader(name = "User") String userUuid,
                                           @RequestHeader(name = "Service") String serviceUuid) {
         logger.info("Get request (countFlights)");
@@ -77,7 +77,7 @@ public class FlightController {
 
     @GetMapping(value = "/flight",
             params = {"uidFlight"})
-    public ResponseEntity<?> getFlight(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getFlight(@RequestHeader(name = "Authorization") String accessToken,
                                        @RequestHeader(name = "User") String userUuid,
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestParam String uidFlight) {
@@ -91,7 +91,7 @@ public class FlightController {
     }
 
     @PutMapping(value = "/flight")
-    public ResponseEntity addFlight(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity addFlight(@RequestHeader(name = "Authorization") String accessToken,
                                     @RequestHeader(name = "User") String userUuid,
                                     @RequestHeader(name = "Service") String serviceUuid,
                                     @RequestBody FlightInfo flightInfo) {
@@ -121,7 +121,7 @@ public class FlightController {
     }
 
     @PatchMapping(value = "/flight")
-    public ResponseEntity editFlight(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity editFlight(@RequestHeader(name = "Authorization") String accessToken,
                                      @RequestHeader(name = "User") String userUuid,
                                      @RequestHeader(name = "Service") String serviceUuid,
                                      @RequestBody FlightInfo flightInfo) {
@@ -154,7 +154,7 @@ public class FlightController {
     }
 
     @DeleteMapping(value = "/flight")
-    public ResponseEntity deleteFlight(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity deleteFlight(@RequestHeader(name = "Authorization") String accessToken,
                                        @RequestHeader(name = "User") String userUuid,
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestBody String uidFlight) {

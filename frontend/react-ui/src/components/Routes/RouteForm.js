@@ -28,9 +28,8 @@ class RouteForm extends React.Component {
                 headers:
                 {
                     'Content-Type':'application/json',
-                    'Authentication':this.props.accessToken ? this.props.accessToken : null,
-                    'User':this.props.userUuid,
-                    'Service':"ede4bfb8-2acb-441e-9b00-4b786309fcd2"
+                    'User':localStorage.getItem('userUuid'),
+                    'Service':'ede4bfb8-2acb-441e-9b00-4b786309fcd2'
                 }
             })
             .then((result) => {

@@ -26,7 +26,7 @@ public class RouteController {
     private Logger logger = Logger.getLogger(RouteController.class.getName());
 
     @GetMapping(value = "/routes")
-    public ResponseEntity<?> getRoutes(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getRoutes(@RequestHeader(name = "Authorization") String accessToken,
                                        @RequestHeader(name = "User") String userUuid,
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestParam(value = "page", defaultValue = "1") int page,
@@ -41,10 +41,10 @@ public class RouteController {
     }
 
     @GetMapping(value = "/pingRoutes")
-    public ResponseEntity<?> pingRoutes(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> pingRoutes(@RequestHeader(name = "Authorization") String accessToken,
                                         @RequestHeader(name = "User") String userUuid,
                                         @RequestHeader(name = "Service") String serviceUuid) {
-        logger.info("Get request (pingTickets)");
+        logger.info("Get request (pingRoutes)");
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8082/ping";
@@ -54,7 +54,7 @@ public class RouteController {
     }
 
     @GetMapping(value = "/countRoutes")
-    public ResponseEntity<?> countRoutes(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> countRoutes(@RequestHeader(name = "Authorization") String accessToken,
                                          @RequestHeader(name = "User") String userUuid,
                                          @RequestHeader(name = "Service") String serviceUuid) {
         logger.info("Get request (countRoutes)");
@@ -68,7 +68,7 @@ public class RouteController {
 
     @GetMapping(value = "/route",
             params = {"uidRoute"})
-    public ResponseEntity<?> getRoute(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getRoute(@RequestHeader(name = "Authorization") String accessToken,
                                       @RequestHeader(name = "User") String userUuid,
                                       @RequestHeader(name = "Service") String serviceUuid,
                                       @RequestParam String uidRoute) {
@@ -83,7 +83,7 @@ public class RouteController {
 
     @GetMapping(value = "/route",
             params = "nmRoute")
-    public ResponseEntity<?> getRouteByNm(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getRouteByNm(@RequestHeader(name = "Authorization") String accessToken,
                                           @RequestHeader(name = "User") String userUuid,
                                           @RequestHeader(name = "Service") String serviceUuid,
                                           @RequestParam String nmRoute) {
@@ -97,7 +97,7 @@ public class RouteController {
     }
 
     @PutMapping(value = "/route")
-    public ResponseEntity addRoute(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity addRoute(@RequestHeader(name = "Authorization") String accessToken,
                                    @RequestHeader(name = "User") String userUuid,
                                    @RequestHeader(name = "Service") String serviceUuid,
                                    @RequestBody RouteInfo routeInfo) {
@@ -127,7 +127,7 @@ public class RouteController {
     }
 
     @PatchMapping(value = "/route")
-    public ResponseEntity editRoute(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity editRoute(@RequestHeader(name = "Authorization") String accessToken,
                                     @RequestHeader(name = "User") String userUuid,
                                     @RequestHeader(name = "Service") String serviceUuid,
                                     @RequestBody RouteInfo routeInfo) {
@@ -153,7 +153,7 @@ public class RouteController {
     @GetMapping(value = "/flightsAndTicketsByRoute",
             params = "uidRoute",
             produces = "application/json")
-    public ResponseEntity findFlightsAndTickets(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity findFlightsAndTickets(@RequestHeader(name = "Authorization") String accessToken,
                                                 @RequestHeader(name = "User") String userUuid,
                                                 @RequestHeader(name = "Service") String serviceUuid,
                                                 @RequestParam String uidRoute,
@@ -204,7 +204,7 @@ public class RouteController {
     }
 
     @DeleteMapping(value = "/route")
-    public ResponseEntity deleteRoute(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity deleteRoute(@RequestHeader(name = "Authorization") String accessToken,
                                       @RequestHeader(name = "User") String userUuid,
                                       @RequestHeader(name = "Service") String serviceUuid,
                                       @RequestBody String uidRoute) {

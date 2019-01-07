@@ -65,6 +65,17 @@ public class AuthController {
         this.tokenProvider = tokenProvider;
     }
 
+    @GetMapping(value = "/user/{username}")
+    public ResponseEntity<?> isUserExists(@PathVariable String username) {
+
+        logger.info("Get isUserExists with: " + username);
+        if (userRepository.existsByEmailOrUsername(username, username))
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        else
+            return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+
     @Transactional
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String headerAuth, @RequestBody LoginRequest loginRequest) {
@@ -81,8 +92,8 @@ public class AuthController {
 
             tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
-            String jwtAccess = tokenProvider.generateToken(user.getEmail());
-            String jwtRefresh = tokenProvider.generateToken(user.getEmail());
+            String jwtAccess = tokenProvider.generateToken(user.getEmail(), user.getUuid().toString());
+            String jwtRefresh = tokenProvider.generateToken(user.getEmail(), user.getUuid().toString());
 
             Token refreshToken = new Token();
             refreshToken.setServiceUuid(loginRequest.getServiceUuid());
@@ -116,15 +127,15 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier());
-        String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier());
-
         User user = userRepository.findByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier())
                 .orElseThrow(() ->
                 new UsernameNotFoundException("User not found with username or email : " + loginRequest.getIdentifier())
         );
 
         tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
+
+        String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
+        String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
 
         Token token1 = new Token();
         token1.setServiceUuid(loginRequest.getServiceUuid());
@@ -160,7 +171,6 @@ public class AuthController {
     }
 
 
-    //todo lol за счет того что акксесс токенов нет в базе, невозможно получить данные с сервисов (проверка токена через базу)
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
         if(userRepository.existsByUsername(signUpUserRequest.getUsername())) {
@@ -173,7 +183,7 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        User user = new User(signUpUserRequest.getName(), signUpUserRequest.getUsername(),
+        User user = new User(signUpUserRequest.getUsername(), signUpUserRequest.getUsername(),
                 signUpUserRequest.getEmail(), signUpUserRequest.getPassword());
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));

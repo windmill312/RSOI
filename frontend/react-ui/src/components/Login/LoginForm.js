@@ -5,6 +5,7 @@ import TextFieldGroup from '../common/TextFieldGroup';
 import { login } from '../../actions/AuthActions';
 import {connect} from "react-redux";
 import validateInput from '../../validations/Login';
+import {addFlashMessage} from "../../actions/FlashMessages";
 
 class LoginForm extends Component {
     constructor(props) {
@@ -40,10 +41,29 @@ class LoginForm extends Component {
         e.preventDefault();
         if (this.isValid()) {
             this.setState({ errors: {}, isLoading: true });
-            this.props.login(this.state).then(
-                (res) => this.context.router.push('/routes'),
-                (err) => this.setState({ errors: err.response.data.errors, isLoading: false })
-            );
+            this.props.login(this.state)
+                .then(
+                    (res) => this.context.router.push('/routes'),
+                )
+                .catch(
+                    (err) => {
+                        if (err.response) {
+                            this.setState({errors: err.response.data.message, isLoading: false});
+                            this.props.addFlashMessage({
+                                type: 'error',
+                                text: 'Проверьте правильность введенных данных!'
+                            })
+                        }
+                        else {
+                            this.setState({isLoading: false});
+                            this.props.addFlashMessage({
+                                type: 'error',
+                                text: 'Сервис временно недоступен!'
+                            })
+                        }
+                    }
+
+                );
         }
     }
 
@@ -80,11 +100,12 @@ class LoginForm extends Component {
 }
 
 LoginForm.propTypes = {
-    login: PropTypes.func.isRequired
+    login: PropTypes.func.isRequired,
+    addFlashMessage: PropTypes.func.isRequired
 };
 
 LoginForm.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default connect(null, { login })(LoginForm);
+export default connect(null, { login, addFlashMessage })(LoginForm);

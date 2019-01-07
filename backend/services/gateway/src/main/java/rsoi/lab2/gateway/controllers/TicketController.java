@@ -23,7 +23,7 @@ public class TicketController {
     private Logger logger = Logger.getLogger(TicketController.class.getName());
 
     @GetMapping(value = "/pingTickets")
-    public ResponseEntity<?> pingTickets(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> pingTickets(@RequestHeader(name = "Authorization") String accessToken,
                                          @RequestHeader(name = "User") String userUuid,
                                          @RequestHeader(name = "Service") String serviceUuid) {
         logger.info("Get request (pingTickets)");
@@ -37,7 +37,7 @@ public class TicketController {
     }
 
     @GetMapping(value = "/tickets")
-    public ResponseEntity<?> getTickets(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getTickets(@RequestHeader(name = "Authorization") String accessToken,
                                         @RequestHeader(name = "User") String userUuid,
                                         @RequestHeader(name = "Service") String serviceUuid,
                                         @RequestParam(value = "page", defaultValue = "1") int page,
@@ -53,7 +53,7 @@ public class TicketController {
 
     @GetMapping(value = "/tickets",
             params = "uidFlight")
-    public ResponseEntity<?> getTickets(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getTickets(@RequestHeader(name = "Authorization") String accessToken,
                                         @RequestHeader(name = "User") String userUuid,
                                         @RequestHeader(name = "Service") String serviceUuid,
                                         @RequestParam String uidFlight,
@@ -69,7 +69,7 @@ public class TicketController {
     }
 
     @GetMapping(value = "/countTickets")
-    public ResponseEntity<?> countTickets(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> countTickets(@RequestHeader(name = "Authorization") String accessToken,
                                           @RequestHeader(name = "User") String userUuid,
                                           @RequestHeader(name = "Service") String serviceUuid) {
         logger.info("Get request (countTickets)");
@@ -83,7 +83,7 @@ public class TicketController {
 
     @GetMapping(value = "/ticket",
             params = "uidTicket")
-    public ResponseEntity<?> getTicket(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity<?> getTicket(@RequestHeader(name = "Authorization") String accessToken,
                                        @RequestHeader(name = "User") String userUuid,
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestParam String uidTicket) {
@@ -97,7 +97,7 @@ public class TicketController {
     }
 
     @PutMapping(value = "/ticket")
-    public ResponseEntity addTicket(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity addTicket(@RequestHeader(name = "Authorization") String accessToken,
                                     @RequestHeader(name = "User") String userUuid,
                                     @RequestHeader(name = "Service") String serviceUuid,
                                     @RequestBody TicketInfo ticketInfo) {
@@ -151,7 +151,7 @@ public class TicketController {
     }
 
     @PatchMapping(value = "/ticket")
-    public ResponseEntity editTicket(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity editTicket(@RequestHeader(name = "Authorization") String accessToken,
                                      @RequestHeader(name = "User") String userUuid,
                                      @RequestHeader(name = "Service") String serviceUuid,
                                      @RequestBody TicketInfo ticketInfo) {
@@ -173,7 +173,7 @@ public class TicketController {
     }
 
     @DeleteMapping(value = "/ticket")
-    public ResponseEntity deleteTicket(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity deleteTicket(@RequestHeader(name = "Authorization") String accessToken,
                                        @RequestHeader(name = "User") String userUuid,
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestBody String uidTicket) {
@@ -216,7 +216,7 @@ public class TicketController {
     }
 
     @DeleteMapping(value = "/tickets")
-    public ResponseEntity deleteTickets(@RequestHeader(name = "Authentication") String accessToken,
+    public ResponseEntity deleteTickets(@RequestHeader(name = "Authorization") String accessToken,
                                         @RequestHeader(name = "User") String userUuid,
                                         @RequestHeader(name = "Service") String serviceUuid,
                                         @RequestBody String uidFlight) {

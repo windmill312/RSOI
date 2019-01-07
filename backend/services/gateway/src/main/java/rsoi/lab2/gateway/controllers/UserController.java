@@ -17,7 +17,14 @@ public class UserController {
 
     private Logger logger = Logger.getLogger(TicketController.class.getName());
 
-    @GetMapping("/api/me")
+    @GetMapping(value = "/api/{username}")
+    public ResponseEntity<?> isUserExists(@PathVariable String username) {
+        logger.info("Get isUserExists with: " + username);
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForEntity("http://localhost:8084/api/auth/user/" + username, Object.class);
+    }
+
+        @GetMapping("/api/me")
     public ResponseEntity getCurrentUser(@RequestHeader(name = "Authorization") String headerAuth) {
         logger.info("Get getCurrentUser request with access token: " + headerAuth + "\n");
         RestTemplate restTemplate = new RestTemplate();
@@ -147,14 +154,4 @@ public class UserController {
                     HttpStatus.BAD_REQUEST);
         }
     }
-
-    /*
-    @GetMapping("/user/me")
-    @PreAuthorize("hasRole('USER')")
-    public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = new UserSummary(currentUser.getUuid(), currentUser.getUsername(), currentUser.getName());
-        return userSummary;
-    }
-    */
-
 }

@@ -5,25 +5,25 @@ export default function validateInput(data) {
     let errors = {};
 
     if (Validator.isEmpty(data.username)) {
-        errors.username = 'This field is required';
+        errors.username = 'Это обязательное поле';
     }
     if (Validator.isEmpty(data.email)) {
-        errors.email = 'This field is required';
+        errors.email = 'Это обязательное поле';
     }
     if (!Validator.isEmail(data.email)) {
-        errors.email = 'Email is invalid';
+        errors.email = 'Неверный Email';
     }
     if (Validator.isEmpty(data.password)) {
-        errors.password = 'This field is required';
+        errors.password = 'Это обязательное поле';
+    }
+    if (data.password.length < 6) {
+        errors.password = 'Пароль должен содержать не менее 6 символов';
     }
     if (Validator.isEmpty(data.passwordConfirmation)) {
-        errors.passwordConfirmation = 'This field is required';
+        errors.passwordConfirmation = 'Это обязательное поле';
     }
     if (!Validator.equals(data.password, data.passwordConfirmation)) {
-        errors.passwordConfirmation = 'Passwords must match';
-    }
-    if (Validator.isEmpty(data.timezone)) {
-        errors.timezone = 'This field is required';
+        errors.passwordConfirmation = 'Пароли должны совпадать';
     }
 
     return {

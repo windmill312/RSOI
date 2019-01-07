@@ -2,22 +2,27 @@ import React from 'react';
 import FlashMessage from './FlashMessage';
 import { connect } from 'react-redux';
 import { deleteFlashMessage } from '../../actions/FlashMessages';
+import PropTypes from 'prop-types';
 
 class FlashMessagesList extends React.Component {
     render() {
-        const messages = this.props.messages.map(message =>
-            <FlashMessage key={message.id} message={message} deleteFlashMessage={this.props.deleteFlashMessage} />
-        );
-        return (
-            <div>{messages}</div>
-        );
+        if (this.props.messages) {
+            const messages = this.props.messages.map(message =>
+                <FlashMessage key={message.id} message={message} deleteFlashMessage={this.props.deleteFlashMessage}/>
+            );
+            return (
+                <div>{messages}</div>
+            );
+        }
+        else
+            return null;
     }
 }
 
 FlashMessagesList.propTypes = {
-    messages: React.PropTypes.array.isRequired,
-    deleteFlashMessage: React.PropTypes.func.isRequired
-}
+    messages: PropTypes.array.isRequired,
+    deleteFlashMessage: PropTypes.func.isRequired
+};
 
 function mapStateToProps(state) {
     return {

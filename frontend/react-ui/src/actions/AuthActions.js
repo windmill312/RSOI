@@ -22,9 +22,16 @@ export function login(data) {
     return dispatch => {
         return axios.post('http://localhost:8090/api/auth/signin', data).then(res => {
             const accessToken = res.data.accessToken;
+            const refreshToken = res.data.refreshToken;
+            const jwtExpirationInMs = res.data.jwtExpirationInMs;
             localStorage.setItem('jwtAccessToken', accessToken);
+            localStorage.setItem('jwtRefreshToken', refreshToken);
+            localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);
             setAuthorizationToken(accessToken);
-            dispatch(setCurrentUser(jwtDecode(accessToken)));
+            const decodedToken = jwtDecode(accessToken);
+            localStorage.setItem('userUuid', decodedToken.jti);
+            dispatch(setCurrentUser(decodedToken));
+
         });
     }
 }

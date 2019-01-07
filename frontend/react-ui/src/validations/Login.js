@@ -12,6 +12,10 @@ export default function validateInput(data) {
         errors.password = '*обязательное поле';
     }
 
+    if (data.password.length < 6) {
+        errors.password = 'Пароль не может быть менее 6 символов';
+    }
+
     return {
         errors,
         isValid: isEmpty(errors)
