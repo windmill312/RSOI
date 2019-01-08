@@ -5,7 +5,7 @@ import App from './components/App';
 import Greetings from './components/common/Greetings';
 import Login from './components/Login/LoginPage';
 import SignUp from './components/SignUp/SignUpPage';
-import Routes from './components/Routes/RouteForm';
+import Routes from './components/Routes/RoutePage';
 import Flights from './components/Flights/FlightForm';
 import Tickets from './components/Tickets/TicketForm';
 import requireAuth from './utils/requireAuth';

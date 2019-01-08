@@ -1,8 +1,9 @@
 import React from 'react';
 import {Table, Alert, TabContent, TabPane, Nav, Pagination, PaginationItem, PaginationLink, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
-//import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import classnames from 'classnames';
-import axios from "axios";
+import {pingRoutes, countRoutes, getRoutes, createRoute, deleteRoute, getTicketsAndFlights} from '../../actions/RoutesActions';
+import PropTypes from "prop-types";
+import connect from "react-redux/es/connect/connect";
 
 class RouteForm extends React.Component {
 
@@ -22,35 +23,29 @@ class RouteForm extends React.Component {
     }
 
     componentDidMount() {
-        axios.get(`http://localhost:8090/pingRoutes`,
-            {
-                //todo send correct array with info
-                headers:
-                {
-                    'Content-Type':'application/json',
-                    'User':localStorage.getItem('userUuid'),
-                    'Service':'ede4bfb8-2acb-441e-9b00-4b786309fcd2'
-                }
-            })
+        this.props.pingRoutes()
             .then((result) => {
                 if (result.status === 200) {
-                    axios.get(`http://localhost:8090/countRoutes`)
-                        .then(result => {
-                            this.setState({
-                                nnRoutes: result.data,
-                                nnPages : result.data/this.state.pageSize
-                            });
-                            axios.get('http://localhost:8090/routes?size=' + this.state.pageSize + '&page=' + this.state.currentPage)
-                                .then(
-                                    response => this.setState({
+                    this.props.countRoutes()
+                    .then(result => {
+                        this.setState({
+                            nnRoutes: result.data,
+                            nnPages: result.data / this.state.pageSize
+                        });
+                        this.props.getRoutes(this.state.pageSize, this.state.currentPage)
+                            .then(
+                                response => {
+                                    console.log(response);
+                                    this.setState({
                                             routes: response.data,
                                             serviceAvailable: true
                                         }
-                                    ))
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                        });
+                                    );
+                                })
+                            .catch((error) => {
+                                console.error(error);
+                            })
+                    })
                 } else {
                     console.log('Ошибка при получении маршрутов (status = ' + result.status + ')');
                 }
@@ -60,14 +55,15 @@ class RouteForm extends React.Component {
                 this.setState({
                     serviceAvailable: false
                 })
-            })
+            });
+        console.log(this.state.routes);
     }
 
     handleCurrentPageChange (e, index) {
         if (index >= 0 && index<this.state.nnPages && index!==this.state.currentPage) {
             e.preventDefault();
             this.setState({currentPage: index});
-            axios.get('http://localhost:8090/flights?size=' + this.state.pageSize + '&page=' + (index+1))
+            this.props.getRoutes(this.state.pageSize, this.state.currentPage + 1)
                 .then(
                     response => this.setState({
                             routes: response.data
@@ -77,21 +73,19 @@ class RouteForm extends React.Component {
                     console.error(error);
                 });
             this.render();
-        } else {
-            return;
         }
     }
 
     getTicketsAndFlights = event =>  {
         event.preventDefault();
-        axios.get(`http://localhost:8090/flightsAndTicketsByRoute?uidRoute=` + this.state.uidRoute)
+        this.props.getTicketsAndFlights(this.state.uidRoute)
             .then(result => {
                 this.setState({
                     routeAggregation: result.data
                 })
             });
         this.createAggregatedReport();
-    }
+    };
 
     createPagination = () => {
         const pages = [];
@@ -112,45 +106,7 @@ class RouteForm extends React.Component {
                 <PaginationLink next onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage + 1)}} href="#" />
             </PaginationItem>
         </Pagination>;
-    }
-
-
-    /*[
-        {
-            "idFlight": 12,
-            "uid": "0de0139c-b09e-4c0c-be01-854f5b439083",
-            "uidRoute": "abb88b8f-1ce0-4c60-b609-b7e1bb48acd6",
-            "dtFlight": "2018-08-02 19:45",
-            "nnTickets": 1,
-            "maxTickets": 50,
-            "tickets": [
-                {
-                    "idTicket": 18,
-                    "uidFlight": "0de0139c-b09e-4c0c-be01-854f5b439083",
-                    "idPassenger": 45,
-                    "classType": "Бизнес",
-                    "uid": "55ec141d-65bb-406f-8211-a2f031f78b33"
-                }
-            ]
-        },
-{
-    "idFlight": 13,
-    "uid": "23581242-f010-4148-a3a9-2f18131cad07",
-    "uidRoute": "abb88b8f-1ce0-4c60-b609-b7e1bb48acd6",
-    "dtFlight": "2015-02-20 15:15",
-    "nnTickets": 1,
-    "nnTickets": 15,
-    "tickets": [
-        {
-            "idTicket": 19,
-            "uidFlight": "23581242-f010-4148-a3a9-2f18131cad07",
-            "idPassenger": 1,
-            "classType": "Бизнес",
-            "uid": "a5b1028d-5812-490d-8935-03ee1ad71b13"
-        }
-        ]
-}
-]*/
+    };
 
     createAggregatedReport = () => {
         const aggrArray = [];
@@ -169,7 +125,7 @@ class RouteForm extends React.Component {
             return aggrArray;
 
         })
-    }
+    };
 
     toggle1(tab) {
         this.componentDidMount();
@@ -182,19 +138,19 @@ class RouteForm extends React.Component {
 
     handleRouteNmChange = event => {
         this.setState({ routeName: event.target.value })
-    }
+    };
 
     handleRouteUidChange = event => {
         this.setState({ uidRoute: event.target.value })
-    }
+    };
 
     handleSubmitRoute = event => {
         event.preventDefault();
         const requestData = {
             routeName: this.state.routeName
         };
-        axios.put(`http://localhost:8090/route`, requestData)
-            .then((result) => {
+        this.props.createRoute(requestData)
+            .then(result => {
                 if (result.status === 200) {
                     console.info('status = 200');
                     alert('Маршрут успешно создан!');
@@ -203,12 +159,12 @@ class RouteForm extends React.Component {
                     alert('Ошибка при создании маршрута!');
                 }
             });
-    }
+    };
 
     handleDeleteRoute(route) {
         return event => {
             event.preventDefault();
-            axios.delete(`http://localhost:8090/route`, {data: route.uid})
+            this.props.deleteRoute(route.uid)
                 .then(result => {
                     if (result.status === 200) {
                         console.info('status = 200');
@@ -309,4 +265,17 @@ class RouteForm extends React.Component {
     }
 }
 
-export default RouteForm;
+RouteForm.propTypes = {
+    pingRoutes: PropTypes.func.isRequired,
+    countRoutes: PropTypes.func.isRequired,
+    getRoutes: PropTypes.func.isRequired,
+    createRoute: PropTypes.func.isRequired,
+    deleteRoute: PropTypes.func.isRequired,
+    getTicketsAndFlights: PropTypes.func.isRequired
+};
+
+RouteForm.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default connect(null, { pingRoutes, countRoutes, getRoutes, createRoute, deleteRoute, getTicketsAndFlights})(RouteForm);

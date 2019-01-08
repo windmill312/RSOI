@@ -19,7 +19,8 @@ CREATE role program WITH password 'test';
 GRANT ALL PRIVILEGES ON database db_route TO program;
 ALTER role program WITH login;
 
-
+sudo -i
+su postgres
 psql
 \connect db_user;
 INSERT INTO roles VALUES (1, 'ROLE_USER');
