@@ -1,16 +1,17 @@
 import React from 'react';
-import {Table, Alert, TabContent, TabPane, Nav, Pagination, PaginationItem, PaginationLink, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
+//import {Table, Alert, TabContent, TabPane, Nav, NavItem, NavLink, Button, Row, Col, Label, Form, Input, FormGroup} from 'reactstrap'
 import classnames from 'classnames';
+import {Navbar, NavItem, Nav, Button, DropdownButton, MenuItem, Pagination, Alert} from 'react-bootstrap';
 import {pingRoutes, countRoutes, getRoutes, createRoute, deleteRoute, getTicketsAndFlights} from '../../actions/RoutesActions';
 import PropTypes from "prop-types";
 import connect from "react-redux/es/connect/connect";
+import '../../styles/Routes.css'
 
 class RouteForm extends React.Component {
 
     constructor() {
         super();
         this.state = {
-            activeSubTab: '0',
             routes: [],
             serviceAvailable: true,
             nnRoutes: 0,
@@ -20,6 +21,8 @@ class RouteForm extends React.Component {
             routeAggregation: [],
             userInfo:[]
         }
+
+        this.handleCurrentPageChange = this.handleCurrentPageChange.bind(this);
     }
 
     componentDidMount() {
@@ -28,9 +31,10 @@ class RouteForm extends React.Component {
                 if (result.status === 200) {
                     this.props.countRoutes()
                     .then(result => {
+                        console.log(Math.ceil(result.data / this.state.pageSize));
                         this.setState({
                             nnRoutes: result.data,
-                            nnPages: result.data / this.state.pageSize
+                            nnPages: Math.ceil(result.data / this.state.pageSize)
                         });
                         this.props.getRoutes(this.state.pageSize, this.state.currentPage)
                             .then(
@@ -59,11 +63,11 @@ class RouteForm extends React.Component {
         console.log(this.state.routes);
     }
 
-    handleCurrentPageChange (e, index) {
-        if (index >= 0 && index<this.state.nnPages && index!==this.state.currentPage) {
-            e.preventDefault();
+    handleCurrentPageChange(e, index) {
+        e.preventDefault();
+        if (index >= 1 && index<=this.state.nnPages && index!==this.state.currentPage) {
             this.setState({currentPage: index});
-            this.props.getRoutes(this.state.pageSize, this.state.currentPage + 1)
+            this.props.getRoutes(this.state.pageSize, this.state.currentPage)
                 .then(
                     response => this.setState({
                             routes: response.data
@@ -72,7 +76,7 @@ class RouteForm extends React.Component {
                 .catch((error) => {
                     console.error(error);
                 });
-            this.render();
+            //this.render();
         }
     }
 
@@ -87,9 +91,25 @@ class RouteForm extends React.Component {
         this.createAggregatedReport();
     };
 
-    createPagination = () => {
-        const pages = [];
-        for (let i = 0; i < this.state.nnPages; i++) {
+    createPagination = event => {
+        const items = [];
+        for (let number = 1; number <= this.state.nnPages; number++) {
+            items.push(
+                <Pagination.Item active={number === this.state.currentPage} key={number} onClick={this.handleCurrentPageChange(event, number)}>{number}</Pagination.Item>
+            );
+        }
+
+        const paginationBasic = (
+            <div>
+                <Pagination bsSize="medium" >{items}</Pagination>
+            </div>
+        );
+
+        return (paginationBasic);
+
+
+
+        /*for (let i = 0; i < this.state.nnPages; i++) {
             pages.push(
                 <PaginationItem key={i} >
                     <PaginationLink onClick={e => {this.handleCurrentPageChange(e,i)}} key={i} >
@@ -105,7 +125,7 @@ class RouteForm extends React.Component {
             <PaginationItem>
                 <PaginationLink next onClick={e => {this.handleCurrentPageChange(e, this.state.currentPage + 1)}} href="#" />
             </PaginationItem>
-        </Pagination>;
+        </Pagination>;*/
     };
 
     createAggregatedReport = () => {
@@ -126,15 +146,6 @@ class RouteForm extends React.Component {
 
         })
     };
-
-    toggle1(tab) {
-        this.componentDidMount();
-        if (this.state.activeSubTab !== tab) {
-            this.setState({
-                activeSubTab: tab
-            });
-        }
-    }
 
     handleRouteNmChange = event => {
         this.setState({ routeName: event.target.value })
@@ -177,10 +188,8 @@ class RouteForm extends React.Component {
         }
     }
 
-    render() {
-        if (this.state.serviceAvailable) {
-            return (
-                <div>
+    /*
+        <div>
                     <Nav>
                         <NavItem>
                             <NavLink
@@ -203,6 +212,7 @@ class RouteForm extends React.Component {
                             </NavLink>
                         </NavItem>
                     </Nav>
+                    </Navbar>
                     <TabContent activeTab={this.state.activeSubTab}>
                         <TabPane tabId="0">
                             <Row>
@@ -253,11 +263,28 @@ class RouteForm extends React.Component {
                         </TabPane>
                     </TabContent>
                 </div>
+     */
+
+    render() {
+        if (this.state.serviceAvailable) {
+            return (
+                <div>
+                    <DropdownButton className='dropdown'
+                        bsStyle="info"
+                        title="Действия"
+                        id={`dropdown`}
+                    >
+                        <MenuItem eventKey="1" href="/routes/create">Добавить</MenuItem>
+                    </DropdownButton>
+                    {this.createPagination}
+                </div>
             )
         } else {
             return (
                 <div>
-                    <Alert color="danger">Сервис временно недоступен</Alert>
+                    <Alert bsStyle="danger">
+                        Сервис временно недоступен
+                    </Alert>
                     <Button outline onClick={()=> {this.componentDidMount(); this.render();}}>Обновить</Button>
                 </div>
             )

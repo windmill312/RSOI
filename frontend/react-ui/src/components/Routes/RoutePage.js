@@ -17,6 +17,7 @@ class RoutePage extends React.Component {
                     getRoutes={getRoutes}
                     getTicketsAndFlights={getTicketsAndFlights}
                 />
+                {this.props.children}
             </div>
         );
     }
