@@ -163,10 +163,10 @@ public class AuthController {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with UUID : " + userRequest.getUserUuid())
                 );
-        if (tokenRepository.existsByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken()))
-            return new ResponseEntity<>(new ApiResponse(true,"Token is valid"), HttpStatus.OK);
+        if (tokenRepository.existsByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken().substring(7)))
+            return ResponseEntity.ok().build();
         else
-            return new ResponseEntity<>(new ApiResponse(false,"Token is invalid"), HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 
     }
 
