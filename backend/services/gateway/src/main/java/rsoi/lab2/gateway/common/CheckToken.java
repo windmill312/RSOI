@@ -10,11 +10,15 @@ import java.util.UUID;
 
 public class CheckToken {
     public static boolean checkToken (String accessToken, String userUuid, String serviceUuid) throws HttpClientErrorException {
-
-        RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8084/api/auth/validate";
-        UserRequest userRequest = new UserRequest(accessToken, UUID.fromString(userUuid), UUID.fromString(serviceUuid));
-        ResponseEntity<Object> response = restTemplate.postForEntity(resourceUrl, userRequest, Object.class);
-        return response.getStatusCode() == HttpStatus.OK;
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            String resourceUrl = "http://localhost:8084/api/auth/validate";
+            UserRequest userRequest = new UserRequest(accessToken, UUID.fromString(userUuid), UUID.fromString(serviceUuid));
+            ResponseEntity<Object> response = restTemplate.postForEntity(resourceUrl, userRequest, Object.class);
+            return response.getStatusCode() == HttpStatus.OK;
+        }
+        catch (HttpClientErrorException e) {
+            return false;
+        }
     }
 }

@@ -7,6 +7,7 @@ import Login from './components/Login/LoginPage';
 import SignUp from './components/SignUp/SignUpPage';
 import Routes from './components/Routes/RoutePage';
 import AddRoute from './components/Routes/AddRoute';
+import AggregationRoute from './components/Routes/AggregationRoute';
 import Flights from './components/Flights/FlightForm';
 import Tickets from './components/Tickets/TicketForm';
 import requireAuth from './utils/requireAuth';
@@ -19,6 +20,7 @@ export default (
         <Route path="/routes">
             <IndexRoute component={requireAuth(Routes)}/>
             <Route path="/routes/create" component={requireAuth(AddRoute)}/>
+            <Route path="/routes/aggregation" component={requireAuth(AggregationRoute)}/>
         </Route>
         <Route path="/flights" component={requireAuth(Flights)}/>
         <Route path="/tickets" component={requireAuth(Tickets)}/>
