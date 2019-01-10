@@ -15,8 +15,7 @@ class RouteForm extends React.Component {
             nnRoutes: 0,
             currentPage: 1,
             pageSize: 5,
-            nnPages: 0,
-            userInfo:[]
+            nnPages: 0
         };
 
         this.handleCurrentPageChange = this.handleCurrentPageChange.bind(this);
@@ -120,33 +119,6 @@ class RouteForm extends React.Component {
             </div>
         )
     }
-
-    createAggregatedReport = () => {
-        const aggrArray = [];
-        this.state.routeAggregation.map(record => {
-
-            aggrArray.push(
-                <tr>
-                    <td> {record.uid}</td>
-                    <td> {record.routeName} </td>
-                    <td> {record.dtFlight} </td>
-                    <td> {record.nnTickets} </td>
-                    <td> {record.nnTickets} </td>
-                </tr>
-            );
-
-            return aggrArray;
-
-        })
-    };
-
-    handleRouteNmChange = event => {
-        this.setState({ routeName: event.target.value })
-    };
-
-    handleRouteUidChange = event => {
-        this.setState({ uidRoute: event.target.value })
-    };
 
     handleDeleteRoute(route) {
         return event => {

@@ -6,16 +6,14 @@ import connect from "react-redux/es/connect/connect";
 
 class RoutePage extends React.Component {
     render() {
-        const {pingRoutes, countRoutes, getRoutes, createRoute, deleteRoute, getTicketsAndFlights} = this.props;
+        const {pingRoutes, countRoutes, getRoutes, deleteRoute} = this.props;
         return (
             <div>
                 <RouteForm
                     pingRoutes={pingRoutes}
                     countRoutes={countRoutes}
-                    createRoute={createRoute}
                     deleteRoute={deleteRoute}
                     getRoutes={getRoutes}
-                    getTicketsAndFlights={getTicketsAndFlights}
                 />
                 {this.props.children}
             </div>
