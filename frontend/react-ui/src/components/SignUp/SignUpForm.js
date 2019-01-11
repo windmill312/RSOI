@@ -92,7 +92,7 @@ class SignUpForm extends React.Component {
                     error={errors.username}
                     label="Имя"
                     onChange={this.onChange}
-                    checkUserExists={this.checkUserExists}
+                    check={this.checkUserExists}
                     value={this.state.username}
                     field="username"
                 />
@@ -101,7 +101,7 @@ class SignUpForm extends React.Component {
                     error={errors.email}
                     label="Email"
                     onChange={this.onChange}
-                    checkUserExists={this.checkUserExists}
+                    check={this.checkUserExists}
                     value={this.state.email}
                     field="email"
                 />

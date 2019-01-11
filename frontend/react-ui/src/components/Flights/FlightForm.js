@@ -125,7 +125,7 @@ class FlightForm extends React.Component {
                 .then(result => {
                     if (result.status === 200) {
                         console.info('status = 200');
-                        alert('Билет успешно удален!');
+                        alert('Рейс успешно удален!');
                     } else {
                         console.info('status = ' + result.status);
                         alert('Произошла ошибка при удалении рейса!');

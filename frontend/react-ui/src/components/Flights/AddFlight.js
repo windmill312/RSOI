@@ -103,7 +103,7 @@ class AddRoute extends React.Component {
                         error={errors.uidRoute}
                         label="Уникальный номер маршрута"
                         onChange={this.handleFlightRouteChange}
-                        checkUserExists={this.checkRouteExists}
+                        check={this.checkRouteExists}
                         value={this.state.uidRoute}
                         field="uidRoute"
                     />

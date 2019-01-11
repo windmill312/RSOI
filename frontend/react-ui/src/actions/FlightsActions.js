@@ -74,7 +74,7 @@ export function deleteFlight(flight) {
 //todo возможно надо перенести в RouteActions
 export function isRouteExists(identifier) {
     return dispatch => {
-        return axios.get(`http://localhost:8090/route/${identifier}`,
+        return axios.get(`http://localhost:8090/route?uidRoute=${identifier}`,
             {
                 headers:
                     {
