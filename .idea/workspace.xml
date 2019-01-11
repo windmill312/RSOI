@@ -2,12 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fc750264-1933-4e88-a33b-b5d5e004c549" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/frontend/react-ui/src/actions/TicketsActions.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/AddTicket.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketForm_old.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketPage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/actions/FlightsActions.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/actions/FlightsActions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/AddFlight.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/AddFlight.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/components/SignUp/SignUpForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/SignUp/SignUpForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/components/common/TextFieldGroup.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/common/TextFieldGroup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/react-ui/src/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/react-ui/src/routes.js" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/service/ticketService/.gradle/" />
     <ignored path="$PROJECT_DIR$/service/ticketService/build/" />
@@ -116,54 +119,12 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/AddFlight.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="51">
-              <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/SignUp/SignUpForm.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-795">
-              <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightPage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" selection-start-line="22" selection-end-line="22" />
+            <state relative-caret-position="363">
+              <caret line="26" column="44" lean-forward="true" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/actions/FlightsActions.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="346">
-              <caret line="80" column="59" selection-start-line="80" selection-start-column="59" selection-end-line="80" selection-end-column="59" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/backend/services/gateway/src/main/java/rsoi/lab2/gateway/controllers/FlightController.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="397">
-              <caret line="176" column="35" selection-start-line="176" selection-start-column="35" selection-end-line="176" selection-end-column="35" />
-              <folding>
-                <element signature="imports" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -179,10 +140,58 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js">
+        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightFormNew.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="323">
-              <caret line="127" column="35" selection-start-line="127" selection-start-column="35" selection-end-line="127" selection-end-column="35" />
+            <state relative-caret-position="-1300">
+              <caret line="75" column="48" lean-forward="true" selection-start-line="75" selection-start-column="48" selection-end-line="75" selection-end-column="48" />
+              <folding>
+                <element signature="e#0#26#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/AddTicket.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="83" column="28" lean-forward="true" selection-start-line="83" selection-start-column="28" selection-end-line="83" selection-end-column="28" />
+              <folding>
+                <element signature="e#0#26#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/AddFlight.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1292">
+              <caret line="8" column="40" lean-forward="true" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
+              <folding>
+                <element signature="e#0#26#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketForm.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-162">
+              <caret line="85" column="9" lean-forward="true" selection-start-line="85" selection-start-column="9" selection-end-line="85" selection-end-column="9" />
+              <folding>
+                <element signature="e#0#26#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/routes.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="369">
+              <caret line="29" column="16" lean-forward="true" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
               <folding>
                 <element signature="e#0#26#0" expanded="true" />
               </folding>
@@ -220,6 +229,9 @@
       <find>userprincip</find>
       <find>post</find>
       <find>TextFieldGroup</find>
+      <find>DropdownButton</find>
+      <find>addFlashMessage</find>
+      <find>invalid</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/controllers</dir>
@@ -236,10 +248,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/security/CustomUserDetailedService.java" />
-        <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/exception/UserNameNotFoundException.java" />
-        <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/exception/AppException.java" />
-        <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/exception/BadRequestException.java" />
         <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/exception/ResourceNotFoundException.java" />
         <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/security/JwtAuthenticationFilter.java" />
         <option value="$PROJECT_DIR$/backend/services/gateway/src/main/java/rsoi/lab2/gateway/model/UserInfo.java" />
@@ -279,14 +287,18 @@
         <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/repositories/TokenRepository.java" />
         <option value="$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/entity/Token.java" />
         <option value="$PROJECT_DIR$/backend/services/userService/src/main/resources/application.properties" />
-        <option value="$PROJECT_DIR$/frontend/react-ui/src/routes.js" />
-        <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightPage.js" />
         <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Routes/AddRoute.js" />
         <option value="$PROJECT_DIR$/frontend/react-ui/src/components/common/TextFieldGroup.js" />
         <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/AddFlight.js" />
         <option value="$PROJECT_DIR$/frontend/react-ui/src/components/SignUp/SignUpForm.js" />
-        <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js" />
         <option value="$PROJECT_DIR$/frontend/react-ui/src/actions/FlightsActions.js" />
+        <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js" />
+        <option value="$PROJECT_DIR$/frontend/react-ui/src/actions/TicketsActions.js" />
+        <option value="$PROJECT_DIR$/frontend/react-ui/src/routes.js" />
+        <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightPage.js" />
+        <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketPage.js" />
+        <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketForm.js" />
+        <option value="$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/AddTicket.js" />
       </list>
     </option>
   </component>
@@ -381,6 +393,15 @@
               <item name="components" type="462c0819:PsiDirectoryNode" />
               <item name="SignUp" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="lab2" type="b2602c69:ProjectViewProjectNode" />
+              <item name="rsoi" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+              <item name="frontend" type="462c0819:PsiDirectoryNode" />
+              <item name="react-ui" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="components" type="462c0819:PsiDirectoryNode" />
+              <item name="Tickets" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -405,6 +426,10 @@
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="rsoi.lab2.payload" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\andrey.sychev\Desktop\rsoi\frontend\react-ui\src\actions" />
+      <recent name="C:\Users\andrey.sychev\Desktop\rsoi\frontend\react-ui\src\components\Tickets" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -740,17 +765,24 @@
       <option name="project" value="LOCAL" />
       <updated>1547195036585</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Finish flights on frontend">
+      <created>1547196980994</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1547196980994</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49303000" />
+    <option name="totallyTimeSpent" value="54207000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="1358" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.15085287" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19669509" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Designer" order="2" />
       <window_info id="UI Designer" order="3" />
@@ -761,7 +793,7 @@
       <window_info id="Build Variants" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32954547" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.35211268" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.35211268" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39772728" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -807,7 +839,8 @@
     <MESSAGE value="Fix hibernate relations" />
     <MESSAGE value="Complete UserService" />
     <MESSAGE value="Fix frontend bugs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix frontend bugs" />
+    <MESSAGE value="Finish flights on frontend" />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish flights on frontend" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -859,42 +892,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar:///opt/gradle/gradle-4.10.2/caches/modules-2/files-2.1/org.springframework/spring-aop/5.0.9.RELEASE/beafb55eae32edb39351cb84594261a60d12219c/spring-aop-5.0.9.RELEASE-sources.jar!/org/springframework/aop/framework/JdkDynamicAopProxy.java" />
-    <entry file="file://$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/model/RoleName.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///opt/gradle/gradle-4.10.2/caches/modules-2/files-2.1/org.springframework.security/spring-security-core/5.1.2.RELEASE/b1392889ba1fcb39672da9592e056d506efc6ba1/spring-security-core-5.1.2.RELEASE-sources.jar!/org/springframework/security/authentication/UsernamePasswordAuthenticationToken.java" />
-    <entry file="file://$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/security/CurrentUser.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/security/UserPrincipal.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="88" lean-forward="true" selection-start-line="88" selection-end-line="88" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/services/UserServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="60" column="45" selection-start-line="60" selection-start-column="45" selection-end-line="60" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/services/userService/src/main/java/rsoi/lab2/controllers/UserController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
@@ -1168,26 +1165,6 @@
     <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/actions/SignUpActions.js">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Routes/AddRoute.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="30" column="31" lean-forward="true" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/routes.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="43" lean-forward="true" selection-start-line="18" selection-start-column="43" selection-end-line="18" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/common/TextFieldGroup.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
@@ -1198,56 +1175,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightPage.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/SignUp/SignUpForm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-795">
-          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/AddFlight.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="27" selection-start-line="3" selection-start-column="27" selection-end-line="3" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/services/gateway/src/main/java/rsoi/lab2/gateway/controllers/UserController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1088">
           <caret line="64" column="5" selection-start-line="64" selection-start-column="5" selection-end-line="64" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/backend/services/flightService/src/main/java/rsoi/lab2/controllers/FlightController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1626">
-          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="127" column="35" selection-start-line="127" selection-start-column="35" selection-end-line="127" selection-end-column="35" />
-          <folding>
-            <element signature="e#0#26#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1262,6 +1195,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/actions/FlightsActions.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="82" column="73" lean-forward="true" selection-start-line="82" selection-start-column="73" selection-end-line="82" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightForm.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1156">
+          <caret line="68" column="5" selection-start-line="68" selection-start-column="5" selection-end-line="68" selection-end-column="5" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/services/flightService/src/main/java/rsoi/lab2/controllers/FlightController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1626">
+          <caret line="21" column="13" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/backend/services/gateway/src/main/java/rsoi/lab2/gateway/controllers/RouteController.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-340">
@@ -1272,10 +1229,110 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/actions/FlightsActions.js">
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/actions/TicketsActions.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="80" column="59" selection-start-line="80" selection-start-column="59" selection-end-line="80" selection-end-column="59" />
+        <state relative-caret-position="329">
+          <caret line="79" column="21" lean-forward="true" selection-start-line="79" selection-start-column="21" selection-end-line="79" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="29" column="16" lean-forward="true" selection-start-line="29" selection-start-column="16" selection-end-line="29" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightPage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="363">
+          <caret line="26" column="44" lean-forward="true" selection-start-line="26" selection-start-column="44" selection-end-line="26" selection-end-column="44" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/SignUp/SignUpForm.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1156">
+          <caret line="33" column="23" selection-start-line="33" selection-start-column="23" selection-end-line="33" selection-end-column="23" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketForm_old.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2622">
+          <caret line="79" column="4" selection-start-line="79" selection-start-column="4" selection-end-line="79" selection-end-column="4" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/FlightFormNew.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1300">
+          <caret line="75" column="48" lean-forward="true" selection-start-line="75" selection-start-column="48" selection-end-line="75" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Routes/AddRoute.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="408">
+          <caret line="30" column="31" lean-forward="true" selection-start-line="30" selection-start-column="31" selection-end-line="30" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketPage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="16" lean-forward="true" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Flights/AddFlight.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1292">
+          <caret line="8" column="40" lean-forward="true" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/TicketForm.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-162">
+          <caret line="85" column="9" lean-forward="true" selection-start-line="85" selection-start-column="9" selection-end-line="85" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/frontend/react-ui/src/components/Tickets/AddTicket.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="83" column="28" lean-forward="true" selection-start-line="83" selection-start-column="28" selection-end-line="83" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

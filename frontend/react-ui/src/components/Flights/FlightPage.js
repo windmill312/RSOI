@@ -26,7 +26,8 @@ FlightPage.propTypes = {
     countFlights: PropTypes.func.isRequired,
     deleteFlight: PropTypes.func.isRequired,
     getFlights: PropTypes.func.isRequired,
-    createFlight: PropTypes.func.isRequired
+    createFlight: PropTypes.func.isRequired,
+    isRouteExists: PropTypes.func.isRequired
 };
 
 export default connect(null, { pingFlights, countFlights, deleteFlight, getFlights, createFlight, isRouteExists})(FlightPage);
