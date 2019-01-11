@@ -15,29 +15,31 @@ class AddRoute extends React.Component {
             dtFlight: '',
             tmFlight: '',
             maxTickets: '',
-            disableButton: true,
             errors: {},
-            invalid: false
+            invalid: true
         };
 
         this.handleFlightRouteChange = this.handleFlightRouteChange.bind(this);
+        this.handleFlightDateChange = this.handleFlightDateChange.bind(this);
+        this.handleFlightMaxTicketsChange = this.handleFlightMaxTicketsChange.bind(this);
+        this.handleFlightTimeChange = this.handleFlightTimeChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.checkRouteExists = this.checkRouteExists.bind(this);
     }
 
-    handleFlightRouteChange = event => {
-        this.setState({ uidRoute: event.target.value });
-    };
+    handleFlightRouteChange(event) {
+        this.setState({ [event.target.name]: event.target.value });
+    }
 
-    handleFlightDateChange = event => {
+    handleFlightDateChange(event) {
         this.setState({ dtFlight: event.target.value });
     };
 
-    handleFlightTimeChange = event => {
+    handleFlightTimeChange(event) {
         this.setState({ tmFlight: event.target.value });
     };
 
-    handleFlightMaxTicketsChange = event => {
+    handleFlightMaxTicketsChange(event) {
         this.setState({ maxTickets: event.target.value });
     };
 
@@ -97,11 +99,10 @@ class AddRoute extends React.Component {
                 <FormGroup
                     controlId="formBasicText"
                 >
-                    <ControlLabel>Уникальный номер маршрута</ControlLabel>
                     <TextFieldGroup
                         error={errors.uidRoute}
                         label="Уникальный номер маршрута"
-                        onChange={this.onChange}
+                        onChange={this.handleFlightRouteChange}
                         checkUserExists={this.checkRouteExists}
                         value={this.state.uidRoute}
                         field="uidRoute"
@@ -112,7 +113,7 @@ class AddRoute extends React.Component {
                         type="date"
                         value={this.state.dtFlight}
                         placeholder="Введите текст"
-                        onChange={this.handleFlightDateChange()}
+                        onChange={this.handleFlightDateChange}
                     />
 
                     <ControlLabel>Время рейса</ControlLabel>
@@ -120,7 +121,7 @@ class AddRoute extends React.Component {
                         type="time"
                         value={this.state.tmFlight}
                         placeholder="Введите текст"
-                        onChange={this.handleFlightTimeChange()}
+                        onChange={this.handleFlightTimeChange}
                     />
 
                     <ControlLabel>Максимальное количество билетов</ControlLabel>
@@ -128,10 +129,10 @@ class AddRoute extends React.Component {
                         type="number"
                         value={this.state.maxTickets}
                         placeholder="Введите текст"
-                        onChange={this.handleFlightMaxTicketsChange()}
+                        onChange={this.handleFlightMaxTicketsChange}
                     />
 
-                    <Button className="button" bsStyle="danger" type="submit" disabled={this.state.disableButton} >Добавить</Button>
+                    <Button className="button" bsStyle="danger" type="submit" disabled={this.state.invalid} >Добавить</Button>
                 </FormGroup>
             </form>
         )

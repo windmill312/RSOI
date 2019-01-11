@@ -71,8 +71,17 @@ export function deleteFlight(flight) {
     }
 }
 
+//todo возможно надо перенести в RouteActions
 export function isRouteExists(identifier) {
     return dispatch => {
-        return axios.get(`http://localhost:8090/route/${identifier}`);
+        return axios.get(`http://localhost:8090/route/${identifier}`,
+            {
+                headers:
+                    {
+                        'Content-Type': 'application/json',
+                        'User': localStorage.getItem('userUuid'),
+                        'Service': 'ede4bfb8-2acb-441e-9b00-4b786309fcd2'
+                    }
+            });
     }
 }

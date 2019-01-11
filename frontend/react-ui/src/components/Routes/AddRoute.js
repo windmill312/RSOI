@@ -20,7 +20,9 @@ class AddRoute extends React.Component {
     handleChange(e) {
         this.setState({ value: e.target.value });
         if (e.target.value.length > 0)
-            this.setState({disableButton: false});
+            this.setState({
+                disableButton: false
+            });
         else
             this.setState({disableButton: true});
     }
@@ -28,7 +30,7 @@ class AddRoute extends React.Component {
     handleSubmit = event => {
         event.preventDefault();
         const requestData = {
-            routeName: this.state.routeName
+            routeName: this.state.value
         };
         this.props.createRoute(requestData)
             .then(result => {

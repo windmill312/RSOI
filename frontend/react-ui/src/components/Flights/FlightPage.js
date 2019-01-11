@@ -1,6 +1,6 @@
 import React from 'react';
 import FlightFormNew from './FlightFormNew';
-import {pingFlights, countFlights, deleteFlight, getFlights, createFlight} from '../../actions/FlightsActions';
+import {pingFlights, countFlights, deleteFlight, getFlights, createFlight, isRouteExists} from '../../actions/FlightsActions';
 import PropTypes from "prop-types";
 import connect from "react-redux/es/connect/connect";
 
@@ -29,4 +29,4 @@ FlightPage.propTypes = {
     createFlight: PropTypes.func.isRequired
 };
 
-export default connect(null, { pingFlights, countFlights, deleteFlight, getFlights, createFlight})(FlightPage);
+export default connect(null, { pingFlights, countFlights, deleteFlight, getFlights, createFlight, isRouteExists})(FlightPage);
