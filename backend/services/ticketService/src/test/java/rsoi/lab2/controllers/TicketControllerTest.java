@@ -54,7 +54,7 @@ public class TicketControllerTest {
         ticket.setIdTicket(16);
         UUID uidFlight = UUID.randomUUID();
         ticket.setUidFlight(uidFlight);
-        ticket.setIdPassenger(0);
+        ticket.setUidPassenger(0);
         ticket.setClassType("ECONOMIC");
 
         List<TicketInfo> allTickets = Arrays.asList(ticket);
@@ -74,7 +74,7 @@ public class TicketControllerTest {
         ticket.setIdTicket(16);
         UUID uidFlight = UUID.randomUUID();
         ticket.setUidFlight(uidFlight);
-        ticket.setIdPassenger(0);
+        ticket.setUidPassenger(0);
         ticket.setClassType("ECONOMIC");
         UUID uid = UUID.randomUUID();
         ticket.setUid(uid);
@@ -97,13 +97,13 @@ public class TicketControllerTest {
         ticket1.setIdTicket(16);
         UUID uidFlight = UUID.randomUUID();
         ticket1.setUidFlight(uidFlight);
-        ticket1.setIdPassenger(0);
+        ticket1.setUidPassenger(0);
         ticket1.setClassType("ECONOMIC");
 
         TicketInfo ticket2 = new TicketInfo();
         ticket2.setIdTicket(16);
         ticket2.setUidFlight(uidFlight);
-        ticket2.setIdPassenger(0);
+        ticket2.setUidPassenger(0);
         ticket2.setClassType("LUXURY");
 
         List<TicketInfo> allTickets = Arrays.asList(ticket1, ticket2);
@@ -143,12 +143,12 @@ public class TicketControllerTest {
         ticketInfo.setClassType("ECONOMIC");
         UUID uid = UUID.randomUUID();
         ticketInfo.setUidFlight(uid);
-        ticketInfo.setIdPassenger(1);
+        ticketInfo.setUidPassenger(1);
 
         Ticket ticket = new Ticket();
         ticket.setClassType(ticketInfo.getClassType());
         ticket.setUidFlight(ticketInfo.getUidFlight());
-        ticket.setIdPassenger(ticketInfo.getIdPassenger());
+        ticket.setUidPassenger(ticketInfo.getUidPassenger());
 
         given(service.saveOrUpdate(ticket)).willReturn(ticket);
 
@@ -173,12 +173,12 @@ public class TicketControllerTest {
         ticketInfo.setUidFlight(uidFlight);
         UUID uid = UUID.randomUUID();
         ticketInfo.setUid(uid);
-        ticketInfo.setIdPassenger(1);
+        ticketInfo.setUidPassenger(1);
 
         Ticket ticket = new Ticket();
         ticket.setClassType(ticketInfo.getClassType());
         ticket.setUidFlight(ticketInfo.getUidFlight());
-        ticket.setIdPassenger(ticketInfo.getIdPassenger());
+        ticket.setUidPassenger(ticketInfo.getUidPassenger());
         ticket.setUid(uid);
 
         given(service.getTicketByUid(uid)).willReturn(ticket);

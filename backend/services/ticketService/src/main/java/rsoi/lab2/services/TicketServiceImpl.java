@@ -23,6 +23,11 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public List<TicketInfo> listAllByUidPassenger(UUID uidPassenger) {
+        return ticketRepository.findAllByUidPassenger(uidPassenger).stream().map(this::buildTicketInfo).collect(Collectors.toList());
+    }
+
+    @Override
     public List<TicketInfo> listAll() {
         return ticketRepository.findAll().stream().map(this::buildTicketInfo).collect(Collectors.toList());
     }
@@ -31,7 +36,7 @@ public class TicketServiceImpl implements TicketService {
         TicketInfo info = new TicketInfo();
         info.setIdTicket(ticket.getIdTicket());
         info.setClassType(ticket.getClassType());
-        info.setIdPassenger(ticket.getIdPassenger());
+        info.setUidPassenger(ticket.getUidPassenger());
         info.setUidFlight(ticket.getUidFlight());
         info.setUid(ticket.getUid());
         return info;

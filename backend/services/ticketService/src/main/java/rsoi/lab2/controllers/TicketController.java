@@ -47,6 +47,16 @@ public class TicketController {
             return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
     }
 
+    @GetMapping("/userTickets")
+    public ResponseEntity listUserTickets(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size, String userUuid) {
+        logger.info("Get \"user tickets\" request with params (page=" + page + ", size=" + size + "user=" + userUuid + ").");
+        List<TicketInfo> list = ticketService.listAllByUidPassenger(UUID.fromString(userUuid));
+        if ((size * page) > list.size())
+            return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
+        else
+            return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
+    }
+
     @GetMapping("/flightTickets")
     public ResponseEntity getFlightTickets(@RequestParam String uidFlight, @RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get \"flightTickets\" request with param (uidFlight=" + uidFlight + ", page=" + page + ", size=" + size + ").");
@@ -67,13 +77,13 @@ public class TicketController {
     @PutMapping("/ticket")
     public ResponseEntity add(@RequestBody TicketInfo ticketInfo) {
         try {
-            logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", idFlight=" + ticketInfo.getUidFlight() +
-                    ", idPassenger=" + ticketInfo.getIdPassenger() + ").");
+            logger.info("Get PUT request (add) with params (classType=" + ticketInfo.getClassType() + ", uidFlight=" + ticketInfo.getUidFlight() +
+                    ", uidPassenger=" + ticketInfo.getUidPassenger() + ").");
             Ticket ticket = new Ticket();
             if (ticketInfo.getIdTicket() != 0)
                 ticket.setIdTicket(ticketInfo.getIdTicket());
             ticket.setUidFlight(ticketInfo.getUidFlight());
-            ticket.setIdPassenger(ticketInfo.getIdPassenger());
+            ticket.setUidPassenger(ticketInfo.getUidPassenger());
             ticket.setClassType(ticketInfo.getClassType());
             ticket.setUid(UUID.randomUUID());
             ticketService.saveOrUpdate(ticket);

@@ -12,8 +12,8 @@ public class Ticket {
     private int idTicket;
     @Column(name = "uidFlight")
     private UUID uidFlight;
-    @Column(name = "idPassenger")
-    private int idPassenger;
+    @Column(name = "uidPassenger")
+    private UUID uidPassenger;
     @Column(name = "class")
     private String classType;
     @Column
@@ -31,12 +31,12 @@ public class Ticket {
         this.classType = classType;
     }
 
-    public int getIdPassenger() {
-        return idPassenger;
+    public UUID getUidPassenger() {
+        return uidPassenger;
     }
 
-    public void setIdPassenger(int idPassenger) {
-        this.idPassenger = idPassenger;
+    public void setUidPassenger(UUID uidPassenger) {
+        this.uidPassenger = uidPassenger;
     }
 
     public int getIdTicket() {

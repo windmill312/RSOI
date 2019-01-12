@@ -20,4 +20,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     void deleteTicketsByUid(UUID uid);
 
     Ticket findByUid(UUID uid);
+
+    List<Ticket> findAllByUidPassenger (UUID uidPassenger);
 }

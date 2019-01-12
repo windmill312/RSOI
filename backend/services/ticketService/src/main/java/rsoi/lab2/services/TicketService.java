@@ -11,6 +11,9 @@ import java.util.UUID;
 public interface TicketService {
 
     @NonNull
+    List<TicketInfo> listAllByUidPassenger (UUID uidPassenger);
+
+    @NonNull
     List<TicketInfo> listAll();
 
     @Nullable
