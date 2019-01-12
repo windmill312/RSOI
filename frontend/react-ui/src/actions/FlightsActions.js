@@ -1,8 +1,9 @@
 import axios from 'axios';
+import {API_BASE_URL} from '../config'
 
 export function pingFlights() {
     return dispatch => {
-        return axios.get(`http://localhost:8090/pingFlights`,
+        return axios.get(API_BASE_URL + `/pingFlights`,
             {
                 headers:
                     {
@@ -16,7 +17,7 @@ export function pingFlights() {
 
 export function countFlights() {
     return dispatch => {
-        return axios.get(`http://localhost:8090/countFlights`,
+        return axios.get(API_BASE_URL + `/countFlights`,
             {
                 headers:
                     {
@@ -30,7 +31,7 @@ export function countFlights() {
 
 export function getFlights(size, page) {
     return dispatch => {
-        return axios.get('http://localhost:8090/flights?size=' + size + '&page=' + page,
+        return axios.get(API_BASE_URL + '/flights?size=' + size + '&page=' + page,
             {
                 headers:
                     {
@@ -44,7 +45,7 @@ export function getFlights(size, page) {
 
 export function createFlight(data) {
     return dispatch => {
-        return axios.put(`http://localhost:8090/flight`, data,
+        return axios.put(API_BASE_URL + `/flight`, data,
             {
                 headers:
                     {
@@ -58,7 +59,7 @@ export function createFlight(data) {
 
 export function deleteFlight(flight) {
     return dispatch => {
-        return axios.delete(`http://localhost:8090/flight`,
+        return axios.delete(API_BASE_URL + `/flight`,
             {
                 data: flight,
                 headers:
@@ -74,7 +75,7 @@ export function deleteFlight(flight) {
 //todo возможно надо перенести в RouteActions
 export function isRouteExists(identifier) {
     return dispatch => {
-        return axios.get(`http://localhost:8090/route?uidRoute=${identifier}`,
+        return axios.get(API_BASE_URL + `/route?uidRoute=${identifier}`,
             {
                 headers:
                     {

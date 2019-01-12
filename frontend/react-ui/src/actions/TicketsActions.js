@@ -1,8 +1,9 @@
 import axios from 'axios';
+import {API_BASE_URL} from '../config'
 
 export function pingTickets() {
     return dispatch => {
-        return axios.get(`http://localhost:8090/pingTickets`,
+        return axios.get(API_BASE_URL + `/pingTickets`,
             {
                 headers:
                     {
@@ -16,7 +17,7 @@ export function pingTickets() {
 
 export function countTickets() {
     return dispatch => {
-        return axios.get(`http://localhost:8090/countTickets`,
+        return axios.get(API_BASE_URL + `/countTickets`,
             {
                 headers:
                     {
@@ -30,7 +31,7 @@ export function countTickets() {
 
 export function getTickets(size, page) {
     return dispatch => {
-        return axios.get('http://localhost:8090/tickets?size=' + size + '&page=' + page,
+        return axios.get(API_BASE_URL + `/tickets?size=` + size + `&page=` + page,
             {
                 headers:
                     {
@@ -44,7 +45,7 @@ export function getTickets(size, page) {
 
 export function createTicket(data) {
     return dispatch => {
-        return axios.put(`http://localhost:8090/ticket`, data,
+        return axios.put(API_BASE_URL + `/ticket`, data,
             {
                 headers:
                     {
@@ -58,7 +59,7 @@ export function createTicket(data) {
 
 export function deleteTicket(flight) {
     return dispatch => {
-        return axios.delete(`http://localhost:8090/ticket`,
+        return axios.delete(API_BASE_URL + `/ticket`,
             {
                 data: flight,
                 headers:
@@ -74,7 +75,7 @@ export function deleteTicket(flight) {
 //todo возможно надо перенести в FlightActions
 export function isFlightExists(identifier) {
     return dispatch => {
-        return axios.get(`http://localhost:8090/flight?uidFlight=${identifier}`,
+        return axios.get(API_BASE_URL + `/flight?uidFlight=${identifier}`,
             {
                 headers:
                     {

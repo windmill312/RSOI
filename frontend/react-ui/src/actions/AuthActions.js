@@ -2,6 +2,7 @@ import axios from 'axios';
 import setAuthorizationToken from '../utils/SetAuthorizationToken';
 import jwtDecode from 'jwt-decode';
 import { SET_CURRENT_USER } from './types';
+import {API_BASE_URL} from '../config'
 
 export function setCurrentUser(user) {
     return {
@@ -13,9 +14,6 @@ export function setCurrentUser(user) {
 export function logout() {
     return dispatch => {
         localStorage.removeItem('jwtAccessToken');
-        localStorage.removeItem('jwtRefreshToken');
-        localStorage.removeItem('jwtExpirationInMs');
-        localStorage.removeItem('userUuid');
         setAuthorizationToken(false);
         dispatch(setCurrentUser({}));
     }
@@ -23,7 +21,7 @@ export function logout() {
 
 export function login(data) {
     return dispatch => {
-        return axios.post('http://localhost:8090/api/auth/signin', data).then(res => {
+        return axios.post(API_BASE_URL + `/api/auth/signin`, data).then(res => {
             const accessToken = res.data.accessToken;
             const refreshToken = res.data.refreshToken;
             const jwtExpirationInMs = res.data.jwtExpirationInMs;
