@@ -8,7 +8,7 @@ class Greetings extends React.Component {
             <div className="jumbotron">
                 <h2>Добро пожаловать на ГудБайАмерика.ру!</h2>
                 <hr/>
-                <Button className="continue-button" bsStyle="primary" href="/login">Нажмите для продолжения</Button>
+                <Button className="continue-button" bsStyle="primary" href="/routes">Нажмите для продолжения</Button>
             </div>
         );
     }

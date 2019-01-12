@@ -26,74 +26,49 @@ public class RouteController {
     private Logger logger = Logger.getLogger(RouteController.class.getName());
 
     @GetMapping(value = "/routes")
-    public ResponseEntity<?> getRoutes(@RequestHeader(name = "Authorization") String accessToken,
-                                       @RequestHeader(name = "User") String userUuid,
-                                       @RequestHeader(name = "Service") String serviceUuid,
+    public ResponseEntity<?> getRoutes(
                                        @RequestParam(value = "page", defaultValue = "1") int page,
                                        @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getRoutes)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8082/routes?page=" + page + "&size=" + size;
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/pingRoutes")
-    public ResponseEntity<?> pingRoutes(@RequestHeader(name = "Authorization") String accessToken,
-                                        @RequestHeader(name = "User") String userUuid,
-                                        @RequestHeader(name = "Service") String serviceUuid) {
+    public ResponseEntity<?> pingRoutes() {
         logger.info("Get request (pingRoutes)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8082/ping";
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/countRoutes")
-    public ResponseEntity<?> countRoutes(@RequestHeader(name = "Authorization") String accessToken,
-                                         @RequestHeader(name = "User") String userUuid,
-                                         @RequestHeader(name = "Service") String serviceUuid) {
+    public ResponseEntity<?> countRoutes() {
         logger.info("Get request (countRoutes)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8082/countAll";
             return restTemplate.getForEntity(resourceUrl, String.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/route",
             params = {"uidRoute"})
-    public ResponseEntity<?> getRoute(@RequestHeader(name = "Authorization") String accessToken,
-                                      @RequestHeader(name = "User") String userUuid,
-                                      @RequestHeader(name = "Service") String serviceUuid,
+    public ResponseEntity<?> getRoute(
                                       @RequestParam String uidRoute) {
         logger.info("Get request (getRoute)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8082/route?uidRoute=" + uidRoute;
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/route",
             params = "nmRoute")
-    public ResponseEntity<?> getRouteByNm(@RequestHeader(name = "Authorization") String accessToken,
-                                          @RequestHeader(name = "User") String userUuid,
-                                          @RequestHeader(name = "Service") String serviceUuid,
+    public ResponseEntity<?> getRouteByNm(
                                           @RequestParam String nmRoute) {
         logger.info("Get request (getRouteByNm)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8082/routes?nmRoute=" + nmRoute;
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @PutMapping(value = "/route")

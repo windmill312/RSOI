@@ -18,76 +18,51 @@ public class FlightController {
     private Logger logger = Logger.getLogger(FlightController.class.getName());
 
     @GetMapping(value = "/pingFlights")
-    public ResponseEntity<?> pingFlights(@RequestHeader(name = "Authorization") String accessToken,
-                                         @RequestHeader(name = "User") String userUuid,
-                                         @RequestHeader(name = "Service") String serviceUuid) {
+    public ResponseEntity<?> pingFlights() {
         logger.info("Get request (pingFlights)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8083/ping";
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/flights")
-    public ResponseEntity<?> getFlights(@RequestHeader(name = "Authorization") String accessToken,
-                                        @RequestHeader(name = "User") String userUuid,
-                                        @RequestHeader(name = "Service") String serviceUuid,
+    public ResponseEntity<?> getFlights(
                                         @RequestParam(value = "page", defaultValue = "1") int page,
                                         @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getFlights)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8083/flights?page=" + page + "&size=" + size;
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/flights",
             params = "uidRoute")
-    public ResponseEntity<?> getFlightsByRoute(@RequestHeader(name = "Authorization") String accessToken,
-                                               @RequestHeader(name = "User") String userUuid,
-                                               @RequestHeader(name = "Service") String serviceUuid,
+    public ResponseEntity<?> getFlightsByRoute(
                                                @RequestParam String uidRoute,
                                                @RequestParam(value = "page", defaultValue = "1") int page,
                                                @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getFlights)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&page=" + page + "&size=" + size;
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/countFlights")
-    public ResponseEntity<?> countFlights(@RequestHeader(name = "Authorization") String accessToken,
-                                          @RequestHeader(name = "User") String userUuid,
-                                          @RequestHeader(name = "Service") String serviceUuid) {
+    public ResponseEntity<?> countFlights() {
         logger.info("Get request (countFlights)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8083/countAll";
             return restTemplate.getForEntity(resourceUrl, String.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @GetMapping(value = "/flight",
             params = {"uidFlight"})
-    public ResponseEntity<?> getFlight(@RequestHeader(name = "Authorization") String accessToken,
-                                       @RequestHeader(name = "User") String userUuid,
-                                       @RequestHeader(name = "Service") String serviceUuid,
+    public ResponseEntity<?> getFlight(
                                        @RequestParam String uidFlight) {
         logger.info("Get request (getFlight)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8083/flight?uidFlight=" + uidFlight;
             return restTemplate.getForEntity(resourceUrl, Object.class);
-        } else
-            throw new InvalidTokenException("Token is invalid");
     }
 
     @PutMapping(value = "/flight")
@@ -133,10 +108,10 @@ public class FlightController {
             throw new InvalidTokenException("Token is invalid");
     }
 
-    ResponseEntity editFlight(@RequestBody FlightInfo flightInfo) {
+    void editFlight(@RequestBody FlightInfo flightInfo) {
 
         logger.info("Get PATCH request (editFlight)");
-        return patchRequest(flightInfo);
+        patchRequest(flightInfo);
     }
 
     private ResponseEntity patchRequest(FlightInfo flightInfo) {

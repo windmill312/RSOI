@@ -20,17 +20,17 @@ export default (
         <Route path="/signup" component={SignUp}/>
         <Route path="/login" component={Login}/>
         <Route path="/routes">
-            <IndexRoute component={requireAuth(Routes)}/>
+            <IndexRoute component={Routes}/>
             <Route path="/routes/create" component={requireAuth(AddRoute)}/>
-            <Route path="/routes/aggregation" component={requireAuth(AggregationRoute)}/>
+            <Route path="/routes/aggregation" component={AggregationRoute}/>
         </Route>
         <Route path="/flights" >
-            <IndexRoute component={requireAuth(Flights)}/>
-            <Route path="/flights/create" component={AddFlight}/>
+            <IndexRoute component={Flights}/>
+            <Route path="/flights/create" component={requireAuth(AddFlight)}/>
         </Route>
         <Route path="/tickets" >
-            <IndexRoute component={Tickets}/>
-            <Route path="/tickets/create" component={AddTicket}/>
+            <IndexRoute component={requireAuth(Tickets)}/>
+            <Route path="/tickets/create" component={requireAuth(AddTicket)}/>
         </Route>
     </Route>
 )

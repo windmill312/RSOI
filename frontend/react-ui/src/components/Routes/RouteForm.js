@@ -109,7 +109,14 @@ class RouteForm extends React.Component {
                             <td> {route.uid}</td>
                             <td> {route.routeName} </td>
                             <td><Button bsStyle="danger"
-                                        onClick={this.handleDeleteRoute(route)}>Удалить</Button>
+                                onClick={this.handleDeleteRoute(route)}
+                                disabled={!localStorage.getItem("userUuid")}
+                                tag={() => {
+                                    if (!localStorage.getItem("userUuid"))
+                                        return ("Требуется авторизация");
+                                }
+                                }
+                            >Удалить</Button>
                             </td>
                         </tr>
                     )}
@@ -146,7 +153,7 @@ class RouteForm extends React.Component {
                             title="Действия"
                             id={`dropdown`} >
 
-                            <MenuItem eventKey="1" href="/routes/create">Добавить</MenuItem>
+                            <MenuItem eventKey="1" href="/routes/create" disabled={!localStorage.getItem("userUuid")}>Добавить</MenuItem>
                             <MenuItem eventKey="2" href="/routes/aggregation">Отчет по маршруту</MenuItem>
 
                         </DropdownButton>
