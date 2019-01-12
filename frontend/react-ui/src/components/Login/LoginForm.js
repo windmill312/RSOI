@@ -43,7 +43,10 @@ class LoginForm extends Component {
             this.setState({ errors: {}, isLoading: true });
             this.props.login(this.state)
                 .then(
-                    (res) => this.context.router.push('/routes'),
+                    (res) => {
+                        localStorage.setItem('identifier', this.state.identifier);
+                        this.context.router.push('/routes');
+                    }
                 )
                 .catch(
                     (err) => {

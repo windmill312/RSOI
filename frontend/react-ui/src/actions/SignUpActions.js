@@ -3,7 +3,7 @@ import {API_BASE_URL} from '../config'
 
 export function userSignUpRequest(userData) {
     return dispatch => {
-        return axios.post(API_BASE_URL + `/api/auth/signup`, userData,
+        return axios.post(`${API_BASE_URL}/api/auth/signup`, userData,
             {
                 headers: {'Content-Type': 'application/json'}
             })
@@ -22,6 +22,6 @@ export function userSignUpRequest(userData) {
 
 export function isUserExists(identifier) {
     return dispatch => {
-        return axios.get(API_BASE_URL + `/api/${identifier}`);
+        return axios.get(`${API_BASE_URL}/api/${identifier}`);
     }
 }
