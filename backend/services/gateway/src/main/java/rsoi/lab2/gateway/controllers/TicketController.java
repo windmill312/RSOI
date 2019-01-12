@@ -51,6 +51,21 @@ public class TicketController {
             throw new InvalidTokenException("Token is invalid");
     }
 
+    @GetMapping(value = "/userTickets")
+    public ResponseEntity<?> getUserTickets(@RequestHeader(name = "Authorization") String accessToken,
+                                        @RequestHeader(name = "User") String userUuid,
+                                        @RequestHeader(name = "Service") String serviceUuid,
+                                        @RequestParam(value = "page", defaultValue = "1") int page,
+                                        @RequestParam(value = "size", defaultValue = "5") int size) {
+        logger.info("Get request (getUserTickets)");
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+            RestTemplate restTemplate = new RestTemplate();
+            String resourceUrl = "http://localhost:8081/userTickets?page=" + page + "&size=" + size + "&userUuid=" + userUuid;
+            return restTemplate.getForEntity(resourceUrl, Object.class);
+        } else
+            throw new InvalidTokenException("Token is invalid");
+    }
+
     @GetMapping(value = "/tickets",
             params = "uidFlight")
     public ResponseEntity<?> getTickets(@RequestHeader(name = "Authorization") String accessToken,

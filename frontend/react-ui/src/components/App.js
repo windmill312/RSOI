@@ -5,15 +5,14 @@ import NavigationBar from './common/NavigationBar';
 import FlashMessagesList from '../components/flash/FlashMessagesList';
 import {refreshToken} from "../actions/AuthActions";
 import {connect} from 'react-redux';
+import PropTypes from "prop-types";
 
 class App extends React.Component {
 
     componentDidUpdate(prevProps) {
-        if (!prevProps.props.auth && this.props.auth) {
-            // When we are logged in, refresh the auth token periodically
+        if (!prevProps.auth && this.props.auth) {
             this.startPeriodicRefresh();
-        } else if (prevProps.props.auth && !this.props.auth) {
-            // Stop refreshing when we log out
+        } else if (prevProps.auth && !this.props.auth) {
             this.stopPeriodicRefresh();
         }
     }
@@ -60,6 +59,10 @@ class App extends React.Component {
         )
     }
 }
+
+App.propTypes = {
+    auth: PropTypes.object.isRequired
+};
 
 function mapStateToProps(state) {
     return {

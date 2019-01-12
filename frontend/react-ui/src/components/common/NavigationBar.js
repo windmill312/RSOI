@@ -32,7 +32,7 @@ class NavigationBar extends React.Component {
                     <div className="navbar-header">
                         <a className="navbar-brand" href="/routes">Маршруты</a>
                         <a className="navbar-brand" href="/flights">Рейсы</a>
-                        <a className="navbar-brand" href="/tickets">Билеты</a>
+                        <a className="navbar-brand" href="/tickets">Мои билеты</a>
                     </div>
 
                     <div className="collapse navbar-collapse">
@@ -45,8 +45,7 @@ class NavigationBar extends React.Component {
 }
 
 NavigationBar.propTypes = {
-    auth: PropTypes.object.isRequired,
-    logout: PropTypes.func.isRequired
+    auth: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {

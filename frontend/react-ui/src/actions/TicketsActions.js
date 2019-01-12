@@ -31,7 +31,7 @@ export function countTickets() {
 
 export function getTickets(size, page) {
     return dispatch => {
-        return axios.get(`${API_BASE_URL}/tickets?size=` + size + `&page=` + page,
+        return axios.get(`${API_BASE_URL}/userTickets?size=` + size + `&page=` + page + `&userUuid` + localStorage.getItem('userUuid'),
             {
                 headers:
                     {

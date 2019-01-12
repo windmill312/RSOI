@@ -6,10 +6,9 @@ import thunk from 'redux-thunk';
 import { createStore, applyMiddleware, compose } from 'redux';
 import rootReducer from './rootReducer';
 import setAuthorizationToken from './utils/SetAuthorizationToken';
-import {refreshToken} from "./actions/AuthActions";
 
 import { Router, browserHistory } from 'react-router';
-import { setCurrentUser } from './actions/AuthActions';
+import { setCurrentUser, refreshToken } from './actions/AuthActions';
 import routes from './routes';
 import jwtDecode from 'jwt-decode';
 
