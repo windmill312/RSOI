@@ -25,7 +25,7 @@ export function login(data) {
             const accessToken = res.data.accessToken;
             const refreshToken = res.data.refreshToken;
             const jwtExpirationInMs = res.data.jwtExpirationInMs;
-            const isAdmin = res.data.isAdmin;
+            const isAdmin = res.data.admin;
             localStorage.setItem('jwtAccessToken', accessToken);
             localStorage.setItem('jwtRefreshToken', refreshToken);
             localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);
@@ -58,7 +58,7 @@ export function refreshToken() {
                 const accessToken = res.data.accessToken;
                 const refreshToken = res.data.refreshToken;
                 const jwtExpirationInMs = res.data.jwtExpirationInMs;
-                const isAdmin = res.data.isAdmin;
+                const isAdmin = res.data.admin;
                 localStorage.setItem('jwtAccessToken', accessToken);
                 localStorage.setItem('jwtRefreshToken', refreshToken);
                 localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);

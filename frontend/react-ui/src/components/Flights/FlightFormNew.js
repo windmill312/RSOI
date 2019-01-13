@@ -126,7 +126,7 @@ class FlightFormNew extends React.Component {
                             <td><Button
                                 bsStyle="danger"
                                 onClick={this.handleDeleteFlight(flight)}
-                                hidden={localStorage.getItem('isAdmin') === false}
+                                disabled={localStorage.getItem('isAdmin') === false}
                             >Удалить</Button></td>
                         </tr>
                     )}
@@ -138,7 +138,7 @@ class FlightFormNew extends React.Component {
     }
 
     render() {
-        if (this.state.serviceAvailable) {
+        //if (this.state.serviceAvailable) {
             return (
                 <div>
                     <div>
@@ -146,7 +146,7 @@ class FlightFormNew extends React.Component {
                                         bsStyle="info"
                                         title="Действия"
                                         id={`dropdown`}
-                                        hidden={localStorage.getItem('isAdmin') === false}
+                                        disabled={localStorage.getItem('isAdmin') === false}
                         >
 
                             <MenuItem eventKey="1" href="/flights/create" >Добавить</MenuItem>
@@ -161,7 +161,7 @@ class FlightFormNew extends React.Component {
                     </div>
                 </div>
             )
-        } else {
+        /*} else {
             return (
                 <div>
                     <Alert bsStyle="danger">
@@ -170,7 +170,7 @@ class FlightFormNew extends React.Component {
                     <Button outline onClick={()=> {this.componentDidMount(); this.render();}}>Обновить</Button>
                 </div>
             )
-        }
+        }*/
     }
 }
 

@@ -39,4 +39,13 @@ public class Role {
         this.name = name;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Role) {
+            if (((Role) obj).getId().equals(this.getId())) {
+                return ((Role) obj).getName().equals(this.getName());
+            }
+        }
+        return false;
+    }
 }

@@ -110,7 +110,7 @@ class RouteForm extends React.Component {
                             <td> {route.routeName} </td>
                             <td><Button bsStyle="danger"
                                 onClick={this.handleDeleteRoute(route)}
-                                hidden={localStorage.getItem('isAdmin') === false}
+                                        disabled={localStorage.getItem('isAdmin') === false}
                             >Удалить</Button>
                             </td>
                         </tr>
@@ -139,7 +139,7 @@ class RouteForm extends React.Component {
     }
 
     render() {
-        if (this.state.serviceAvailable) {
+        //if (this.state.serviceAvailable) {
             return (
                 <div>
                     <div>
@@ -148,7 +148,7 @@ class RouteForm extends React.Component {
                             title="Действия"
                             id={`dropdown`} >
 
-                            <MenuItem eventKey="1" href="/routes/create" hidden={localStorage.getItem('isAdmin') === false} >Добавить</MenuItem>
+                            <MenuItem eventKey="1" href="/routes/create" disabled={localStorage.getItem('isAdmin') === false} >Добавить</MenuItem>
                             <MenuItem eventKey="2" href="/routes/aggregation">Отчет по маршруту</MenuItem>
 
                         </DropdownButton>
@@ -161,7 +161,7 @@ class RouteForm extends React.Component {
                     </div>
                 </div>
             )
-        } else {
+        /*} else {
             return (
                 <div>
                     <Alert bsStyle="danger">
@@ -170,7 +170,7 @@ class RouteForm extends React.Component {
                     <Button outline onClick={()=> {this.componentDidMount(); this.render();}}>Обновить</Button>
                 </div>
             )
-        }
+        }*/
     }
 }
 
