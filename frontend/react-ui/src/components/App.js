@@ -24,7 +24,7 @@ class App extends React.Component {
     startPeriodicRefresh() {
         this.refreshInterval = setInterval(
             () => this.props.dispatch(refreshToken()),
-            0.5 * 60 * 1000 // Half a minute
+            30 * 60 * 1000 // Half a minute
         );
     }
 

@@ -126,12 +126,7 @@ class FlightFormNew extends React.Component {
                             <td><Button
                                 bsStyle="danger"
                                 onClick={this.handleDeleteFlight(flight)}
-                                disabled={!localStorage.getItem("userUuid")}
-                                tag={() => {
-                                    if (!localStorage.getItem("userUuid"))
-                                        return ("Требуется авторизация");
-                                    }
-                                }
+                                hidden={localStorage.getItem('isAdmin') === false}
                             >Удалить</Button></td>
                         </tr>
                     )}
@@ -150,9 +145,11 @@ class FlightFormNew extends React.Component {
                         <DropdownButton className='dropdown'
                                         bsStyle="info"
                                         title="Действия"
-                                        id={`dropdown`} >
+                                        id={`dropdown`}
+                                        hidden={localStorage.getItem('isAdmin') === false}
+                        >
 
-                            <MenuItem eventKey="1" href="/flights/create" disabled={!localStorage.getItem("userUuid")}>Добавить</MenuItem>
+                            <MenuItem eventKey="1" href="/flights/create" >Добавить</MenuItem>
 
                         </DropdownButton>
                     </div>

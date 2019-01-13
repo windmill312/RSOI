@@ -25,9 +25,11 @@ export function login(data) {
             const accessToken = res.data.accessToken;
             const refreshToken = res.data.refreshToken;
             const jwtExpirationInMs = res.data.jwtExpirationInMs;
+            const isAdmin = res.data.isAdmin;
             localStorage.setItem('jwtAccessToken', accessToken);
             localStorage.setItem('jwtRefreshToken', refreshToken);
             localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);
+            localStorage.setItem('isAdmin', isAdmin);
             setAuthorizationToken(accessToken);
             const decodedToken = jwtDecode(accessToken);
             localStorage.setItem('userUuid', decodedToken.jti);
@@ -56,9 +58,11 @@ export function refreshToken() {
                 const accessToken = res.data.accessToken;
                 const refreshToken = res.data.refreshToken;
                 const jwtExpirationInMs = res.data.jwtExpirationInMs;
+                const isAdmin = res.data.isAdmin;
                 localStorage.setItem('jwtAccessToken', accessToken);
                 localStorage.setItem('jwtRefreshToken', refreshToken);
                 localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);
+                localStorage.setItem('isAdmin', isAdmin);
                 setAuthorizationToken(accessToken);
             })
             .catch(err => {
@@ -69,6 +73,7 @@ export function refreshToken() {
                 localStorage.removeItem('jwtAccessToken');
                 localStorage.removeItem('jwtRefreshToken');
                 localStorage.removeItem('jwtExpirationInMs');
+                localStorage.removeItem('isAdmin');
             });
     }
 }
