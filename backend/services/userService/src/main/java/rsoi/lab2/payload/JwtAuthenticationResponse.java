@@ -5,6 +5,7 @@ public class JwtAuthenticationResponse {
     private String tokenType = "Bearer";
     private String refreshToken;
     private int jwtExpirationInMs;
+    private boolean isAdmin = false;
 
     public JwtAuthenticationResponse(String accessToken, String refreshToken, int jwtExpirationInMs) {
         this.accessToken = accessToken;
@@ -42,5 +43,13 @@ public class JwtAuthenticationResponse {
 
     public void setJwtExpirationInMs(int jwtExpirationInMs) {
         this.jwtExpirationInMs = jwtExpirationInMs;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 }

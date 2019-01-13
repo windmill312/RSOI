@@ -132,6 +132,8 @@ public class AuthController {
                 new UsernameNotFoundException("User not found with username or email : " + loginRequest.getIdentifier())
         );
 
+
+
         tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
         String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
@@ -153,7 +155,15 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs));
+        JwtAuthenticationResponse response = new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs);
+        Role adminRole = new Role();
+        adminRole.setId(2L);
+        adminRole.setName(RoleName.ROLE_ADMIN);
+
+        if (user.getRoles().contains(adminRole))
+            response.setAdmin(true);
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/validate")
