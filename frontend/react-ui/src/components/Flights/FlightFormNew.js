@@ -126,7 +126,7 @@ class FlightFormNew extends React.Component {
                             <td><Button
                                 bsStyle="danger"
                                 onClick={this.handleDeleteFlight(flight)}
-                                disabled={localStorage.getItem('isAdmin') === false}
+                                disabled={localStorage.getItem('isAdmin') === 'false'}
                             >Удалить</Button></td>
                         </tr>
                     )}
@@ -146,7 +146,7 @@ class FlightFormNew extends React.Component {
                                         bsStyle="info"
                                         title="Действия"
                                         id={`dropdown`}
-                                        disabled={localStorage.getItem('isAdmin') === false}
+                                        disabled={localStorage.getItem('isAdmin') === 'false'}
                         >
 
                             <MenuItem eventKey="1" href="/flights/create" >Добавить</MenuItem>

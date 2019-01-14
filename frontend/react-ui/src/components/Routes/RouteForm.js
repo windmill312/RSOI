@@ -110,7 +110,7 @@ class RouteForm extends React.Component {
                             <td> {route.routeName} </td>
                             <td><Button bsStyle="danger"
                                 onClick={this.handleDeleteRoute(route)}
-                                        disabled={localStorage.getItem('isAdmin') === false}
+                                        disabled={localStorage.getItem('isAdmin') === 'false'}
                             >Удалить</Button>
                             </td>
                         </tr>
@@ -148,7 +148,7 @@ class RouteForm extends React.Component {
                             title="Действия"
                             id={`dropdown`} >
 
-                            <MenuItem eventKey="1" href="/routes/create" disabled={localStorage.getItem('isAdmin') === false} >Добавить</MenuItem>
+                            <MenuItem eventKey="1" href="/routes/create" disabled={localStorage.getItem('isAdmin') === 'false'} >Добавить</MenuItem>
                             <MenuItem eventKey="2" href="/routes/aggregation">Отчет по маршруту</MenuItem>
 
                         </DropdownButton>

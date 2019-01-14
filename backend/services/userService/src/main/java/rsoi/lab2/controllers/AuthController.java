@@ -30,6 +30,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.UUID;
 
 @RestController
@@ -156,8 +157,9 @@ public class AuthController {
         adminRole.setId(2L);
         adminRole.setName(RoleName.ROLE_ADMIN);
 
-        if (user.getRoles().contains(adminRole))
-            response.setAdmin(true);
+        for (Role role : user.getRoles())
+            if (role.getName().equals(RoleName.ROLE_ADMIN))
+                response.setAdmin(true);
 
         return ResponseEntity.ok(response);
     }
