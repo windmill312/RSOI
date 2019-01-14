@@ -123,7 +123,7 @@ class AddRoute extends React.Component {
                 </FormGroup>
 
                 <FormGroup controlId="buttonGroup">
-                    <Button className="button" bsStyle="danger" type="submit" disabled={this.state.invalid_uid || this.state.invalid_type} >Добавить</Button>
+                    <Button className="button" bsStyle="danger" type="submit" disabled={this.state.invalid_uid || this.state.invalid_type} >Купить</Button>
                 </FormGroup>
             </form>
         )

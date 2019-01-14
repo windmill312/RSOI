@@ -20,6 +20,9 @@ public class Token implements Serializable {
     @Column
     private String value;
 
+    @Column
+    private Long dttmCreate;
+
     @Enumerated(EnumType.STRING)
     @Column
     private TokenType tokenType;
@@ -62,5 +65,13 @@ public class Token implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getDttmCreate() {
+        return dttmCreate;
+    }
+
+    public void setDttmCreate(Long dttmCreate) {
+        this.dttmCreate = dttmCreate;
     }
 }

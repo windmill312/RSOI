@@ -77,10 +77,10 @@ class TicketForm extends React.Component {
                 .then(result => {
                     if (result.status === 200) {
                         console.info('status = 200');
-                        alert('Билет успешно удален!');
+                        alert('Вы вернули билет!');
                     } else {
                         console.info('status = ' + result.status);
-                        alert('Произошла ошибка при удалении билета!');
+                        alert('Произошла ошибка при возврате билета!');
                     }
                 });
         }
@@ -146,7 +146,7 @@ class TicketForm extends React.Component {
                                         title="Действия"
                                         id={`dropdown`} >
 
-                            <MenuItem eventKey="1" href="/tickets/create">Добавить</MenuItem>
+                            <MenuItem eventKey="1" href="/tickets/create">Купить</MenuItem>
 
                         </DropdownButton>
                     </div>

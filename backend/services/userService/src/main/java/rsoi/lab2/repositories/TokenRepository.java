@@ -16,4 +16,6 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
     Optional<Token> findByTokenType (TokenType tokenType);
     boolean existsByUserAndServiceUuidAndValue (User user, UUID serviceUuid, String value);
     void deleteAllByUserAndServiceUuid (User user, UUID serviceUuid);
+
+    Optional<Token> findByUserAndServiceUuidAndValue(User user, UUID serviceUuid, String value);
 }

@@ -26,10 +26,12 @@ export function login(data) {
             const refreshToken = res.data.refreshToken;
             const jwtExpirationInMs = res.data.jwtExpirationInMs;
             const isAdmin = res.data.admin;
+            const msFrom = new Date().getTime().toString();
             localStorage.setItem('jwtAccessToken', accessToken);
             localStorage.setItem('jwtRefreshToken', refreshToken);
             localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);
             localStorage.setItem('isAdmin', isAdmin);
+            localStorage.setItem('msFrom', msFrom);
             setAuthorizationToken(accessToken);
             const decodedToken = jwtDecode(accessToken);
             localStorage.setItem('userUuid', decodedToken.jti);
@@ -41,39 +43,45 @@ export function login(data) {
 
 export function refreshToken() {
     return dispatch => {
-        const authToken = localStorage.getItem('accessToken');
-        return fetch(`${API_BASE_URL}/api/auth/refresh-token`, {
-            method: 'POST',
-            headers: {
-                // Provide our existing token as credentials to get a new one
-                Authorization: `Bearer ${authToken}`
-            },
-            data: {
-                identifier: localStorage.getItem('identifier'),
-                serviceUuid: `${SERVICE_UUID}`
-            }
-        })
-            .then(res => res.json())
-            .then(res => {
-                const accessToken = res.data.accessToken;
-                const refreshToken = res.data.refreshToken;
-                const jwtExpirationInMs = res.data.jwtExpirationInMs;
-                const isAdmin = res.data.admin;
-                localStorage.setItem('jwtAccessToken', accessToken);
-                localStorage.setItem('jwtRefreshToken', refreshToken);
-                localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);
-                localStorage.setItem('isAdmin', isAdmin);
-                setAuthorizationToken(accessToken);
+    if ( new Date().getTime() - parseInt(localStorage.getItem('msFrom'))  > parseInt(localStorage.getItem('jwtExpirationInMs'))) {
+
+        const data = {
+            identifier: localStorage.getItem('identifier'),
+            serviceUuid: `${SERVICE_UUID}`
+        };
+
+
+            const authToken = localStorage.getItem('jwtRefreshToken');
+            return axios.post(`${API_BASE_URL}/api/auth/refresh-token`, data, {
+                headers: {
+                    // Provide our existing token as credentials to get a new one
+                    Authorization: `Bearer ${authToken}`
+                }
             })
-            .catch(err => {
-                // We couldn't get a refresh token because our current credentials
-                // are invalid or expired, or something else went wrong, so clear
-                // them and sign us out
-                console.log(err);
-                localStorage.removeItem('jwtAccessToken');
-                localStorage.removeItem('jwtRefreshToken');
-                localStorage.removeItem('jwtExpirationInMs');
-                localStorage.removeItem('isAdmin');
-            });
+                .then(res => {
+                    const accessToken = res.data.accessToken;
+                    const refreshToken = res.data.refreshToken;
+                    const jwtExpirationInMs = res.data.jwtExpirationInMs;
+                    const isAdmin = res.data.admin;
+                    const msFrom = new Date().getTime().toString();
+                    localStorage.setItem('jwtAccessToken', accessToken);
+                    localStorage.setItem('jwtRefreshToken', refreshToken);
+                    localStorage.setItem('jwtExpirationInMs', jwtExpirationInMs);
+                    localStorage.setItem('isAdmin', isAdmin);
+                    localStorage.setItem('msFrom', msFrom);
+                    setAuthorizationToken(accessToken);
+                })
+                .catch(err => {
+                    // We couldn't get a refresh token because our current credentials
+                    // are invalid or expired, or something else went wrong, so clear
+                    // them and sign us out
+                    console.log(err);
+                    localStorage.removeItem('jwtAccessToken');
+                    localStorage.removeItem('jwtRefreshToken');
+                    localStorage.removeItem('jwtExpirationInMs');
+                    localStorage.removeItem('isAdmin');
+                    localStorage.removeItem('msFrom');
+                });
+        }
     }
 }

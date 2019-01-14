@@ -23,8 +23,9 @@ class App extends React.Component {
 
     startPeriodicRefresh() {
         this.refreshInterval = setInterval(
-            () => this.props.dispatch(refreshToken()),
-            30 * 60 * 1000 // Half a minute
+            () => refreshToken(),
+            1
+            //parseInt(localStorage.getItem('jwtExpirationInMs')) /3600
         );
     }
 

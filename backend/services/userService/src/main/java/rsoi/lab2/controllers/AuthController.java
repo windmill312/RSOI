@@ -30,6 +30,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -86,7 +87,7 @@ public class AuthController {
                 new UsernameNotFoundException("User not found with username or email: " + loginRequest.getIdentifier())
         );
 
-        boolean contains = tokenRepository.existsByUserAndServiceUuidAndValue(user, loginRequest.getServiceUuid(), headerAuth);
+        boolean contains = tokenRepository.existsByUserAndServiceUuidAndValue(user, loginRequest.getServiceUuid(), headerAuth.substring(7));
 
         if (contains) {
 
@@ -95,12 +96,8 @@ public class AuthController {
             String jwtAccess = tokenProvider.generateToken(user.getEmail(), user.getUuid().toString());
             String jwtRefresh = tokenProvider.generateToken(user.getEmail(), user.getUuid().toString());
 
-            Token refreshToken = new Token();
-            refreshToken.setServiceUuid(loginRequest.getServiceUuid());
-            refreshToken.setUser(user);
-            refreshToken.setTokenType(TokenType.REFRESH_TOKEN);
-            refreshToken.setValue(jwtRefresh);
-            tokenRepository.save(refreshToken);
+            updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
+            updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
 
             userRepository.save(user);
 
@@ -110,6 +107,16 @@ public class AuthController {
         {
             throw new UsernameNotFoundException("Token is invalid");
         }
+    }
+
+    private void updateToken(UUID serviceUuid, User user, TokenType tokenType, String tokenValue) {
+        Token token = new Token();
+        token.setServiceUuid(serviceUuid);
+        token.setUser(user);
+        token.setTokenType(tokenType);
+        token.setValue(tokenValue);
+        token.setDttmCreate(System.currentTimeMillis());
+        tokenRepository.save(token);
     }
 
     @Transactional
@@ -139,19 +146,8 @@ public class AuthController {
         String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
         String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
 
-        Token token1 = new Token();
-        token1.setServiceUuid(loginRequest.getServiceUuid());
-        token1.setUser(user);
-        token1.setTokenType(TokenType.ACCESS_TOKEN);
-        token1.setValue(jwtAccess);
-        tokenRepository.save(token1);
-
-        Token token2 = new Token();
-        token2.setServiceUuid(loginRequest.getServiceUuid());
-        token2.setUser(user);
-        token2.setTokenType(TokenType.REFRESH_TOKEN);
-        token2.setValue(jwtRefresh);
-        tokenRepository.save(token2);
+        updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
+        updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
 
         userRepository.save(user);
 
@@ -173,7 +169,9 @@ public class AuthController {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with UUID : " + userRequest.getUserUuid())
                 );
-        if (tokenRepository.existsByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken().substring(7)))
+        Token token = tokenRepository.findByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken().substring(7))
+                .orElseThrow(() -> new UsernameNotFoundException("Token not found"));
+        if (token.getDttmCreate() + jwtAccessExpirationInMs < System.currentTimeMillis())
             return ResponseEntity.ok().build();
         else
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
