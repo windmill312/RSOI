@@ -75,14 +75,17 @@ class AddRoute extends React.Component {
             .then(result => {
                 if (result.status === 200) {
                     console.info('status = 200');
-                    this.render(
-                        <Alert bsStyle="success">Билет успешно создан!</Alert>
-                    );
+                    this.props.addFlashMessage({
+                        type: 'success',
+                        text: 'Покупка прошла успешно!'
+                    });
+                    this.context.router.push('/tickets');
                 } else {
                     console.info('status = ' + result.status);
-                    return (
-                        <Alert bsStyle="success">Произошла ошибка при создании рейса!</Alert>
-                    );
+                    this.props.addFlashMessage({
+                        type: 'error',
+                        text: 'Произола ошибка при покупке билета!'
+                    });
                 }
             })
             .catch(error => {
@@ -133,6 +136,10 @@ AddRoute.propTypes = {
     createTicket: PropTypes.func.isRequired,
     addFlashMessage: PropTypes.func.isRequired,
     isFlightExists: PropTypes.func.isRequired
+};
+
+AddRoute.contextTypes = {
+    router: PropTypes.object.isRequired
 };
 
 export default connect(null, { createTicket, isFlightExists, addFlashMessage }) (AddRoute);

@@ -27,7 +27,6 @@ class RouteForm extends React.Component {
                 if (result.status === 200) {
                     this.props.countRoutes()
                     .then(result => {
-                        console.log(Math.ceil(result.data / this.state.pageSize));
                         this.setState({
                             nnRoutes: result.data,
                             nnPages: Math.ceil(result.data / this.state.pageSize)
@@ -130,10 +129,17 @@ class RouteForm extends React.Component {
                 .then(result => {
                     if (result.status === 200) {
                         console.info('status = 200');
-                        alert('Маршрут успешно удален!');
+                        this.props.addFlashMessage({
+                            type: 'success',
+                            text: 'Вы удалили маршрут билет!'
+                        });
+                        this.componentDidMount();
                     } else {
                         console.info('status = ' + result.status);
-                        alert('Произошла ошибка при удалении маршрута!');
+                        this.props.addFlashMessage({
+                            type: 'error',
+                            text: 'Произошла ошибка при удалении маршрута!'
+                        });
                     }
                 })
         }

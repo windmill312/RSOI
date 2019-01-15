@@ -6,7 +6,7 @@ import connect from "react-redux/es/connect/connect";
 import { addFlashMessage } from '../../actions/FlashMessages.js';
 import TextFieldGroup from "../common/TextFieldGroup";
 
-class AddRoute extends React.Component {
+class AddFlight extends React.Component {
     constructor(props) {
         super(props);
 
@@ -80,10 +80,17 @@ class AddRoute extends React.Component {
             .then(result => {
                 if (result.status === 200) {
                     console.info('status = 200');
-                    alert('Рейс успешно создан!');
+                    this.props.addFlashMessage({
+                        type: 'success',
+                        text: 'Рейс успешно создан!'
+                    });
+                    this.context.router.push('/flights');
                 } else {
                     console.info('status = ' + result.status);
-                    alert('Произошла ошибка при создании рейса!');
+                    this.props.addFlashMessage({
+                        type: 'error',
+                        text: 'Произола ошибка при создании рейса!'
+                    });
                 }
             })
             .catch(error => {
@@ -139,10 +146,14 @@ class AddRoute extends React.Component {
     }
 }
 
-AddRoute.propTypes = {
+AddFlight.propTypes = {
     createFlight: PropTypes.func.isRequired,
     addFlashMessage: PropTypes.func.isRequired,
     isRouteExists: PropTypes.func.isRequired
 };
 
-export default connect(null, { createFlight, addFlashMessage, isRouteExists }) (AddRoute);
+AddFlight.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default connect(null, { createFlight, addFlashMessage, isRouteExists }) (AddFlight);

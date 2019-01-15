@@ -3,6 +3,7 @@ import {FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap';
 import PropTypes from "prop-types";
 import {createRoute} from '../../actions/RoutesActions';
 import connect from "react-redux/es/connect/connect";
+import {addFlashMessage} from "../../actions/FlashMessages";
 
 class AddRoute extends React.Component {
     constructor(props) {
@@ -35,11 +36,17 @@ class AddRoute extends React.Component {
         this.props.createRoute(requestData)
             .then(result => {
                 if (result.status === 200) {
-                    console.info('status = 200');
-                    alert('Маршрут успешно создан!');
+                    this.props.addFlashMessage({
+                        type: 'success',
+                        text: 'Маршрут успешно создан!'
+                    });
+                    this.context.router.push('/routes');
                 } else {
                     console.info('status = ' + result.status);
-                    alert('Ошибка при создании маршрута!');
+                    this.props.addFlashMessage({
+                        type: 'error',
+                        text: 'Произола ошибка при создании маршрута!'
+                    });
                 }
             });
     };
@@ -66,7 +73,12 @@ class AddRoute extends React.Component {
 }
 
 AddRoute.propTypes = {
-    createRoute: PropTypes.func.isRequired
+    createRoute: PropTypes.func.isRequired,
+    addFlashMessage: PropTypes.func.isRequired
 };
 
-export default connect(null, { createRoute }) (AddRoute);
+AddRoute.contextTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default connect(null, { createRoute, addFlashMessage }) (AddRoute);

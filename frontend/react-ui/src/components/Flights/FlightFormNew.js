@@ -27,7 +27,7 @@ class FlightFormNew extends React.Component {
                         .then(result => {
                             this.setState({
                                 nnRoutes: result.data,
-                                nnPages : result.data/this.state.pageSize
+                                nnPages : Math.ceil(result.data / this.state.pageSize)
                             });
                             this.props.getFlights(this.state.pageSize, this.state.currentPage)
                                 .then(
@@ -54,7 +54,7 @@ class FlightFormNew extends React.Component {
 
     handleCurrentPageChange (index) {
         if (index >= 1 && index<=this.state.nnPages && index!==this.state.currentPage) {
-            this.props.getFlights(this.state.pageSize, this.state.currentPage)
+            this.props.getFlights(this.state.pageSize, index)
                 .then(
                     response => this.setState({
                         flights: response.data,
@@ -75,10 +75,17 @@ class FlightFormNew extends React.Component {
                 .then(result => {
                     if (result.status === 200) {
                         console.info('status = 200');
-                        alert('Билет успешно удален!');
+                        this.props.addFlashMessage({
+                            type: 'success',
+                            text: 'Вы удалили рейс!'
+                        });
+                        this.componentDidMount();
                     } else {
                         console.info('status = ' + result.status);
-                        alert('Произошла ошибка при удалении рейса!');
+                        this.props.addFlashMessage({
+                            type: 'error',
+                            text: 'Произошла ошибка при удалении рейса!'
+                        });
                     }
                 })
         }

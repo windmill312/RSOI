@@ -3,6 +3,7 @@ import {countTickets, deleteTicket, getTickets, pingTickets} from '../../actions
 import PropTypes from "prop-types";
 import connect from "react-redux/es/connect/connect";
 import { Button, DropdownButton, MenuItem, Pagination, Alert, Table} from 'react-bootstrap';
+import {addFlashMessage} from "../../actions/FlashMessages";
 
 class TicketForm extends React.Component {
 
@@ -29,7 +30,7 @@ class TicketForm extends React.Component {
                         .then(result => {
                             this.setState({
                                 nnTickets: result.data,
-                                nnPages : result.data/this.state.pageSize
+                                nnPages : Math.ceil(result.data / this.state.pageSize)
                             });
                             this.props.getTickets(this.state.pageSize, this.state.currentPage)
                                 .then(
@@ -56,7 +57,7 @@ class TicketForm extends React.Component {
 
     handleCurrentPageChange (index) {
         if (index >= 1 && index<=this.state.nnPages && index!==this.state.currentPage) {
-            this.props.getTickets(this.state.pageSize, this.state.currentPage)
+            this.props.getTickets(this.state.pageSize, index)
                 .then(
                     response => this.setState({
                             tickets: response.data,
@@ -77,10 +78,17 @@ class TicketForm extends React.Component {
                 .then(result => {
                     if (result.status === 200) {
                         console.info('status = 200');
-                        alert('Вы вернули билет!');
+                        this.props.addFlashMessage({
+                            type: 'success',
+                            text: 'Вы вернули билет!'
+                        });
+                        this.componentDidMount();
                     } else {
                         console.info('status = ' + result.status);
-                        alert('Произошла ошибка при возврате билета!');
+                        this.props.addFlashMessage({
+                            type: 'error',
+                            text: 'Произошла ошибка при возврате билета!'
+                        });
                     }
                 });
         }
@@ -172,11 +180,12 @@ TicketForm.propTypes = {
     pingTickets: PropTypes.func.isRequired,
     countTickets: PropTypes.func.isRequired,
     deleteTicket: PropTypes.func.isRequired,
-    getTickets: PropTypes.func.isRequired
+    getTickets: PropTypes.func.isRequired,
+    addFlashMessage: PropTypes.func.isRequired,
 };
 
 TicketForm.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default connect(null, { countTickets, deleteTicket, getTickets, pingTickets })(TicketForm);
+export default connect(null, { countTickets, deleteTicket, getTickets, pingTickets, addFlashMessage })(TicketForm);
