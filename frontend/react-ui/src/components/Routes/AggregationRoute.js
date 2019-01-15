@@ -21,7 +21,6 @@ class AddRoute extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.getTicketsAndFlights = this.getTicketsAndFlights.bind(this);
-        this.createAggregatedReport = this.createAggregatedReport.bind(this);
         this.createTable = this.createTable.bind(this);
     }
 
@@ -35,7 +34,6 @@ class AddRoute extends React.Component {
 
     handleSubmit() {
         this.getTicketsAndFlights();
-        console.log(this.state.routeAggregation);
     };
 
     getTicketsAndFlights = event => {
@@ -57,42 +55,7 @@ class AddRoute extends React.Component {
             return (
                 <ExpandRow data={this.state.routeAggregation}/>
             );
-
-        /*return (
-            <div>
-                <Table responsive id="tableId" className="table">
-                    <thead>
-                    <tr>
-                        <th>Уникальный номер рейса</th>
-                        <th>Дата рейса</th>
-                        <th>Количество купленных билетов</th>
-                        <th>Общее количество билетов</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {this.createAggregatedReport()}
-                    </tbody>
-                </Table>
-            </div>
-        )*/
     }
-
-    createAggregatedReport() {
-        const aggrArray = [];
-        this.state.routeAggregation.map(record => {
-            aggrArray.push(
-                <tr >
-                    <td> {record.uid}</td>
-                    <td> {record.dtFlight} </td>
-                    <td> {record.nnTickets} </td>
-                    <td> {record.maxTickets} </td>
-                </tr>
-            );
-            return aggrArray;
-        });
-
-        return aggrArray;
-    };
 
 
     render() {
@@ -112,8 +75,9 @@ class AddRoute extends React.Component {
 
                     <Button className="button" bsStyle="danger" type="submit" disabled={this.state.disableButton} >Создать отчет</Button>
                 </FormGroup>
-
-                {this.createTable()}
+                <FormGroup>
+                    {this.createTable()}
+                </FormGroup>
 
             </form>
         );

@@ -16,14 +16,14 @@ class BSTable extends React.Component {
 
 export default class ExpandRow extends React.Component {
 
-    isExpandableRow(row) {
+    static isExpandableRow(row) {
         if (row.tickets)
             return true;
         else
             return false;
     }
 
-    expandComponent(row) {
+    static expandComponent(row) {
         return (
             <BSTable data={ row.tickets } />
         );
@@ -36,8 +36,8 @@ export default class ExpandRow extends React.Component {
         return (
             <BootstrapTable data={ this.props.data }
                             options={ options }
-                            expandableRow={ this.isExpandableRow }
-                            expandComponent={ this.expandComponent }
+                            expandableRow={ ExpandRow.isExpandableRow }
+                            expandComponent={ ExpandRow.expandComponent }
                             search>
                 <TableHeaderColumn dataField='uid' isKey={ true }>Уникальный номер рейса</TableHeaderColumn>
                 <TableHeaderColumn dataField='dtFlight'>Дата рейса</TableHeaderColumn>

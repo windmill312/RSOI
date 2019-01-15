@@ -3,6 +3,7 @@ import {pingFlights, countFlights, deleteFlight, getFlights} from '../../actions
 import PropTypes from "prop-types";
 import connect from "react-redux/es/connect/connect";
 import { Button, DropdownButton, MenuItem, Pagination, Alert, Table} from 'react-bootstrap';
+import {addFlashMessage} from "../../actions/FlashMessages";
 
 class FlightFormNew extends React.Component {
 
@@ -187,11 +188,12 @@ FlightFormNew.propTypes = {
     pingFlights: PropTypes.func.isRequired,
     countFlights: PropTypes.func.isRequired,
     deleteFlight: PropTypes.func.isRequired,
-    getFlights: PropTypes.func.isRequired
+    getFlights: PropTypes.func.isRequired,
+    addFlashMessage: PropTypes.func.isRequired
 };
 
 FlightFormNew.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default connect(null, { pingFlights, countFlights, deleteFlight, getFlights })(FlightFormNew);
+export default connect(null, { pingFlights, countFlights, deleteFlight, getFlights, addFlashMessage })(FlightFormNew);
