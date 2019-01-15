@@ -35,7 +35,6 @@ class RouteForm extends React.Component {
                         this.props.getRoutes(this.state.pageSize, this.state.currentPage)
                             .then(
                                 response => {
-                                    console.log(response);
                                     this.setState({
                                             routes: response.data,
                                             serviceAvailable: true
@@ -61,11 +60,11 @@ class RouteForm extends React.Component {
 
     handleCurrentPageChange (index) {
         if (index >= 1 && index<=this.state.nnPages && index!==this.state.currentPage) {
-            this.setState({currentPage: index});
-            this.props.getRoutes(this.state.pageSize, this.state.currentPage)
+            this.props.getRoutes(this.state.pageSize, index)
                 .then(
                     response => this.setState({
-                            routes: response.data
+                        routes: response.data,
+                        currentPage: index
                         }
                     ))
                 .catch((error) => {
@@ -79,7 +78,9 @@ class RouteForm extends React.Component {
         const items = [];
         for (let number = 1; number <= this.state.nnPages; number++) {
             items.push(
-                <Pagination.Item active={number === this.state.currentPage} key={number} onClick={this.handleCurrentPageChange(number)}>{number}</Pagination.Item>
+                <Pagination.Item active={number === this.state.currentPage} key={number} onClick={() => {
+                    this.handleCurrentPageChange(number);
+                }}>{number}</Pagination.Item>
             );
         }
 
@@ -139,7 +140,7 @@ class RouteForm extends React.Component {
     }
 
     render() {
-        //if (this.state.serviceAvailable) {
+        if (this.state.serviceAvailable) {
             return (
                 <div>
                     <div>
@@ -161,7 +162,7 @@ class RouteForm extends React.Component {
                     </div>
                 </div>
             )
-        /*} else {
+        } else {
             return (
                 <div>
                     <Alert bsStyle="danger">
@@ -170,7 +171,7 @@ class RouteForm extends React.Component {
                     <Button outline onClick={()=> {this.componentDidMount(); this.render();}}>Обновить</Button>
                 </div>
             )
-        }*/
+        }
     }
 }
 

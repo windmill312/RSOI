@@ -56,11 +56,11 @@ class TicketForm extends React.Component {
 
     handleCurrentPageChange (index) {
         if (index >= 1 && index<=this.state.nnPages && index!==this.state.currentPage) {
-            this.setState({currentPage: index});
             this.props.getTickets(this.state.pageSize, this.state.currentPage)
                 .then(
                     response => this.setState({
-                            tickets: response.data
+                            tickets: response.data,
+                            currentPage: index
                         }
                     ))
                 .catch((error) => {
@@ -90,7 +90,9 @@ class TicketForm extends React.Component {
         const items = [];
         for (let number = 1; number <= this.state.nnPages; number++) {
             items.push(
-                <Pagination.Item active={number === this.state.currentPage} key={number} onClick={this.handleCurrentPageChange(number)}>{number}</Pagination.Item>
+                <Pagination.Item active={number === this.state.currentPage} key={number} onClick={() => {
+                    this.handleCurrentPageChange(number);
+                }}>{number}</Pagination.Item>
             );
         }
 
@@ -101,7 +103,7 @@ class TicketForm extends React.Component {
         );
 
         return (paginationBasic);
-    };
+    }
 
     createTable() {
         return (
@@ -111,7 +113,6 @@ class TicketForm extends React.Component {
                     <tr>
                         <th> Код билета</th>
                         <th> Код рейса</th>
-                        <th> Пассажир</th>
                         <th> Класс</th>
                         <th></th>
                     </tr>
@@ -121,12 +122,8 @@ class TicketForm extends React.Component {
                         <tr key={i}>
                             <td key={i}> {ticket.uid}</td>
                             <td key={i}> {ticket.uidFlight}</td>
-                            <td key={i}> {ticket.idPassenger}</td>
                             <td key={i}> {ticket.classType}</td>
-                            <td key={i} contentEditable={true}
-                                onBlur={event => {console.log(event);
-                                    this.handleChangeTicket(ticket)}}> {ticket.classType}</td>
-                            <td key={ticket.idTicket}><Button color="danger" onClick={this.handleDeleteTicket(ticket)}>Удалить</Button></td>
+                            <td key={ticket.uid}><Button color="danger" onClick={this.handleDeleteTicket(ticket)}>Вернуть</Button></td>
                         </tr>
                     )}
                     </tbody>
@@ -137,7 +134,7 @@ class TicketForm extends React.Component {
     }
 
     render() {
-        //if (this.state.serviceAvailable) {
+        if (this.state.serviceAvailable) {
             return (
                 <div>
                     <div>
@@ -158,7 +155,7 @@ class TicketForm extends React.Component {
                     </div>
                 </div>
             )
-        /*} else {
+        } else {
             return (
                 <div>
                     <Alert bsStyle="danger">
@@ -167,7 +164,7 @@ class TicketForm extends React.Component {
                     <Button outline onClick={()=> {this.componentDidMount(); this.render();}}>Обновить</Button>
                 </div>
             )
-        }*/
+        }
     }
 }
 
@@ -176,6 +173,10 @@ TicketForm.propTypes = {
     countTickets: PropTypes.func.isRequired,
     deleteTicket: PropTypes.func.isRequired,
     getTickets: PropTypes.func.isRequired
+};
+
+TicketForm.contextTypes = {
+    router: PropTypes.object.isRequired
 };
 
 export default connect(null, { countTickets, deleteTicket, getTickets, pingTickets })(TicketForm);

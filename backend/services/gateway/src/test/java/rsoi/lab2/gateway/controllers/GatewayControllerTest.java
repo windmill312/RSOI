@@ -69,7 +69,7 @@ public class GatewayControllerTest {
 
         TicketInfo ticket1 = new TicketInfo();
         ticket1.setIdFlight(idFlight);
-        ticket1.setIdPassenger(0);
+        ticket1.setUidPassenger(0);
         ticket1.setClassType("ECONOMIC");
 
         String oldFlight = controller.getFlight(idFlight);
@@ -95,7 +95,7 @@ public class GatewayControllerTest {
 
         TicketInfo ticket1 = new TicketInfo();
         ticket1.setIdFlight(idFlight);
-        ticket1.setIdPassenger(0);
+        ticket1.setUidPassenger(0);
         ticket1.setClassType("ECONOMIC");
 
         assertTrue(controller.addTicket(ticket1).contains("Ticket created with id"));
@@ -131,7 +131,7 @@ public class GatewayControllerTest {
 
         TicketInfo ticket1 = new TicketInfo();
         ticket1.setIdFlight(idFlight);
-        ticket1.setIdPassenger(0);
+        ticket1.setUidPassenger(0);
         ticket1.setClassType("ECONOMIC");
 
         int idTicket = Integer.parseInt(controller.addTicket(ticket1).replaceAll("\\D+", ""));

@@ -24,7 +24,6 @@ class AddRoute extends React.Component {
     }
 
     handleClassChange(event) {
-        console.log("!!!!");
         this.setState({
             classType: event.target.value,
             invalid_type: false
@@ -69,7 +68,7 @@ class AddRoute extends React.Component {
 
         const requestData = {
             uidFlight: this.state.uidFlight,
-            idPassenger: localStorage.getItem('userUuid'),
+            uidPassenger: localStorage.getItem('userUuid'),
             classType: this.state.classType
         };
         this.props.createTicket(requestData)
@@ -93,7 +92,7 @@ class AddRoute extends React.Component {
                         маршрута!</Alert>
                 );
             });
-    }
+    };
 
     render() {
         const { errors } = this.state;

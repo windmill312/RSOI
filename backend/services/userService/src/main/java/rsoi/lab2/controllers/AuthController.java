@@ -91,18 +91,7 @@ public class AuthController {
         boolean contains = tokenRepository.existsByUserAndServiceUuidAndValue(user, loginRequest.getServiceUuid(), headerAuth.substring(7));
 
         if (contains) {
-
-            tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
-
-            String jwtAccess = tokenProvider.generateToken(user.getEmail(), user.getUuid().toString());
-            String jwtRefresh = tokenProvider.generateToken(user.getEmail(), user.getUuid().toString());
-
-            updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
-            updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
-
-            userRepository.save(user);
-
-            return ResponseEntity.ok(new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs));
+            return tokensOperations(user, loginRequest);
         }
         else
         {
@@ -140,7 +129,26 @@ public class AuthController {
                 new UsernameNotFoundException("User not found with username or email : " + loginRequest.getIdentifier())
         );
 
+        return tokensOperations(user, loginRequest);
+    }
 
+    @PostMapping("/validate")
+    public ResponseEntity<?> validation (@RequestBody UserRequest userRequest) {
+
+        User user = userRepository.findByUuid(userRequest.getUserUuid())
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with UUID : " + userRequest.getUserUuid())
+                );
+        Token token = tokenRepository.findByUserAndServiceUuidAndValueAndTokenType(user, userRequest.getServiceUuid(), userRequest.getToken().substring(7), TokenType.ACCESS_TOKEN)
+                .orElseThrow(() -> new UsernameNotFoundException("Token not found"));
+        if (token.getDttmCreate() + jwtAccessExpirationInMs > System.currentTimeMillis())
+            return ResponseEntity.ok().build();
+        else
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+    }
+
+    private ResponseEntity<?> tokensOperations(User user, LoginRequest loginRequest) {
 
         tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
@@ -162,22 +170,6 @@ public class AuthController {
                 response.setAdmin(true);
 
         return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/validate")
-    public ResponseEntity<?> validation (@RequestBody UserRequest userRequest) {
-
-        User user = userRepository.findByUuid(userRequest.getUserUuid())
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with UUID : " + userRequest.getUserUuid())
-                );
-        Token token = tokenRepository.findByUserAndServiceUuidAndValue(user, userRequest.getServiceUuid(), userRequest.getToken().substring(7))
-                .orElseThrow(() -> new UsernameNotFoundException("Token not found"));
-        if (token.getDttmCreate() + jwtAccessExpirationInMs < System.currentTimeMillis())
-            return ResponseEntity.ok().build();
-        else
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
     }
 
 

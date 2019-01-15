@@ -8,7 +8,7 @@ public class TicketInfo {
 
     private UUID uidFlight;
 
-    private int idPassenger;
+    private UUID uidPassenger;
 
     private String classType;
 
@@ -22,12 +22,12 @@ public class TicketInfo {
         this.idTicket = idTicket;
     }
 
-    public int getIdPassenger() {
-        return idPassenger;
+    public UUID getUidPassenger() {
+        return uidPassenger;
     }
 
-    public void setIdPassenger(int idPassenger) {
-        this.idPassenger = idPassenger;
+    public void setUidPassenger(UUID uidPassenger) {
+        this.uidPassenger = uidPassenger;
     }
 
     public String getClassType() {
