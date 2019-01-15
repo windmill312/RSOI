@@ -1,5 +1,5 @@
 import React from 'react';
-import {FormGroup, ControlLabel, FormControl, Button, Alert, DropdownButton, MenuItem} from 'react-bootstrap';
+import {FormGroup, ControlLabel, FormControl, Button, Alert} from 'react-bootstrap';
 import PropTypes from "prop-types";
 import {createTicket, isFlightExists} from '../../actions/TicketsActions';
 import connect from "react-redux/es/connect/connect";

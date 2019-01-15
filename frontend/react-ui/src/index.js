@@ -11,6 +11,7 @@ import { Router, browserHistory } from 'react-router';
 import { setCurrentUser, refreshToken } from './actions/AuthActions';
 import routes from './routes';
 import jwtDecode from 'jwt-decode';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 const store = createStore(
     rootReducer,

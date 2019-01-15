@@ -1,6 +1,6 @@
 import React from 'react';
 import RouteForm from './RouteForm';
-import {pingRoutes, countRoutes, getRoutes, createRoute, deleteRoute, getTicketsAndFlights} from '../../actions/RoutesActions';
+import {pingRoutes, countRoutes, getRoutes, deleteRoute} from '../../actions/RoutesActions';
 import PropTypes from "prop-types";
 import connect from "react-redux/es/connect/connect";
 
@@ -25,9 +25,7 @@ RouteForm.propTypes = {
     pingRoutes: PropTypes.func.isRequired,
     countRoutes: PropTypes.func.isRequired,
     getRoutes: PropTypes.func.isRequired,
-    createRoute: PropTypes.func.isRequired,
-    deleteRoute: PropTypes.func.isRequired,
-    getTicketsAndFlights: PropTypes.func.isRequired
+    deleteRoute: PropTypes.func.isRequired
 };
 
-export default connect(null, { pingRoutes, countRoutes, getRoutes, createRoute, deleteRoute, getTicketsAndFlights})(RoutePage);
+export default connect(null, { pingRoutes, countRoutes, getRoutes, deleteRoute})(RoutePage);

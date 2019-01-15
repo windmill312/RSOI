@@ -54,7 +54,6 @@ class RouteForm extends React.Component {
                     serviceAvailable: false
                 })
             });
-        console.log(this.state.routes);
     }
 
     handleCurrentPageChange (index) {
@@ -193,4 +192,4 @@ RouteForm.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default connect(null, { pingRoutes, getRoutes,countRoutes, deleteRoute, getTicketsAndFlights})(RouteForm);
+export default connect(null, { pingRoutes, getRoutes, countRoutes, deleteRoute, getTicketsAndFlights})(RouteForm);

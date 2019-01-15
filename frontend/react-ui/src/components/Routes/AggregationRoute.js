@@ -1,16 +1,18 @@
 import React from 'react';
-import {FormGroup, ControlLabel, FormControl, Button, Table} from 'react-bootstrap';
+import {FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap';
 import PropTypes from "prop-types";
 import {getTicketsAndFlights} from '../../actions/RoutesActions';
 import connect from "react-redux/es/connect/connect";
 import '../../styles/Routes/Aggregation.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import ExpandRow from '../common/ExpandRow';
 
 class AddRoute extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            routeAggregation: [],
+            routeAggregation: [[]],
             uidRoute: '',
             disableButton: true,
             tableHidden: false
@@ -31,25 +33,32 @@ class AddRoute extends React.Component {
             this.setState({disableButton: true});
     }
 
-    handleSubmit(e) {
-        e.preventDefault();
+    handleSubmit() {
         this.getTicketsAndFlights();
-
+        console.log(this.state.routeAggregation);
     };
 
-    getTicketsAndFlights()  {
+    getTicketsAndFlights = event => {
+        event.preventDefault();
         this.props.getTicketsAndFlights(this.state.uidRoute)
             .then(result => {
                 this.setState({
                     routeAggregation: result.data
                 })
+            })
+            .catch(error => {
+                console.log(error);
             });
-        this.createAggregatedReport();
     };
 
     createTable() {
 
-        return (
+        if (this.state.routeAggregation.length > 0)
+            return (
+                <ExpandRow data={this.state.routeAggregation}/>
+            );
+
+        /*return (
             <div>
                 <Table responsive id="tableId" className="table">
                     <thead>
@@ -61,25 +70,25 @@ class AddRoute extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.createAggregatedReport}
+                    {this.createAggregatedReport()}
                     </tbody>
                 </Table>
             </div>
-        )
+        )*/
     }
 
     createAggregatedReport() {
         const aggrArray = [];
         this.state.routeAggregation.map(record => {
-
             aggrArray.push(
-                <tr>
+                <tr >
                     <td> {record.uid}</td>
                     <td> {record.dtFlight} </td>
                     <td> {record.nnTickets} </td>
                     <td> {record.maxTickets} </td>
                 </tr>
             );
+            return aggrArray;
         });
 
         return aggrArray;
@@ -88,7 +97,7 @@ class AddRoute extends React.Component {
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit} className="form">
+            <form onSubmit={this.getTicketsAndFlights} className="form">
                 <FormGroup
                     controlId="formBasicText"
                 >
