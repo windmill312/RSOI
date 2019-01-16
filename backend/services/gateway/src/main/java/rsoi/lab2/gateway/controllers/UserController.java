@@ -1,7 +1,13 @@
 package rsoi.lab2.gateway.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -24,7 +30,7 @@ public class UserController {
         return restTemplate.getForEntity("http://localhost:8084/api/auth/user/" + username, Object.class);
     }
 
-        @GetMapping("/api/me")
+    @GetMapping("/api/me")
     public ResponseEntity getCurrentUser(@RequestHeader(name = "Authorization") String headerAuth) {
         logger.info("Get getCurrentUser request with access token: " + headerAuth + "\n");
         RestTemplate restTemplate = new RestTemplate();
@@ -40,7 +46,32 @@ public class UserController {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Token is invalid or user not found!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @GetMapping(
+            value = "/oauth",
+            params = {
+                    "serviceUuid"
+            }
+    )
+    public ResponseEntity isServiceExists (@RequestHeader(name = "Authorization") String headerAuth, @RequestParam String serviceUuid) {
+        logger.info("Get isServiceExists request with param: " + serviceUuid + "\n");
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        headers.set("Authorization", headerAuth);
+        HttpEntity<SignUpServiceRequest> request = new HttpEntity<>(headers);
+        try {
+            ResponseEntity<?> response = restTemplate.exchange("http://localhost:8084/oauth?serviceUuid=" + serviceUuid, HttpMethod.GET, request, Object.class);
+            return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
+        }
+        catch (HttpClientErrorException ex) {
+            logger.info("Troubles exists :(");
+            //todo fix this foo
+            return new ResponseEntity<>(new ApiResponse(false, "Token is invalid or user not found!"),
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -61,7 +92,7 @@ public class UserController {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Token is invalid or user not found!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -77,7 +108,7 @@ public class UserController {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Token is invalid!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -91,17 +122,23 @@ public class UserController {
         HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
         try {
             ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/api/auth/signin", request, Object.class);
-            return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
+            if (loginRequest.getRedirectUri() == null)
+                return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
+            else {
+                //todo create normal redirect
+                return new ResponseEntity<>(response.getBody(), response.getHeaders(), response.getStatusCode());
+            }
+               // return ResponseEntity.status(HttpStatus.FOUND).headers(response.getHeaders()).header("Location", loginRequest.getRedirectUri()).body(response.getBody());
         } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "User not found with username or email: " + loginRequest.getIdentifier() ),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 
     @PostMapping("/oauth/signin")
-    public ResponseEntity<?> authenticateService(@Valid @RequestBody ServiceRequest serviceRequest) throws JsonProcessingException {
+    public ResponseEntity<?> authenticateService(@Valid @RequestBody ServiceRequest serviceRequest) {
 
         logger.info("Get auth request with service uuid: " + serviceRequest.getUuid() + "\n");
         RestTemplate restTemplate = new RestTemplate();
@@ -115,7 +152,7 @@ public class UserController {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Service not found!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -133,7 +170,7 @@ public class UserController {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Service name is already taken!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -151,7 +188,7 @@ public class UserController {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Email or username is already in use!"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.UNAUTHORIZED);
         }
     }
 }

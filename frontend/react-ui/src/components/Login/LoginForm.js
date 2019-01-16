@@ -6,6 +6,7 @@ import { login } from '../../actions/AuthActions';
 import {connect} from "react-redux";
 import validateInput from '../../validations/Login';
 import {addFlashMessage} from "../../actions/FlashMessages";
+import {SERVICE_UUID} from '../../config';
 
 class LoginForm extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ class LoginForm extends Component {
         this.state = {
             identifier: "",
             password: "",
-            serviceUuid: "ede4bfb8-2acb-441e-9b00-4b786309fcd2",
+            serviceUuid: `${SERVICE_UUID}`,
             errors: {},
             isLoading: false
         };
@@ -45,7 +46,12 @@ class LoginForm extends Component {
                 .then(
                     (res) => {
                         localStorage.setItem('identifier', this.state.identifier);
-                        this.context.router.push('/routes');
+                        sessionStorage.setItem('password', this.state.password);
+                        const url = localStorage.getItem('url');
+                        if (url !== '')
+                            this.context.router.push(`${url}`);
+                        else
+                            this.context.router.push(`/tickets`);
                     }
                 )
                 .catch(

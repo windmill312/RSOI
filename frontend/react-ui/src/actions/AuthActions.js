@@ -2,7 +2,7 @@ import axios from 'axios';
 import setAuthorizationToken from '../utils/SetAuthorizationToken';
 import jwtDecode from 'jwt-decode';
 import { SET_CURRENT_USER } from './types';
-import {API_BASE_URL, SERVICE_UUID} from '../config'
+import {API_BASE_URL, SERVICE_UUID} from '../config';
 
 export function setCurrentUser(user) {
     return {
@@ -14,6 +14,7 @@ export function setCurrentUser(user) {
 export function logout() {
     return dispatch => {
         localStorage.removeItem('jwtAccessToken');
+        localStorage.removeItem('isAdmin');
         setAuthorizationToken(false);
         dispatch(setCurrentUser({}));
     }

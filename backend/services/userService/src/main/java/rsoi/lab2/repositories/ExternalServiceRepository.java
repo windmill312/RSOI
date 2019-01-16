@@ -13,4 +13,5 @@ import java.util.UUID;
 public interface ExternalServiceRepository extends JpaRepository<ExternalService, Long> {
     Boolean existsByName(String name);
     Boolean existsByUuid(UUID uuid);
+    Optional<ExternalService> findByUuid(UUID uuid);
 }

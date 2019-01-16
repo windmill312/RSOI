@@ -13,6 +13,7 @@ import AddFlight from './components/Flights/AddFlight';
 import Tickets from './components/Tickets/TicketPage';
 import AddTicket from './components/Tickets/AddTicket';
 import requireAuth from './utils/requireAuth';
+import OAuthForm from "./components/Login/OAuthForm";
 
 export default (
     <Route path='/' component={App}>
@@ -32,5 +33,6 @@ export default (
             <IndexRoute component={requireAuth(Tickets)}/>
             <Route path="/tickets/create" component={requireAuth(AddTicket)}/>
         </Route>
+        <Route path="/oauth" component={requireAuth(OAuthForm)}/>
     </Route>
 )

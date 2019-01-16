@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 export default function(ComposedComponent) {
     class Authenticate extends React.Component {
         componentWillMount() {
+            localStorage.setItem('url', window.location.href);
             if (!this.props.isAuthenticated) {
                 this.props.addFlashMessage({
                     type: 'error',
