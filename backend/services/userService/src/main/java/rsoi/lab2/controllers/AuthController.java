@@ -39,6 +39,9 @@ public class AuthController {
 
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
+    @Value("app.gatewayUuid")
+    private String gateway;
+
     @Value("${app.jwtAccessExpirationInMs}")
     private int jwtAccessExpirationInMs;
 
@@ -67,36 +70,49 @@ public class AuthController {
         this.tokenProvider = tokenProvider;
     }
 
-    @GetMapping(value = "/user/{username}")
-    public ResponseEntity<?> isUserExists(@PathVariable String username) {
-
+    @GetMapping(value = "/user/{username}",
+            params = {
+                    "gatewayUuid"
+            })
+    public ResponseEntity<?> isUserExists(@PathVariable String username,
+                                          @RequestParam String gatewayUuid) {
         logger.info("Get isUserExists with: " + username);
-        if (userRepository.existsByEmailOrUsername(username, username))
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        if (gatewayUuid.equals(gateway))
+            if (userRepository.existsByEmailOrUsername(username, username))
+                return ResponseEntity.status(HttpStatus.CONFLICT).build();
+            else
+                return ResponseEntity.status(HttpStatus.OK).build();
         else
-            return ResponseEntity.status(HttpStatus.OK).build();
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
 
     @Transactional
-    @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String headerAuth, @RequestBody LoginRequest loginRequest) {
+    @PostMapping(
+            value = "/refresh-token",
+            params = {
+                    "gatewayUuid"
+            })
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String headerAuth,
+                                          @RequestBody LoginRequest loginRequest,
+                                          @RequestParam String gatewayUuid) {
 
         logger.info("Get refresh-token request from: " + loginRequest.getServiceUuid() + "\n");
+        if (gatewayUuid.equals(gateway)) {
+            User user = userRepository.findByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier()).orElseThrow(() ->
+                    new UsernameNotFoundException("User not found with username or email: " + loginRequest.getIdentifier())
+            );
 
-        User user = userRepository.findByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier()).orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email: " + loginRequest.getIdentifier())
-        );
+            boolean contains = tokenRepository.existsByUserAndServiceUuidAndValue(user, loginRequest.getServiceUuid(), headerAuth.substring(7));
 
-        boolean contains = tokenRepository.existsByUserAndServiceUuidAndValue(user, loginRequest.getServiceUuid(), headerAuth.substring(7));
-
-        if (contains) {
-            return tokensOperations(user, loginRequest);
+            if (contains) {
+                return tokensOperations(user, loginRequest);
+            } else {
+                throw new UsernameNotFoundException("Token is invalid");
+            }
         }
         else
-        {
-            throw new UsernameNotFoundException("Token is invalid");
-        }
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     private void updateToken(UUID serviceUuid, User user, TokenType tokenType, String tokenValue) {
@@ -110,42 +126,57 @@ public class AuthController {
     }
 
     @Transactional
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    @PostMapping(
+            value = "/signin",
+            params = {
+                    "gatewayUuid"
+            })
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
+                                              @RequestParam String gatewayUuid) {
 
         logger.info("Get auth request from: " + loginRequest.getServiceUuid() + "\n");
+        if (gatewayUuid.equals(gateway)) {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getIdentifier(),
+                            loginRequest.getPassword()
+                    )
+            );
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getIdentifier(),
-                        loginRequest.getPassword()
-                )
-        );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            User user = userRepository.findByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier())
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("User not found with username or email : " + loginRequest.getIdentifier())
+                    );
 
-        User user = userRepository.findByUsernameOrEmail(loginRequest.getIdentifier(), loginRequest.getIdentifier())
-                .orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email : " + loginRequest.getIdentifier())
-        );
-
-        return tokensOperations(user, loginRequest);
+            return tokensOperations(user, loginRequest);
+        }
+        else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @PostMapping("/validate")
-    public ResponseEntity<?> validation (@RequestBody UserRequest userRequest) {
-
-        User user = userRepository.findByUuid(userRequest.getUserUuid())
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User not found with UUID : " + userRequest.getUserUuid())
-                );
-        Token token = tokenRepository.findByUserAndServiceUuidAndValueAndTokenType(user, userRequest.getServiceUuid(), userRequest.getToken().substring(7), TokenType.ACCESS_TOKEN)
-                .orElseThrow(() -> new UsernameNotFoundException("Token not found"));
-        if (token.getDttmCreate() + jwtAccessExpirationInMs > System.currentTimeMillis())
-            return ResponseEntity.ok().build();
+    @PostMapping(
+            value = "/validate",
+            params = {
+                    "gatewayUuid"
+            })
+    public ResponseEntity<?> validation (@RequestBody UserRequest userRequest,
+                                         @RequestParam String gatewayUuid) {
+        if (gatewayUuid.equals(gateway)) {
+            User user = userRepository.findByUuid(userRequest.getUserUuid())
+                    .orElseThrow(() ->
+                            new UsernameNotFoundException("User not found with UUID : " + userRequest.getUserUuid())
+                    );
+            Token token = tokenRepository.findByUserAndServiceUuidAndValueAndTokenType(user, userRequest.getServiceUuid(), userRequest.getToken().substring(7), TokenType.ACCESS_TOKEN)
+                    .orElseThrow(() -> new UsernameNotFoundException("Token not found"));
+            if (token.getDttmCreate() + jwtAccessExpirationInMs > System.currentTimeMillis())
+                return ResponseEntity.ok().build();
+            else
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         else
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     private ResponseEntity<?> tokensOperations(User user, LoginRequest loginRequest) {
@@ -173,34 +204,43 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest) {
-        if(userRepository.existsByUsername(signUpUserRequest.getUsername())) {
-            return new ResponseEntity<>(new ApiResponse(false, "Username is already taken!"),
-                    HttpStatus.BAD_REQUEST);
+    @PostMapping(
+            value = "/signup",
+            params = {
+                    "gatewayUuid"
+            })
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpUserRequest signUpUserRequest,
+                                          @RequestParam String gatewayUuid) {
+        if (gatewayUuid.equals(gateway)) {
+            if (userRepository.existsByUsername(signUpUserRequest.getUsername())) {
+                return new ResponseEntity<>(new ApiResponse(false, "Username is already taken!"),
+                        HttpStatus.BAD_REQUEST);
+            }
+
+            if (userRepository.existsByEmail(signUpUserRequest.getEmail())) {
+                return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"),
+                        HttpStatus.BAD_REQUEST);
+            }
+
+            User user = new User(signUpUserRequest.getUsername(), signUpUserRequest.getUsername(),
+                    signUpUserRequest.getEmail(), signUpUserRequest.getPassword());
+
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+            Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
+                    .orElseThrow(() -> new AppException("User Role not set."));
+
+            user.setRoles(Collections.singleton(userRole));
+
+            User result = userRepository.save(user);
+
+            URI location = ServletUriComponentsBuilder
+                    .fromCurrentContextPath().path("/users/{username}")
+                    .buildAndExpand(result.getUsername()).toUri();
+
+            return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
         }
-
-        if(userRepository.existsByEmail(signUpUserRequest.getEmail())) {
-            return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"),
-                    HttpStatus.BAD_REQUEST);
-        }
-
-        User user = new User(signUpUserRequest.getUsername(), signUpUserRequest.getUsername(),
-                signUpUserRequest.getEmail(), signUpUserRequest.getPassword());
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AppException("User Role not set."));
-
-        user.setRoles(Collections.singleton(userRole));
-
-        User result = userRepository.save(user);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/users/{username}")
-                .buildAndExpand(result.getUsername()).toUri();
-
-        return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
+        else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

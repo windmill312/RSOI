@@ -20,18 +20,22 @@ class OAuthForm extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({
-            redirectUri: this.props.location.query.redirectUri
-        });
-        this.props.checkService(this.props.location.query.serviceUuid)
-            .then(res => {
-                this.setState({
-                    serviceName: res.data.name
-                });
-            })
-            .catch(err => {
-                console.log(err);
+        if (sessionStorage.getItem('password') === null)
+            this.context.router.push("/login");
+        else {
+            this.setState({
+                redirectUri: this.props.location.query.redirectUri
             });
+            this.props.checkService(this.props.location.query.serviceUuid)
+                .then(res => {
+                    this.setState({
+                        serviceName: res.data.name
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
     }
 
     sendAccess() {
@@ -42,8 +46,8 @@ class OAuthForm extends React.Component {
         };
         this.props.login(data)
             .then(() => {
+                window.location = `${this.state.redirectUri}?accessToken=${localStorage.getItem('accessToken')}&refreshToken=${localStorage.getItem('refreshToken')}&jwtExpirationInMs=${localStorage.getItem('jwtExpirationInMs')}`;
                 localStorage.removeItem('url');
-                window.close();
             })
             .catch(err => {
                 console.log(err);

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -25,13 +26,16 @@ public class RouteController {
 
     private Logger logger = Logger.getLogger(RouteController.class.getName());
 
+    @Value("app.gatewayUuid")
+    private String gatewayUuid;
+
     @GetMapping(value = "/routes")
     public ResponseEntity<?> getRoutes(
                                        @RequestParam(value = "page", defaultValue = "1") int page,
                                        @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getRoutes)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8082/routes?page=" + page + "&size=" + size;
+            String resourceUrl = "http://localhost:8082/routes?page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -39,7 +43,7 @@ public class RouteController {
     public ResponseEntity<?> pingRoutes() {
         logger.info("Get request (pingRoutes)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8082/ping";
+            String resourceUrl = "http://localhost:8082/ping?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -47,7 +51,7 @@ public class RouteController {
     public ResponseEntity<?> countRoutes() {
         logger.info("Get request (countRoutes)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8082/countAll";
+            String resourceUrl = "http://localhost:8082/countAll?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, String.class);
     }
 
@@ -57,7 +61,7 @@ public class RouteController {
                                       @RequestParam String uidRoute) {
         logger.info("Get request (getRoute)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8082/route?uidRoute=" + uidRoute;
+            String resourceUrl = "http://localhost:8082/route?uidRoute=" + uidRoute + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -67,7 +71,7 @@ public class RouteController {
                                           @RequestParam String nmRoute) {
         logger.info("Get request (getRouteByNm)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8082/routes?nmRoute=" + nmRoute;
+            String resourceUrl = "http://localhost:8082/routes?nmRoute=" + nmRoute + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -82,7 +86,7 @@ public class RouteController {
                 RestTemplate restTemplate = new RestTemplate();
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-                String resourceUrl = "http://localhost:8082/route";
+                String resourceUrl = "http://localhost:8082/route?gatewayUuid=" + gatewayUuid;
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                 HttpEntity<RouteInfo> request = new HttpEntity<>(routeInfo, headers);
@@ -112,7 +116,7 @@ public class RouteController {
                 RestTemplate restTemplate = new RestTemplate();
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-                String resourceUrl = "http://localhost:8082/route?_method=patch";
+                String resourceUrl = "http://localhost:8082/route?_method=patch" + "&gatewayUuid=" + gatewayUuid;
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                 HttpEntity<RouteInfo> request = new HttpEntity<>(routeInfo, headers);
@@ -137,7 +141,7 @@ public class RouteController {
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             try {
                 RestTemplate restTemplate = new RestTemplate();
-                String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute;
+                String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&gatewayUuid=" + gatewayUuid;
                 ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, String.class);
 
                 String flight = responseFlight.getBody().toString();
@@ -151,7 +155,7 @@ public class RouteController {
                     JSONObject object = jsonFlightArray.getJSONObject(i);
                     FlightInfo flightInfo = gson.fromJson(object.toString(), FlightInfo.class);
 
-                    resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + object.getString("uid");
+                    resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + object.getString("uid") + "&gatewayUuid=" + gatewayUuid;
                     ResponseEntity responseTickets = restTemplate.getForEntity(resourceUrl, String.class);
                     String jsonTickets = responseTickets.getBody().toString();
                     JSONArray jsonTicketsArray = new JSONArray(jsonTickets);
@@ -186,7 +190,7 @@ public class RouteController {
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
             try {
                 RestTemplate restTemplate = new RestTemplate();
-                String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute;
+                String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&gatewayUuid=" + gatewayUuid;
                 ResponseEntity responseFlights = restTemplate.getForEntity(resourceUrl, String.class);
 
                 JSONArray jsonFlightArray = new JSONArray(responseFlights.getBody().toString());
@@ -196,13 +200,13 @@ public class RouteController {
                 for (int i = 0; i < jsonFlightArray.length(); i++) {
                     //removing flight tickets
                     JSONObject flightObject = jsonFlightArray.getJSONObject(i);
-                    resourceUrl = "http://localhost:8081/tickets";
+                    resourceUrl = "http://localhost:8081/tickets?gatewayUuid=" + gatewayUuid;
                     HttpEntity<Object> requestTickets = new HttpEntity<>(flightObject.get("uid"), headers);
                     ResponseEntity responseTickets = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestTickets, Object.class);
                     //removing flight
                     if (responseTickets.getStatusCode().equals(HttpStatus.OK)) {
                         logger.info("Tickets of flight " + flightObject.get("uid") + " successfully removed");
-                        resourceUrl = "http://localhost:8083/flight";
+                        resourceUrl = "http://localhost:8083/flight?gatewayUuid=" + gatewayUuid;
                         HttpEntity<Object> requestFlight = new HttpEntity<>(flightObject.get("uid"), headers);
                         ResponseEntity responseFlight = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestFlight, Object.class);
                         if (! responseFlight.getStatusCode().equals(HttpStatus.OK))
@@ -212,7 +216,7 @@ public class RouteController {
                 }
                 //removing route
                 logger.info("Flights successfully removed");
-                resourceUrl = "http://localhost:8082/route";
+                resourceUrl = "http://localhost:8082/route?gatewayUuid=" + gatewayUuid;
                 HttpEntity<String> requestRoute = new HttpEntity<>(uidRoute, headers);
                 ResponseEntity responseRoute = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestRoute, Object.class);
                 if (responseRoute.getStatusCode() == HttpStatus.OK)

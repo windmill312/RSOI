@@ -2,6 +2,7 @@ package rsoi.lab2.gateway.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -17,11 +18,14 @@ public class FlightController {
 
     private Logger logger = Logger.getLogger(FlightController.class.getName());
 
+    @Value("app.gatewayUuid")
+    private String gatewayUuid;
+
     @GetMapping(value = "/pingFlights")
     public ResponseEntity<?> pingFlights() {
         logger.info("Get request (pingFlights)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/ping";
+            String resourceUrl = "http://localhost:8083/ping?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -31,7 +35,7 @@ public class FlightController {
                                         @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getFlights)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/flights?page=" + page + "&size=" + size;
+            String resourceUrl = "http://localhost:8083/flights?page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -43,15 +47,17 @@ public class FlightController {
                                                @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getFlights)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&page=" + page + "&size=" + size;
+            String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
-    @GetMapping(value = "/countFlights")
+    @GetMapping(
+            value = "/countFlights"
+    )
     public ResponseEntity<?> countFlights() {
         logger.info("Get request (countFlights)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/countAll";
+            String resourceUrl = "http://localhost:8083/countAll?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, String.class);
     }
 
@@ -61,7 +67,7 @@ public class FlightController {
                                        @RequestParam String uidFlight) {
         logger.info("Get request (getFlight)");
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/flight?uidFlight=" + uidFlight;
+            String resourceUrl = "http://localhost:8083/flight?uidFlight=" + uidFlight + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
     }
 
@@ -76,7 +82,7 @@ public class FlightController {
                 RestTemplate restTemplate = new RestTemplate();
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-                String resourceUrl = "http://localhost:8083/flight";
+                String resourceUrl = "http://localhost:8083/flight?gatewayUuid=" + gatewayUuid;
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                 HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
@@ -117,7 +123,7 @@ public class FlightController {
     private ResponseEntity patchRequest(FlightInfo flightInfo) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/flight?_method=patch";
+            String resourceUrl = "http://localhost:8083/flight?_method=patch?gatewayUuid=" + gatewayUuid;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
@@ -138,14 +144,14 @@ public class FlightController {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-            String resourceUrl = "http://localhost:8081/tickets";
+            String resourceUrl = "http://localhost:8081/tickets?gatewayUuid=" + gatewayUuid;
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<String> request = new HttpEntity<>(uidFlight, headers);
             ResponseEntity<String> responseTickets = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
             if (responseTickets.getStatusCode() == HttpStatus.OK) {
-                resourceUrl = "http://localhost:8083/flight";
+                resourceUrl = "http://localhost:8083/flight?gatewayUuid=" + gatewayUuid;
                 HttpEntity<String> requestFlight = new HttpEntity<>(uidFlight, headers);
                 ResponseEntity responseFlight = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, requestFlight, String.class);
                 if (responseFlight.getStatusCode().equals(HttpStatus.OK))

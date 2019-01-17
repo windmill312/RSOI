@@ -48,8 +48,9 @@ class LoginForm extends Component {
                         localStorage.setItem('identifier', this.state.identifier);
                         sessionStorage.setItem('password', this.state.password);
                         const url = localStorage.getItem('url');
-                        if (url !== '')
+                        if (url !== null) {
                             this.context.router.push(`${url}`);
+                        }
                         else
                             this.context.router.push(`/tickets`);
                     }
