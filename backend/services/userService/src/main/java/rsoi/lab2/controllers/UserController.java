@@ -16,7 +16,7 @@ import rsoi.lab2.security.UserPrincipal;
 @RequestMapping("/api")
 public class UserController {
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gateway;
 
     @GetMapping(

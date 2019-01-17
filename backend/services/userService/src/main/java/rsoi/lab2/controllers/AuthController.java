@@ -39,7 +39,7 @@ public class AuthController {
 
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gateway;
 
     @Value("${app.jwtAccessExpirationInMs}")

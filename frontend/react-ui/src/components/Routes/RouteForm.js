@@ -4,6 +4,7 @@ import {pingRoutes, countRoutes, getRoutes, deleteRoute, getTicketsAndFlights} f
 import PropTypes from "prop-types";
 import connect from "react-redux/es/connect/connect";
 import '../../styles/Routes/Routes.css'
+import {addFlashMessage} from "../../actions/FlashMessages";
 
 class RouteForm extends React.Component {
 
@@ -130,7 +131,7 @@ class RouteForm extends React.Component {
                         console.info('status = 200');
                         this.props.addFlashMessage({
                             type: 'success',
-                            text: 'Вы удалили маршрут билет!'
+                            text: 'Вы успешно удалили маршрут!'
                         });
                         this.componentDidMount();
                     } else {
@@ -185,11 +186,12 @@ RouteForm.propTypes = {
     countRoutes: PropTypes.func.isRequired,
     getRoutes: PropTypes.func.isRequired,
     deleteRoute: PropTypes.func.isRequired,
-    getTicketsAndFlights: PropTypes.func.isRequired
+    getTicketsAndFlights: PropTypes.func.isRequired,
+    addFlashMessage: PropTypes.func.isRequired
 };
 
 RouteForm.contextTypes = {
     router: PropTypes.object.isRequired
 };
 
-export default connect(null, { pingRoutes, getRoutes, countRoutes, deleteRoute, getTicketsAndFlights})(RouteForm);
+export default connect(null, { pingRoutes, getRoutes, countRoutes, deleteRoute, getTicketsAndFlights, addFlashMessage})(RouteForm);

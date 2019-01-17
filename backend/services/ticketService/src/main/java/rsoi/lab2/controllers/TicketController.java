@@ -17,9 +17,9 @@ import java.util.logging.Logger;
 @RestController
 public class TicketController {
 
-    Logger logger = Logger.getLogger(TicketController.class.getName());
+    private Logger logger = Logger.getLogger(TicketController.class.getName());
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gateway;
 
     @Autowired

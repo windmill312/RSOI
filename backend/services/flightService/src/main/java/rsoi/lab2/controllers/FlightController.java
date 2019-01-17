@@ -21,10 +21,10 @@ import com.google.gson.Gson;
 
 @RestController
 public class FlightController {
-    Logger logger = Logger.getLogger(FlightController.class.getName());
+    private Logger logger = Logger.getLogger(FlightController.class.getName());
 
-    @Value("app.gatewayUuid")
-    private String gateway;
+    @Value("${app.gatewayUuid}")
+    public String gateway;
 
     @Autowired
     private FlightService flightService;

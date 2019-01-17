@@ -23,7 +23,7 @@ public class TicketController {
 
     private Logger logger = Logger.getLogger(TicketController.class.getName());
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gatewayUuid;
 
     @GetMapping(value = "/pingTickets")
@@ -31,7 +31,7 @@ public class TicketController {
                                          @RequestHeader(name = "User") String userUuid,
                                          @RequestHeader(name = "Service") String serviceUuid) {
         logger.info("Get request (pingTickets)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8081/ping?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
@@ -47,7 +47,7 @@ public class TicketController {
                                         @RequestParam(value = "page", defaultValue = "1") int page,
                                         @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getTickets)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8081/tickets?page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
@@ -62,7 +62,7 @@ public class TicketController {
                                         @RequestParam(value = "page", defaultValue = "1") int page,
                                         @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getUserTickets)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8081/userTickets?page=" + page + "&size=" + size + "&userUuid=" + userUuid + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
@@ -79,7 +79,7 @@ public class TicketController {
                                         @RequestParam(value = "page", defaultValue = "1") int page,
                                         @RequestParam(value = "size", defaultValue = "5") int size) {
         logger.info("Get request (getTicketsByFlight)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + uidFlight + "&page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
@@ -92,7 +92,7 @@ public class TicketController {
                                           @RequestHeader(name = "User") String userUuid,
                                           @RequestHeader(name = "Service") String serviceUuid) {
         logger.info("Get request (countTickets)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8081/countAll?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, String.class);
@@ -107,7 +107,7 @@ public class TicketController {
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestParam String uidTicket) {
         logger.info("Get request (getTicket)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             String resourceUrl = "http://localhost:8081/ticket?uidTicket=" + uidTicket + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
@@ -120,7 +120,7 @@ public class TicketController {
                                     @RequestHeader(name = "User") String userUuid,
                                     @RequestHeader(name = "Service") String serviceUuid,
                                     @RequestBody TicketInfo ticketInfo) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 logger.info("Get PUT request (addTicket)");
                 RestTemplate restTemplate = new RestTemplate();
@@ -174,7 +174,7 @@ public class TicketController {
                                      @RequestHeader(name = "User") String userUuid,
                                      @RequestHeader(name = "Service") String serviceUuid,
                                      @RequestBody TicketInfo ticketInfo) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 logger.info("Get PATCH request (editTicket)");
                 RestTemplate restTemplate = new RestTemplate();
@@ -196,7 +196,7 @@ public class TicketController {
                                        @RequestHeader(name = "User") String userUuid,
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestBody String uidTicket) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 logger.info("Get DELETE request (deleteTicket)");
                 //get ticket
@@ -220,7 +220,7 @@ public class TicketController {
                     ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, String.class);
                     FlightInfo flightInfo = new Gson().fromJson(responseFlight.getBody().toString(), FlightInfo.class);
                     flightInfo.setNnTickets(flightInfo.getNnTickets() - 1);
-                    new FlightController().editFlight(flightInfo);
+                    new FlightController().editFlight(flightInfo, gatewayUuid);
                     return responseFlight;
                 } else {
                     logger.info("Server error while removing ticket");
@@ -239,7 +239,7 @@ public class TicketController {
                                         @RequestHeader(name = "User") String userUuid,
                                         @RequestHeader(name = "Service") String serviceUuid,
                                         @RequestBody String uidFlight) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 logger.info("Get DELETE request (deleteTickets)");
                 RestTemplate restTemplate = new RestTemplate();

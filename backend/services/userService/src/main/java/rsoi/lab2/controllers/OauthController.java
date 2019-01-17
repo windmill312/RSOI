@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/oauth")
 public class OauthController {
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gateway;
 
     @Value("${app.jwtAccessExpirationInMs}")

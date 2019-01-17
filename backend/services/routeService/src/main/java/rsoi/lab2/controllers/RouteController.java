@@ -20,9 +20,9 @@ public class RouteController {
 
     @Autowired
     public RouteService routeService;
-    Logger logger = Logger.getLogger(RouteController.class.getName());
+    private Logger logger = Logger.getLogger(RouteController.class.getName());
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gateway;
 
     public RouteController(RouteService service) {

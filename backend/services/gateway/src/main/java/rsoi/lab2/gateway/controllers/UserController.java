@@ -18,7 +18,7 @@ public class UserController {
 
     private Logger logger = Logger.getLogger(TicketController.class.getName());
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gatewayUuid;
 
     @GetMapping(value = "/api/{username}")
@@ -152,7 +152,7 @@ public class UserController {
     }
 
     @PostMapping("/oauth/signup")
-    public ResponseEntity<?> registerService(@Valid @RequestBody SignUpServiceRequest signUpServiceRequest) throws JsonProcessingException {
+    public ResponseEntity<?> registerService(@Valid @RequestBody SignUpServiceRequest signUpServiceRequest) {
         logger.info("Get register request with service name: " + signUpServiceRequest.getName() + "\n");
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();

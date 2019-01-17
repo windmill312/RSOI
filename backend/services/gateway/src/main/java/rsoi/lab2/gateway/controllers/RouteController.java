@@ -26,7 +26,7 @@ public class RouteController {
 
     private Logger logger = Logger.getLogger(RouteController.class.getName());
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gatewayUuid;
 
     @GetMapping(value = "/routes")
@@ -80,7 +80,7 @@ public class RouteController {
                                    @RequestHeader(name = "User") String userUuid,
                                    @RequestHeader(name = "Service") String serviceUuid,
                                    @RequestBody RouteInfo routeInfo) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 logger.info("Get PUT request (addRoute)");
                 RestTemplate restTemplate = new RestTemplate();
@@ -110,7 +110,7 @@ public class RouteController {
                                     @RequestHeader(name = "User") String userUuid,
                                     @RequestHeader(name = "Service") String serviceUuid,
                                     @RequestBody RouteInfo routeInfo) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 logger.info("Get PATCH request (editRoute)");
                 RestTemplate restTemplate = new RestTemplate();
@@ -138,7 +138,7 @@ public class RouteController {
                                                 @RequestParam String uidRoute,
                                                 @RequestParam(value = "page", defaultValue = "1") int page,
                                                 @RequestParam(value = "size", defaultValue = "5") int size) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 RestTemplate restTemplate = new RestTemplate();
                 String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&gatewayUuid=" + gatewayUuid;
@@ -187,7 +187,7 @@ public class RouteController {
                                       @RequestHeader(name = "User") String userUuid,
                                       @RequestHeader(name = "Service") String serviceUuid,
                                       @RequestBody String uidRoute) {
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 RestTemplate restTemplate = new RestTemplate();
                 String resourceUrl = "http://localhost:8083/flights?uidRoute=" + uidRoute + "&gatewayUuid=" + gatewayUuid;

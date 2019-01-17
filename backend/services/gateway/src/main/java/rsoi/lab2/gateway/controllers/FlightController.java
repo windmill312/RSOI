@@ -18,7 +18,7 @@ public class FlightController {
 
     private Logger logger = Logger.getLogger(FlightController.class.getName());
 
-    @Value("app.gatewayUuid")
+    @Value("${app.gatewayUuid}")
     private String gatewayUuid;
 
     @GetMapping(value = "/pingFlights")
@@ -77,7 +77,7 @@ public class FlightController {
                                     @RequestHeader(name = "Service") String serviceUuid,
                                     @RequestBody FlightInfo flightInfo) {
         logger.info("Get PUT request (addFlight)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             try {
                 RestTemplate restTemplate = new RestTemplate();
                 ObjectMapper mapper = new ObjectMapper();
@@ -108,22 +108,22 @@ public class FlightController {
                                      @RequestBody FlightInfo flightInfo) {
 
         logger.info("Get PATCH request (editFlight)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
-            return patchRequest(flightInfo);
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
+            return patchRequest(flightInfo, gatewayUuid);
         } else
             throw new InvalidTokenException("Token is invalid");
     }
 
-    void editFlight(@RequestBody FlightInfo flightInfo) {
+    void editFlight(@RequestBody FlightInfo flightInfo, String gatewayUuid) {
 
         logger.info("Get PATCH request (editFlight)");
-        patchRequest(flightInfo);
+        patchRequest(flightInfo, gatewayUuid);
     }
 
-    private ResponseEntity patchRequest(FlightInfo flightInfo) {
+    private ResponseEntity patchRequest(FlightInfo flightInfo, String gatewayUuid) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8083/flight?_method=patch?gatewayUuid=" + gatewayUuid;
+            String resourceUrl = "http://localhost:8083/flight?_method=patch&gatewayUuid=" + gatewayUuid;
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
             HttpEntity<FlightInfo> request = new HttpEntity<>(flightInfo, headers);
@@ -140,7 +140,7 @@ public class FlightController {
                                        @RequestHeader(name = "Service") String serviceUuid,
                                        @RequestBody String uidFlight) {
         logger.info("Get DELETE request (deleteFlight)");
-        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid)) {
+        if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
             ObjectMapper mapper = new ObjectMapper();
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
