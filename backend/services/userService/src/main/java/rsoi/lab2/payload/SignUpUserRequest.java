@@ -1,6 +1,7 @@
 package rsoi.lab2.payload;
 
 import javax.validation.constraints.*;
+import java.util.UUID;
 
 public class SignUpUserRequest {
 
@@ -16,6 +17,9 @@ public class SignUpUserRequest {
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
+
+    @NotBlank
+    private UUID serviceUuid;
 
     public String getUsername() {
         return username;
@@ -39,5 +43,13 @@ public class SignUpUserRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UUID getServiceUuid() {
+        return serviceUuid;
+    }
+
+    public void setServiceUuid(UUID serviceUuid) {
+        this.serviceUuid = serviceUuid;
     }
 }

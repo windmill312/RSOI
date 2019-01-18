@@ -3,6 +3,7 @@ package rsoi.lab2.gateway.common;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.UUID;
 
 public class SignUpUserRequest {
     @NotBlank
@@ -17,6 +18,8 @@ public class SignUpUserRequest {
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
+
+    private UUID serviceUuid;
 
     public String getUsername() {
         return username;
@@ -40,5 +43,13 @@ public class SignUpUserRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public UUID getServiceUuid() {
+        return serviceUuid;
+    }
+
+    public void setServiceUuid(UUID serviceUuid) {
+        this.serviceUuid = serviceUuid;
     }
 }

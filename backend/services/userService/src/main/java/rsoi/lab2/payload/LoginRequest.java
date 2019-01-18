@@ -12,7 +12,6 @@ public class LoginRequest {
 
     private String redirectUri;
 
-    //todo не забыть выставить на морде
     private UUID serviceUuid;
 
     public String getIdentifier() {

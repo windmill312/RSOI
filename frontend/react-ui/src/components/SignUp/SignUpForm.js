@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { isUserExists, userSignUpRequest } from '../../actions/SignUpActions';
 import {connect} from "react-redux";
 import { addFlashMessage } from '../../actions/FlashMessages.js';
+import {SERVICE_UUID} from "../../config";
 
 class SignUpForm extends React.Component {
     constructor(props) {
@@ -16,7 +17,8 @@ class SignUpForm extends React.Component {
             passwordConfirmation: '',
             errors: {},
             isLoading: false,
-            invalid: false
+            invalid: false,
+            serviceUuid: `${SERVICE_UUID}`
         };
 
         this.onChange = this.onChange.bind(this);
@@ -69,16 +71,25 @@ class SignUpForm extends React.Component {
 
         if (this.isValid()) {
             this.setState({ errors: {}, isLoading: true });
-            this.props.userSignUpRequest(this.state).then(
-                () => {
-                    this.props.addFlashMessage({
-                        type: 'success',
-                        text: 'Регистрация прошла успешно!'
-                    });
-                    this.context.router.push('/login');
-                },
-                (err) => this.setState({ errors: err.response.data, isLoading: false })
-            );
+            this.props.userSignUpRequest(this.state)
+                .then(
+                    res => {
+                        this.props.addFlashMessage({
+                            type: 'success',
+                            text: 'Регистрация прошла успешно!'
+                        });
+                        this.context.router.push('/login');
+                    },
+                    (err) => this.setState({ errors: err.response.data, isLoading: false })
+                )
+                .catch(
+                    error => {
+                        console.log(error.status);
+                        this.props.addFlashMessage({
+                            type: 'error',
+                            text: 'Произошла ошибка при регистрации!'
+                        });
+                });
         }
     }
 

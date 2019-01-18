@@ -14,23 +14,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import rsoi.lab2.entity.Role;
-import rsoi.lab2.entity.Token;
-import rsoi.lab2.entity.User;
+import rsoi.lab2.entity.*;
 import rsoi.lab2.exception.AppException;
 import rsoi.lab2.model.RoleName;
 import rsoi.lab2.model.TokenType;
 import rsoi.lab2.payload.*;
-import rsoi.lab2.repositories.RoleRepository;
-import rsoi.lab2.repositories.TokenRepository;
-import rsoi.lab2.repositories.UserRepository;
+import rsoi.lab2.repositories.*;
 import rsoi.lab2.security.JwtTokenProvider;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
@@ -39,14 +35,14 @@ public class AuthController {
 
     private Logger logger = LoggerFactory.getLogger(AuthController.class);
 
+    @Value("${app.frontUuid}")
+    private String frontUuid;
+
     @Value("${app.gatewayUuid}")
     private String gateway;
 
     @Value("${app.jwtAccessExpirationInMs}")
     private int jwtAccessExpirationInMs;
-
-    @Value("${app.ourServiceUuid}")
-    private String ourServiceUuid;
 
     private final AuthenticationManager authenticationManager;
 
@@ -59,6 +55,12 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtTokenProvider tokenProvider;
+
+    @Autowired
+    ExternalServiceRepository serviceRepository;
+
+    @Autowired
+    ServiceKeyRepository serviceKeyRepository;
 
     @Autowired
     public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, TokenRepository tokenRepository, PasswordEncoder passwordEncoder, JwtTokenProvider tokenProvider) {
@@ -181,15 +183,27 @@ public class AuthController {
 
     private ResponseEntity<?> tokensOperations(User user, LoginRequest loginRequest) {
 
-        tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
+        ExternalService externalService = serviceRepository.findByUuid(loginRequest.getServiceUuid())
+                .orElseThrow(() -> new NoSuchElementException("Service not found"));
 
-        String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
-        String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
+        if (externalService.getUuid().equals(frontUuid)) {
+            tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
-        updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
-        updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
+            String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid(), externalService.getSecretKey());
+            String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid(), externalService.getSecretKey());
 
-        userRepository.save(user);
+            updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
+            updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
+            userRepository.save(user);
+
+            return createResponseWithTokens(user, jwtAccess, jwtRefresh);
+        }
+        else
+            return createResponseWithCode(externalService, user);
+
+    }
+
+    private ResponseEntity createResponseWithTokens(User user, String jwtAccess, String jwtRefresh) {
 
         JwtAuthenticationResponse response = new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs);
         Role adminRole = new Role();
@@ -199,10 +213,26 @@ public class AuthController {
         for (Role role : user.getRoles())
             if (role.getName().equals(RoleName.ROLE_ADMIN))
                 response.setAdmin(true);
-
-        return ResponseEntity.ok(response);
+            return ResponseEntity.ok(response);
     }
 
+    private ResponseEntity createResponseWithCode(ExternalService externalService, User user) {
+
+        UUID authorizationCode = UUID.randomUUID();
+        ServiceKey serviceKey = new ServiceKey();
+        serviceKey.setService(externalService);
+        serviceKey.setUser(user);
+        serviceKey.setValue(authorizationCode);
+
+        externalService.getKeys().add(serviceKey);
+        user.getKeys().add(serviceKey);
+
+        userRepository.save(user);
+        serviceRepository.save(externalService);
+
+        String response = "{code: " + authorizationCode + "}";
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping(
             value = "/signup",

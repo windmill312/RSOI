@@ -3,7 +3,8 @@ package rsoi.lab2.entity;
 import org.apache.commons.lang.RandomStringUtils;
 
 import javax.persistence.*;
-import java.util.Random;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -23,6 +24,9 @@ public class ExternalService {
     @Column(length = 60)
     private UUID uuid;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "service")
+    private Set<ServiceKey> keys;
+
     public ExternalService() {
 
     }
@@ -30,8 +34,7 @@ public class ExternalService {
     public ExternalService(String name) {
         this.name = name;
         int length = 15;
-        String generatedString = RandomStringUtils.random(length, true, true);
-        this.secretKey = generatedString;
+        this.secretKey = RandomStringUtils.random(length, true, true);
         this.uuid = UUID.randomUUID();
     }
 
@@ -65,5 +68,13 @@ public class ExternalService {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Set<ServiceKey> getKeys() {
+        return keys;
+    }
+
+    public void setKeys(Set<ServiceKey> keys) {
+        this.keys = keys;
     }
 }

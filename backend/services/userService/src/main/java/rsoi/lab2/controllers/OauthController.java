@@ -29,7 +29,7 @@ public class OauthController {
     private int jwtAccessExpirationInMs;
 
     @Value("${app.frontUrl}")
-    private String projectUrl;
+    private String frontendUrl;
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -53,7 +53,7 @@ public class OauthController {
                                               @RequestParam String gatewayUuid) {
         if (gatewayUuid.equals(gateway))
             if (externalServiceRepository.existsByUuid(UUID.fromString(serviceUuid))) {
-                String url = projectUrl + "/oauth?redirectUri=" + redirectUri + "&serviceUuid=" + serviceUuid;
+                String url = frontendUrl + "/oauth?redirectUri=" + redirectUri + "&serviceUuid=" + serviceUuid;
                 return ResponseEntity.status(HttpStatus.OK).header("Location", url).build();
             }
             else

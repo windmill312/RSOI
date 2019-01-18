@@ -46,6 +46,9 @@ public class User implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private Set<Token> tokens;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private Set<ServiceKey> keys;
+
     public User(String name, String username, String email, String password) {
         this.setName(name);
         this.setUsername(username);
@@ -120,5 +123,13 @@ public class User implements Serializable {
 
     public void setTokens(Set<Token> tokens) {
         this.tokens = tokens;
+    }
+
+    public Set<ServiceKey> getKeys() {
+        return keys;
+    }
+
+    public void setKeys(Set<ServiceKey> keys) {
+        this.keys = keys;
     }
 }

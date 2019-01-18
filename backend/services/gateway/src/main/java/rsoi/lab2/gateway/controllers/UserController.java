@@ -177,7 +177,7 @@ public class UserController {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<SignUpUserRequest> request = new HttpEntity<>(signUpUserRequest, headers);
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/api/auth/signup" + "&gatewayUuid=" + gatewayUuid, request, Object.class);
+            ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/api/auth/signup?gatewayUuid=" + gatewayUuid, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
         } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");

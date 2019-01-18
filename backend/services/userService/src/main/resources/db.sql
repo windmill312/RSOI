@@ -23,6 +23,8 @@ ALTER role program WITH login;
 INSERT INTO roles VALUES (1, 'ROLE_USER');
 INSERT INTO roles VALUES (2, 'ROLE_ADMIN');
 
+insert into services values (1, 'our_frontend', 'XsL2FuvmwFC4CTC', 'ede4bfb8-2acb-441e-9b00-4b786309fcd2');
+
 --create admin
 insert into user_roles values (1,2);
 
@@ -36,4 +38,5 @@ sudo -i
 su postgres
 psql
 ------------------------------
-
+--посмотреть таблицы базы
+\dt
