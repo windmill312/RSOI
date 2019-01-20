@@ -186,26 +186,21 @@ public class AuthController {
         ExternalService externalService = serviceRepository.findByUuid(loginRequest.getServiceUuid())
                 .orElseThrow(() -> new NoSuchElementException("Service not found"));
 
-        if (externalService.getUuid().equals(frontUuid)) {
             tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
-            String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid(), externalService.getSecretKey());
-            String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid(), externalService.getSecretKey());
+            String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
+            String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
 
             updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
             updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
             userRepository.save(user);
 
-            return createResponseWithTokens(user, jwtAccess, jwtRefresh);
-        }
-        else
-            return createResponseWithCode(externalService, user);
-
+            return createResponseWithTokens(user, jwtAccess, jwtRefresh, externalService);
     }
 
-    private ResponseEntity createResponseWithTokens(User user, String jwtAccess, String jwtRefresh) {
+    private ResponseEntity createResponseWithTokens(User user, String jwtAccess, String jwtRefresh, ExternalService externalService) {
 
-        JwtAuthenticationResponse response = new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs);
+        JwtAuthenticationResponse response = new JwtAuthenticationResponse(jwtAccess, jwtRefresh, jwtAccessExpirationInMs, createAuthCode(externalService, user));
         Role adminRole = new Role();
         adminRole.setId(2L);
         adminRole.setName(RoleName.ROLE_ADMIN);
@@ -216,13 +211,16 @@ public class AuthController {
             return ResponseEntity.ok(response);
     }
 
-    private ResponseEntity createResponseWithCode(ExternalService externalService, User user) {
+    private UUID createAuthCode(ExternalService externalService, User user) {
+
+        serviceKeyRepository.deleteAllByUserAndService(user, externalService);
 
         UUID authorizationCode = UUID.randomUUID();
         ServiceKey serviceKey = new ServiceKey();
         serviceKey.setService(externalService);
         serviceKey.setUser(user);
         serviceKey.setValue(authorizationCode);
+        serviceKeyRepository.save(serviceKey);
 
         externalService.getKeys().add(serviceKey);
         user.getKeys().add(serviceKey);
@@ -230,8 +228,7 @@ public class AuthController {
         userRepository.save(user);
         serviceRepository.save(externalService);
 
-        String response = "{code: " + authorizationCode + "}";
-        return ResponseEntity.ok(response);
+        return authorizationCode;
     }
 
     @PostMapping(

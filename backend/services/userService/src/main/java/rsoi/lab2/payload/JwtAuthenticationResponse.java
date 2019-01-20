@@ -1,16 +1,20 @@
 package rsoi.lab2.payload;
 
+import java.util.UUID;
+
 public class JwtAuthenticationResponse {
     private String accessToken;
     private String tokenType = "Bearer";
     private String refreshToken;
     private int jwtExpirationInMs;
     private boolean isAdmin = false;
+    private UUID code;
 
-    public JwtAuthenticationResponse(String accessToken, String refreshToken, int jwtExpirationInMs) {
+    public JwtAuthenticationResponse(String accessToken, String refreshToken, int jwtExpirationInMs, UUID authCode) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.jwtExpirationInMs = jwtExpirationInMs;
+        this.code = authCode;
     }
 
     public String getAccessToken() {
@@ -51,5 +55,13 @@ public class JwtAuthenticationResponse {
 
     public void setAdmin(boolean admin) {
         this.isAdmin = admin;
+    }
+
+    public UUID getCode() {
+        return code;
+    }
+
+    public void setCode(UUID code) {
+        this.code = code;
     }
 }

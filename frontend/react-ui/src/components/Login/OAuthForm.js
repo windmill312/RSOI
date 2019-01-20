@@ -40,21 +40,13 @@ class OAuthForm extends React.Component {
     }
 
     sendAccess() {
-        const data = {
-            'identifier': localStorage.getItem('identifier'),
-            'password': sessionStorage.getItem('password'),
-            'redirectUri': this.state.redirectUri,
-            'serviceUuid': this.props.location.query.serviceUuid
-        };
-        this.props.login(data)
-            /*.then(() => {
-                window.location = `${this.state.redirectUri}?accessToken=${localStorage.getItem('accessToken')}&refreshToken=${localStorage.getItem('refreshToken')}&jwtExpirationInMs=${localStorage.getItem('jwtExpirationInMs')}`;
-                localStorage.removeItem('url');
-            })
-            .catch(err => {
-                console.log(err);
-                alert('Error');
-            })*/
+        if (localStorage.getItem('code') !== null) {
+            window.location = `${this.state.redirectUri}/callback?code=${localStorage.getItem('code')}`;
+            localStorage.removeItem('url');
+        }
+        else {
+            alert('Error');
+        }
     }
 
     render() {

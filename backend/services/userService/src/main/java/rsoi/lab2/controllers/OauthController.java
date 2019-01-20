@@ -9,13 +9,21 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import rsoi.lab2.entity.ExternalService;
+import rsoi.lab2.entity.ServiceKey;
+import rsoi.lab2.entity.Token;
+import rsoi.lab2.model.TokenType;
 import rsoi.lab2.payload.ApiResponse;
+import rsoi.lab2.payload.JwtAuthenticationResponse;
 import rsoi.lab2.payload.ServiceResponse;
 import rsoi.lab2.payload.SignUpServiceRequest;
 import rsoi.lab2.repositories.ExternalServiceRepository;
+import rsoi.lab2.repositories.ServiceKeyRepository;
+import rsoi.lab2.repositories.TokenRepository;
 import rsoi.lab2.security.JwtTokenProvider;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
@@ -36,6 +44,12 @@ public class OauthController {
 
     @Autowired
     ExternalServiceRepository externalServiceRepository;
+
+    @Autowired
+    TokenRepository tokenRepository;
+
+    @Autowired
+    ServiceKeyRepository serviceKeyRepository;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -97,6 +111,55 @@ public class OauthController {
             signUpServiceRequest.setName(externalService.getName());
 
             return ResponseEntity.ok().body(signUpServiceRequest);
+        }
+        else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @GetMapping(
+            value = "/tokens",
+            params = {
+                    "serviceUuid",
+                    "gatewayUuid",
+                    "serviceSecret",
+                    "code"
+            })
+    public ResponseEntity<?> getTokensByCode (@RequestParam String serviceUuid,
+                                              @RequestParam String gatewayUuid,
+                                              @RequestParam String serviceSecret,
+                                              @RequestParam String code
+                                              ) {
+        if (gatewayUuid.equals(gateway)) {
+
+            ServiceKey serviceKey = serviceKeyRepository.findByValue(UUID.fromString(code))
+                    .orElseThrow(() -> new NoSuchElementException("Code is invalid"));
+
+            ExternalService externalService = externalServiceRepository.findByUuid(UUID.fromString(serviceUuid))
+                    .orElseThrow(() -> new NoSuchElementException("Service not found"));
+
+            if (externalService.getSecretKey().equals(serviceSecret)) {
+
+                List<Token> tokens = tokenRepository.findAllByUserAndServiceUuid(serviceKey.getUser(), externalService.getUuid());
+
+                if (tokens.size() <= 0)
+                    throw new NoSuchElementException("There are no tokens for code");
+
+                String accessToken = "";
+                String refreshToken = "";
+
+                for (Token token : tokens) {
+                    if (token.getTokenType().equals(TokenType.ACCESS_TOKEN))
+                        accessToken = token.getValue();
+                    else
+                        refreshToken = token.getValue();
+                }
+
+                JwtAuthenticationResponse response = new JwtAuthenticationResponse(accessToken, refreshToken, jwtAccessExpirationInMs, null);
+
+                return ResponseEntity.ok().body(response);
+            }
+            else
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Service secret is invalid!");
         }
         else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

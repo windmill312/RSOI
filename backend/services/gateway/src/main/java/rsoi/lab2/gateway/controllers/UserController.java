@@ -129,6 +129,42 @@ public class UserController {
         }
     }
 
+    @GetMapping(
+            value = "/api/oauth/tokens",
+            params = {
+                    "serviceUuid",
+                    "code",
+                    "serviceSecret",
+                    "redirectUri"
+            }
+    )
+    public ResponseEntity<?> getTokensByCode(
+            @RequestParam String serviceUuid,
+            @RequestParam String code,
+            @RequestParam String serviceSecret,
+            @RequestParam String redirectUri
+            ) {
+        logger.info("GET request 'getTokensByCode' from service: " + serviceUuid);
+        RestTemplate restTemplate = new RestTemplate();
+        try {
+            ResponseEntity<?> response = restTemplate.getForEntity(
+                    "http://localhost:8084/oauth/tokens?code=" + code
+                            + "&gatewayUuid=" + gatewayUuid
+                            + "&serviceSecret=" + serviceSecret
+                            + "&serviceUuid=" + serviceUuid,
+                    Object.class);
+            if (response.getStatusCode() == HttpStatus.OK)
+                return ResponseEntity.status(HttpStatus.FOUND).headers(response.getHeaders()).header("Location", redirectUri).body(response.getBody());
+            else
+                return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
+        } catch (HttpClientErrorException ex) {
+            logger.info("Troubles exists :(");
+            //todo fix this foo
+            return new ResponseEntity<>(new ApiResponse(false, "Service not found!"),
+                    HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     @GetMapping(value = "/oauth/signin",
     params = {
             "serviceUuid",
