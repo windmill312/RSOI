@@ -154,7 +154,7 @@ public class UserController {
                             + "&serviceUuid=" + serviceUuid,
                     Object.class);
             if (response.getStatusCode() == HttpStatus.OK)
-                return ResponseEntity.status(HttpStatus.FOUND).headers(response.getHeaders()).header("Location", redirectUri).body(response.getBody());
+                return ResponseEntity.status(HttpStatus.OK).headers(response.getHeaders()).headers(response.getHeaders()).body(response.getBody());
             else
                 return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
         } catch (HttpClientErrorException ex) {

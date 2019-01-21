@@ -33,6 +33,9 @@ public class OauthController {
     @Value("${app.gatewayUuid}")
     private String gateway;
 
+    @Value("${app.frontUuid}")
+    private String frontUuid;
+
     @Value("${app.jwtAccessExpirationInMs}")
     private int jwtAccessExpirationInMs;
 
@@ -139,7 +142,8 @@ public class OauthController {
 
             if (externalService.getSecretKey().equals(serviceSecret)) {
 
-                List<Token> tokens = tokenRepository.findAllByUserAndServiceUuid(serviceKey.getUser(), externalService.getUuid());
+                //todo передается uuid нашего фронта, надо заменить на uuid стороннего сервиса
+                List<Token> tokens = tokenRepository.findAllByUserAndServiceUuid(serviceKey.getUser(), UUID.fromString(frontUuid)); //externalService.getUuid()
 
                 if (tokens.size() <= 0)
                     throw new NoSuchElementException("There are no tokens for code");
