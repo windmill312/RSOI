@@ -1,7 +1,10 @@
 import React from 'react';
-import {FormGroup, ControlLabel, FormControl, Button} from 'react-bootstrap';
+import {FormGroup, ControlLabel, FormControl, Button, Alert} from 'react-bootstrap';
 import PropTypes from "prop-types";
 import {getTicketsAndFlights} from '../../actions/RoutesActions';
+import {pingTickets} from '../../actions/TicketsActions';
+import {pingFlights} from '../../actions/FlightsActions';
+import {pingRoutes} from '../../actions/RoutesActions';
 import connect from "react-redux/es/connect/connect";
 import '../../styles/Routes/Aggregation.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -15,7 +18,9 @@ class AddRoute extends React.Component {
             routeAggregation: [[]],
             uidRoute: '',
             disableButton: true,
-            tableHidden: false
+            tableHidden: false,
+            invalid: true,
+            expandable: false
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -30,6 +35,42 @@ class AddRoute extends React.Component {
             this.setState({disableButton: false});
         else
             this.setState({disableButton: true});
+    }
+
+    componentDidMount() {
+        this.props.pingRoutes()
+            .then(
+                () => {
+                    this.props.pingFlights()
+                        .then(() => {
+                            this.setState({
+                                invalid: false
+                            });
+                            this.props.pingTickets()
+                                .then(() => {
+                                    this.setState({
+                                        expandable: true
+                                    });
+                                });
+                        })
+                        .catch(
+                            (error) => {
+                                console.log(error);
+                                this.setState({
+                                    invalid: true
+                                });
+                            }
+                        )
+                }
+            )
+            .catch(
+                (error) => {
+                    console.log(error);
+                    this.setState({
+                        invalid: true
+                    });
+                }
+            )
     }
 
     handleSubmit() {
@@ -53,39 +94,52 @@ class AddRoute extends React.Component {
 
         if (this.state.routeAggregation.length > 0)
             return (
-                <ExpandRow data={this.state.routeAggregation}/>
+                <ExpandRow data={this.state.routeAggregation} isExpandable={this.state.expandable}/>
             );
     }
 
 
     render() {
-        return (
-            <form onSubmit={this.getTicketsAndFlights} className="form">
-                <FormGroup
-                    controlId="formBasicText"
-                >
-                    <ControlLabel>Уникальный номер маршрута</ControlLabel>
-                    <FormControl
-                        className="input"
-                        type="text"
-                        value={this.state.uidRoute}
-                        placeholder="Введите текст"
-                        onChange={this.handleChange}
-                    />
+        if (this.state.invalid === false)
+            return (
+                <form onSubmit={this.getTicketsAndFlights} className="form">
+                    <FormGroup
+                        controlId="formBasicText"
+                    >
+                        <ControlLabel>Уникальный номер маршрута</ControlLabel>
+                        <FormControl
+                            className="input"
+                            type="text"
+                            value={this.state.uidRoute}
+                            placeholder="Введите текст"
+                            onChange={this.handleChange}
+                        />
 
-                    <Button className="button" bsStyle="danger" type="submit" disabled={this.state.disableButton} >Создать отчет</Button>
-                </FormGroup>
-                <FormGroup>
-                    {this.createTable()}
-                </FormGroup>
+                        <Button className="button" bsStyle="danger" type="submit" disabled={this.state.disableButton} >Создать отчет</Button>
+                    </FormGroup>
+                    <FormGroup>
+                        {this.createTable()}
+                    </FormGroup>
 
-            </form>
-        );
+                </form>
+            );
+        else
+            return (
+                <div>
+                    <Alert bsStyle="danger">
+                        Функция временно недоступна
+                    </Alert>
+                    <Button outline onClick={()=> {this.componentDidMount(); this.render();}}>Обновить</Button>
+                </div>
+            );
     }
 }
 
 AddRoute.propTypes = {
-    getTicketsAndFlights: PropTypes.func.isRequired
+    getTicketsAndFlights: PropTypes.func.isRequired,
+    pingTickets: PropTypes.func.isRequired,
+    pingRoutes: PropTypes.func.isRequired,
+    pingFlights: PropTypes.func.isRequired
 };
 
-export default connect(null, { getTicketsAndFlights }) (AddRoute);
+export default connect(null, { getTicketsAndFlights, pingTickets, pingFlights, pingRoutes }) (AddRoute);

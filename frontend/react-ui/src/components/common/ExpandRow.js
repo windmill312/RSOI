@@ -33,21 +33,34 @@ export default class ExpandRow extends React.Component {
         const options = {
             expandRowBgColor: 'rgb(242, 255, 163)'
         };
-        return (
-            <BootstrapTable data={ this.props.data }
-                            options={ options }
-                            expandableRow={ ExpandRow.isExpandableRow }
-                            expandComponent={ ExpandRow.expandComponent }
-                            search>
-                <TableHeaderColumn dataField='uid' isKey={ true }>Уникальный номер рейса</TableHeaderColumn>
-                <TableHeaderColumn dataField='dtFlight'>Дата рейса</TableHeaderColumn>
-                <TableHeaderColumn dataField='nnTickets'>Количество купленных билетов</TableHeaderColumn>
-                <TableHeaderColumn dataField='maxTickets'>Общее количество билетов</TableHeaderColumn>
-            </BootstrapTable>
-        );
+        if (this.props.isExpandable)
+            return (
+                <BootstrapTable data={ this.props.data }
+                                options={ options }
+                                expandableRow={ ExpandRow.isExpandableRow }
+                                expandComponent={ ExpandRow.expandComponent }
+                                search>
+                    <TableHeaderColumn dataField='uid' isKey={ true }>Уникальный номер рейса</TableHeaderColumn>
+                    <TableHeaderColumn dataField='dtFlight'>Дата рейса</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nnTickets'>Количество купленных билетов</TableHeaderColumn>
+                    <TableHeaderColumn dataField='maxTickets'>Общее количество билетов</TableHeaderColumn>
+                </BootstrapTable>
+            );
+        else
+            return (
+                <BootstrapTable data={ this.props.data }
+                                options={ options }
+                                search>
+                    <TableHeaderColumn dataField='uid' isKey={ true }>Уникальный номер рейса</TableHeaderColumn>
+                    <TableHeaderColumn dataField='dtFlight'>Дата рейса</TableHeaderColumn>
+                    <TableHeaderColumn dataField='nnTickets'>Количество купленных билетов</TableHeaderColumn>
+                    <TableHeaderColumn dataField='maxTickets'>Общее количество билетов</TableHeaderColumn>
+                </BootstrapTable>
+            );
     }
 }
 
 ExpandRow.propTypes ={
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    isExpandable: PropTypes.bool.isRequired
 };

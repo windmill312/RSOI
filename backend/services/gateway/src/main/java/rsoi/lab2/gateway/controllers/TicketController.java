@@ -5,12 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import rsoi.lab2.gateway.common.CheckToken;
+import rsoi.lab2.gateway.common.RequestQueue;
 import rsoi.lab2.gateway.exception.InvalidTokenException;
 import rsoi.lab2.gateway.model.FlightInfo;
 import rsoi.lab2.gateway.model.TicketInfo;
@@ -22,6 +25,9 @@ import java.util.logging.Logger;
 public class TicketController {
 
     private Logger logger = Logger.getLogger(TicketController.class.getName());
+
+    @Autowired
+    private RequestQueue queue;
 
     @Value("${app.gatewayUuid}")
     private String gatewayUuid;
@@ -145,15 +151,22 @@ public class TicketController {
                         if (responseTicket.getStatusCode().equals(HttpStatus.OK)) {
                             logger.info("Ticket created with uid " + responseTicket.getBody());
                             flightInfo.setNnTickets(flightInfo.getNnTickets() + 1);
-                            RestTemplate restTemplateFlight = new RestTemplate();
 
-                            HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-                            requestFactory.setConnectTimeout(500);
-                            requestFactory.setReadTimeout(500);
-                            restTemplate.setRequestFactory(requestFactory);
+                            try {
+                                RestTemplate restTemplateFlight = new RestTemplate();
 
-                            HttpEntity<FlightInfo> requestFlight = new HttpEntity<>(flightInfo, headers);
-                            restTemplateFlight.postForObject("http://localhost:8083/flight?_method=patch" + "&gatewayUuid=" + gatewayUuid, requestFlight, ResponseEntity.class);
+                                HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+                                requestFactory.setConnectTimeout(500);
+                                requestFactory.setReadTimeout(500);
+                                restTemplate.setRequestFactory(requestFactory);
+
+                                HttpEntity<FlightInfo> requestFlight = new HttpEntity<>(flightInfo, headers);
+                                restTemplateFlight.postForObject("http://localhost:8083/flight?_method=patch" + "&gatewayUuid=" + gatewayUuid, requestFlight, ResponseEntity.class);
+                            }
+                            catch (ResourceAccessException ex) {
+                                logger.info("Flight service is not available! Request added to the queue!");
+                                queue.add(flightInfo);
+                            }
                             return responseTicket;
                         } else
                             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error while creating new ticket");

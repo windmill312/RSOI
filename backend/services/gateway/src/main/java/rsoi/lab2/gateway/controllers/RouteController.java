@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import rsoi.lab2.gateway.common.CheckToken;
 import rsoi.lab2.gateway.exception.InvalidTokenException;
@@ -151,20 +152,35 @@ public class RouteController {
 
                 List<FlightInfo> listFlightInfo = new ArrayList<>();
 
+                boolean isTicketsAvailable = false;
+                try {
+                    RestTemplate restTickets = new RestTemplate();
+                    String ticketsUrl = "http://localhost:8081/ping?gatewayUuid=" + gatewayUuid;
+                    ResponseEntity responseEntity = restTickets.getForEntity(ticketsUrl, Object.class);
+                    if (responseEntity.getStatusCode() == HttpStatus.OK)
+                        isTicketsAvailable = true;
+                }
+                catch (ResourceAccessException ex) {
+                    logger.info("Ticket service is not available");
+                    isTicketsAvailable = false;
+                }
+
                 for (int i = 0; i < jsonFlightArray.length(); i++) {
                     JSONObject object = jsonFlightArray.getJSONObject(i);
                     FlightInfo flightInfo = gson.fromJson(object.toString(), FlightInfo.class);
 
-                    resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + object.getString("uid") + "&gatewayUuid=" + gatewayUuid;
-                    ResponseEntity responseTickets = restTemplate.getForEntity(resourceUrl, String.class);
-                    String jsonTickets = responseTickets.getBody().toString();
-                    JSONArray jsonTicketsArray = new JSONArray(jsonTickets);
-                    List<TicketInfo> listTicketInfo = new ArrayList<>();
-                    for (int j = 0; j < jsonTicketsArray.length(); j++) {
-                        listTicketInfo.add(gson.fromJson(jsonTicketsArray.getJSONObject(j).toString(), TicketInfo.class));
-                    }
+                    if (isTicketsAvailable) {
+                        resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + object.getString("uid") + "&gatewayUuid=" + gatewayUuid;
+                        ResponseEntity responseTickets = restTemplate.getForEntity(resourceUrl, String.class);
+                        String jsonTickets = responseTickets.getBody().toString();
+                        JSONArray jsonTicketsArray = new JSONArray(jsonTickets);
+                        List<TicketInfo> listTicketInfo = new ArrayList<>();
+                        for (int j = 0; j < jsonTicketsArray.length(); j++) {
+                            listTicketInfo.add(gson.fromJson(jsonTicketsArray.getJSONObject(j).toString(), TicketInfo.class));
+                        }
 
-                    flightInfo.setTickets(listTicketInfo);
+                        flightInfo.setTickets(listTicketInfo);
+                    }
                     listFlightInfo.add(flightInfo);
                 }
 
