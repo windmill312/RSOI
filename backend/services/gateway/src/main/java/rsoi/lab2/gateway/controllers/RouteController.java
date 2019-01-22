@@ -239,11 +239,40 @@ public class RouteController {
                     return responseRoute;
                 else
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service error while removing route");
-            } catch (Exception ex) {
+            } catch (ResourceAccessException e) {
+                logger.info("Transaction rollback! Service not available:" + e.getLocalizedMessage());
+                transactionRollback();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service error because of exception (" + e.getLocalizedMessage() + ")");
+            }
+            catch (Exception ex) {
                 logger.info(ex.getLocalizedMessage());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Service error because of exception (" + ex.getLocalizedMessage() + ")");
             }
         } else
             throw new InvalidTokenException("Token is invalid");
+    }
+
+    private ResponseEntity<String> transactionRollback() {
+        RestTemplate restTemplate = new RestTemplate();
+        String resourceUrl = "http://localhost:8083/rollback?gatewayUuid=" + gatewayUuid;
+
+        try {
+            ResponseEntity requestFlights = restTemplate.postForEntity(resourceUrl, null, String.class);
+        }
+        catch (ResourceAccessException ex) {
+            logger.info(ex.getLocalizedMessage());
+            //todo put to queue
+        }
+
+        try{
+            resourceUrl = "http://localhost:8081/rollback?gatewayUuid=" + gatewayUuid;
+            ResponseEntity requestTickets = restTemplate.postForEntity(resourceUrl, null, String.class);
+        }
+        catch (ResourceAccessException ex) {
+            logger.info(ex.getLocalizedMessage());
+            //todo put to queue
+        }
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Transaction rollbacked!");
     }
 }

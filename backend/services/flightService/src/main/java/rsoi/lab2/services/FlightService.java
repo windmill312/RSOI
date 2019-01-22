@@ -1,5 +1,6 @@
 package rsoi.lab2.services;
 
+import org.json.JSONException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import rsoi.lab2.entity.Flight;
@@ -29,4 +30,6 @@ public interface FlightService {
     Flight getFlightByUid(UUID uidFlight);
 
     int countAll();
+
+    void rollback() throws JSONException;
 }

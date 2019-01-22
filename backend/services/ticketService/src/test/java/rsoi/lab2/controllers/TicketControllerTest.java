@@ -43,7 +43,7 @@ public class TicketControllerTest {
 
     @Test
     public void pingTest() {
-        assertEquals(controller.ping().getStatusCode(), HttpStatus.OK);
+        assertEquals(controller.ping(null).getStatusCode(), HttpStatus.OK);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TicketControllerTest {
         ticket.setIdTicket(16);
         UUID uidFlight = UUID.randomUUID();
         ticket.setUidFlight(uidFlight);
-        ticket.setUidPassenger(0);
+        ticket.setUidPassenger(UUID.randomUUID());
         ticket.setClassType("ECONOMIC");
 
         List<TicketInfo> allTickets = Arrays.asList(ticket);
@@ -74,7 +74,7 @@ public class TicketControllerTest {
         ticket.setIdTicket(16);
         UUID uidFlight = UUID.randomUUID();
         ticket.setUidFlight(uidFlight);
-        ticket.setUidPassenger(0);
+        ticket.setUidPassenger(UUID.randomUUID());
         ticket.setClassType("ECONOMIC");
         UUID uid = UUID.randomUUID();
         ticket.setUid(uid);
@@ -97,13 +97,13 @@ public class TicketControllerTest {
         ticket1.setIdTicket(16);
         UUID uidFlight = UUID.randomUUID();
         ticket1.setUidFlight(uidFlight);
-        ticket1.setUidPassenger(0);
+        ticket1.setUidPassenger(UUID.randomUUID());
         ticket1.setClassType("ECONOMIC");
 
         TicketInfo ticket2 = new TicketInfo();
         ticket2.setIdTicket(16);
         ticket2.setUidFlight(uidFlight);
-        ticket2.setUidPassenger(0);
+        ticket2.setUidPassenger(UUID.randomUUID());
         ticket2.setClassType("LUXURY");
 
         List<TicketInfo> allTickets = Arrays.asList(ticket1, ticket2);
@@ -143,7 +143,7 @@ public class TicketControllerTest {
         ticketInfo.setClassType("ECONOMIC");
         UUID uid = UUID.randomUUID();
         ticketInfo.setUidFlight(uid);
-        ticketInfo.setUidPassenger(1);
+        ticketInfo.setUidPassenger(UUID.randomUUID());
 
         Ticket ticket = new Ticket();
         ticket.setClassType(ticketInfo.getClassType());
@@ -173,7 +173,7 @@ public class TicketControllerTest {
         ticketInfo.setUidFlight(uidFlight);
         UUID uid = UUID.randomUUID();
         ticketInfo.setUid(uid);
-        ticketInfo.setUidPassenger(1);
+        ticketInfo.setUidPassenger(UUID.randomUUID());
 
         Ticket ticket = new Ticket();
         ticket.setClassType(ticketInfo.getClassType());

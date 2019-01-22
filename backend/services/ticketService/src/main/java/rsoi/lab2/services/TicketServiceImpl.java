@@ -1,5 +1,8 @@
 package rsoi.lab2.services;
 
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,8 @@ public class TicketServiceImpl implements TicketService {
     public List<TicketInfo> listAll() {
         return ticketRepository.findAll().stream().map(this::buildTicketInfo).collect(Collectors.toList());
     }
+
+    private JSONArray jsonArray = new JSONArray();
 
     private TicketInfo buildTicketInfo(Ticket ticket) {
         TicketInfo info = new TicketInfo();
@@ -70,6 +75,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void delete(UUID uid) {
+        jsonArray.put(ticketRepository.findByUid(uid));
         ticketRepository.deleteTicketsByUid(uid);
     }
 
@@ -85,7 +91,25 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public void deleteFlightTickets(UUID uidFlight) {
+        jsonArray.put(ticketRepository.findAllByUidFlight(uidFlight));
         ticketRepository.deleteTicketsByUidFlight(uidFlight);
+    }
+
+    @Override
+    public void rollback() throws JSONException {
+        Gson gson = new Gson();
+        try {
+            for (int i=0; i< jsonArray.length(); i++)
+                for (int j=0; j < jsonArray.getJSONArray(i).length(); j++ ) {
+                    Ticket ticket = gson.fromJson(jsonArray.getJSONArray(i).getJSONObject(j).toString(), Ticket.class);
+                    ticketRepository.save(ticket);
+                }
+
+            jsonArray = new JSONArray();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

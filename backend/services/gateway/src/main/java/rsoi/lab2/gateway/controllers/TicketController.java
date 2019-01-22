@@ -26,8 +26,8 @@ public class TicketController {
 
     private Logger logger = Logger.getLogger(TicketController.class.getName());
 
-    @Autowired
-    private RequestQueue queue;
+    /*@Autowired
+    private RequestQueue queue;*/
 
     @Value("${app.gatewayUuid}")
     private String gatewayUuid;
@@ -165,7 +165,7 @@ public class TicketController {
                             }
                             catch (ResourceAccessException ex) {
                                 logger.info("Flight service is not available! Request added to the queue!");
-                                queue.add(flightInfo);
+                                //queue.add(flightInfo);
                             }
                             return responseTicket;
                         } else

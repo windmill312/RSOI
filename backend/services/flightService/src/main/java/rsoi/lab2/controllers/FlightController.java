@@ -118,6 +118,26 @@ public class FlightController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
+    @PostMapping(
+            value = "/rollback",
+            params = {
+                    "gatewayUuid"
+            }
+    )
+    public ResponseEntity rollback(@RequestParam String gatewayUuid) {
+        if (gatewayUuid.equals(gateway))
+            try {
+                logger.info("Get POST request (rollback)");
+                flightService.rollback();
+                return ResponseEntity.ok().build();
+            } catch (Exception e) {
+                logger.info(e.getLocalizedMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            }
+        else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
     @PutMapping(
             value = "/flight",
             params = {

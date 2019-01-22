@@ -37,4 +37,6 @@ public interface TicketService {
     int countAll();
 
     void deleteFlightTickets(UUID uidFlight);
+
+    void rollback();
 }

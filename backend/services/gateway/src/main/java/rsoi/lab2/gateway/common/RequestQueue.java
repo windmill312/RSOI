@@ -17,7 +17,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
 
-@Component
+
 public class RequestQueue extends Thread {
 
     private Logger logger = Logger.getLogger(RequestQueue.class.getName());
