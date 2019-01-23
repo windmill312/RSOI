@@ -1,0 +1,37 @@
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### Gradle ###
+.gradle
+/build/
+/classes/
+/gradle/
+/jacoco/
+/libs/
+/reports/
+/resources/
+/test-results/
+/tmp/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
