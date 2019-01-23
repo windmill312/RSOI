@@ -3,12 +3,12 @@ import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
-import { createStore, applyMiddleware, compose } from 'redux';
+import {applyMiddleware, compose, createStore} from 'redux';
 import rootReducer from './rootReducer';
 import setAuthorizationToken from './utils/SetAuthorizationToken';
 
-import { Router, browserHistory } from 'react-router';
-import { setCurrentUser, refreshToken } from './actions/AuthActions';
+import {browserHistory, Router} from 'react-router';
+import {refreshToken, setCurrentUser} from './actions/AuthActions';
 import routes from './routes';
 import jwtDecode from 'jwt-decode';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
@@ -29,7 +29,7 @@ if (localStorage.jwtAccessToken) {
 
 ReactDOM.render(
     <Provider store={store}>
-        <Router history={browserHistory} routes={routes} />
+        <Router history={browserHistory} routes={routes}/>
     </Provider>,
     document.getElementById('app'));
 

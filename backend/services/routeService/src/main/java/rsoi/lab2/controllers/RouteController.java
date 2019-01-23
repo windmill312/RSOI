@@ -32,7 +32,7 @@ public class RouteController {
     @GetMapping(
             value = "/ping",
             params = {
-                "gatewayUuid"
+                    "gatewayUuid"
             }
     )
     public ResponseEntity<Object> ping(@RequestParam String gatewayUuid) {
@@ -71,15 +71,14 @@ public class RouteController {
                 return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
             else
                 return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @GetMapping(value = "/route",
             params = {
-                "uidRoute",
-                "gatewayUuid"
+                    "uidRoute",
+                    "gatewayUuid"
             },
             produces = "application/json")
     public ResponseEntity<RouteInfo> getRoute(@RequestParam String uidRoute,
@@ -93,8 +92,8 @@ public class RouteController {
 
     @GetMapping(value = "/routes",
             params = {
-                "nmRoute",
-                "gatewayUuid"
+                    "nmRoute",
+                    "gatewayUuid"
             },
             produces = "application/json")
     public ResponseEntity<List<RouteInfo>> getRoutes(@RequestParam String nmRoute,
@@ -108,8 +107,7 @@ public class RouteController {
                 return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
             else
                 return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -123,7 +121,7 @@ public class RouteController {
                                       @RequestParam String gatewayUuid) {
         if (gatewayUuid.equals(gateway))
             try {
-                logger.info("Get PUT request (add) with params (routeName=" + route.getRouteName() + ")" );
+                logger.info("Get PUT request (add) with params (routeName=" + route.getRouteName() + ")");
                 Route newRoute = new Route(route.getRouteName());
                 newRoute.setUid(UUID.randomUUID());
                 routeService.saveOrUpdate(newRoute);

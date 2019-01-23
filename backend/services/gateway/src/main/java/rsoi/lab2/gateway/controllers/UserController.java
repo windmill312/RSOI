@@ -1,12 +1,14 @@
 package rsoi.lab2.gateway.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-import rsoi.lab2.gateway.common.*;
+import rsoi.lab2.gateway.common.ApiResponse;
+import rsoi.lab2.gateway.common.LoginRequest;
+import rsoi.lab2.gateway.common.SignUpServiceRequest;
+import rsoi.lab2.gateway.common.SignUpUserRequest;
 import rsoi.lab2.gateway.model.UserRequest;
 
 import javax.validation.Valid;
@@ -21,11 +23,14 @@ public class UserController {
     @Value("${app.gatewayUuid}")
     private String gatewayUuid;
 
+    @Value("${app.services.user}")
+    private String userServiceUrl;
+
     @GetMapping(value = "/api/{username}")
     public ResponseEntity<?> isUserExists(@PathVariable String username) {
         logger.info("Get isUserExists with: " + username);
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForEntity("http://localhost:8084/api/auth/user/" + username + "?gatewayUuid=" + gatewayUuid, Object.class);
+        return restTemplate.getForEntity(userServiceUrl + "/api/auth/user/" + username + "?gatewayUuid=" + gatewayUuid, Object.class);
     }
 
     @GetMapping("/api/me")
@@ -37,10 +42,9 @@ public class UserController {
         headers.set("Authorization", headerAuth);
         HttpEntity<SignUpServiceRequest> request = new HttpEntity<>(headers);
         try {
-            ResponseEntity<?> response = restTemplate.exchange("http://localhost:8084/api/user/me?gatewayUuid=" + gatewayUuid, HttpMethod.GET, request, Object.class);
+            ResponseEntity<?> response = restTemplate.exchange(userServiceUrl + "/api/user/me?gatewayUuid=" + gatewayUuid, HttpMethod.GET, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
-        }
-        catch (HttpClientErrorException ex) {
+        } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Token is invalid or user not found!"),
@@ -54,7 +58,7 @@ public class UserController {
                     "serviceUuid"
             }
     )
-    public ResponseEntity isServiceExists (@RequestHeader(name = "Authorization") String headerAuth, @RequestParam String serviceUuid) {
+    public ResponseEntity isServiceExists(@RequestHeader(name = "Authorization") String headerAuth, @RequestParam String serviceUuid) {
         logger.info("Get isServiceExists request with param: " + serviceUuid + "\n");
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -62,10 +66,9 @@ public class UserController {
         headers.set("Authorization", headerAuth);
         HttpEntity<SignUpServiceRequest> request = new HttpEntity<>(headers);
         try {
-            ResponseEntity<?> response = restTemplate.exchange("http://localhost:8084/oauth?serviceUuid=" + serviceUuid + "&gatewayUuid=" + gatewayUuid, HttpMethod.GET, request, Object.class);
+            ResponseEntity<?> response = restTemplate.exchange(userServiceUrl + "/oauth?serviceUuid=" + serviceUuid + "&gatewayUuid=" + gatewayUuid, HttpMethod.GET, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
-        }
-        catch (HttpClientErrorException ex) {
+        } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Token is invalid or user not found!"),
@@ -83,10 +86,9 @@ public class UserController {
         headers.set("Authorization", headerAuth);
         HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/api/auth/refresh-token?gatewayUuid=" + gatewayUuid, request, Object.class);
+            ResponseEntity<?> response = restTemplate.postForEntity(userServiceUrl + "/api/auth/refresh-token?gatewayUuid=" + gatewayUuid, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
-        }
-        catch (HttpClientErrorException ex) {
+        } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Token is invalid or user not found!"),
@@ -97,12 +99,11 @@ public class UserController {
     @PostMapping("/api/auth/validate")
     public ResponseEntity<?> validation(@RequestBody UserRequest userRequest) {
         RestTemplate restTemplate = new RestTemplate();
-        String resourceUrl = "http://localhost:8084/api/auth/validate?gatewayUuid=" + gatewayUuid;
+        String resourceUrl = userServiceUrl + "/api/auth/validate?gatewayUuid=" + gatewayUuid;
         try {
             ResponseEntity response = restTemplate.postForObject(resourceUrl, userRequest, ResponseEntity.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
-        }
-        catch (HttpClientErrorException ex) {
+        } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
             //todo fix this foo
             return new ResponseEntity<>(new ApiResponse(false, "Token is invalid!"),
@@ -119,12 +120,12 @@ public class UserController {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<LoginRequest> request = new HttpEntity<>(loginRequest, headers);
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/api/auth/signin?gatewayUuid=" + gatewayUuid, request, Object.class);
+            ResponseEntity<?> response = restTemplate.postForEntity(userServiceUrl + "/api/auth/signin?gatewayUuid=" + gatewayUuid, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
         } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
             //todo fix this foo
-            return new ResponseEntity<>(new ApiResponse(false, "User not found with username or email: " + loginRequest.getIdentifier() ),
+            return new ResponseEntity<>(new ApiResponse(false, "User not found with username or email: " + loginRequest.getIdentifier()),
                     HttpStatus.UNAUTHORIZED);
         }
     }
@@ -143,12 +144,12 @@ public class UserController {
             @RequestParam String code,
             @RequestParam String serviceSecret,
             @RequestParam String redirectUri
-            ) {
+    ) {
         logger.info("GET request 'getTokensByCode' from service: " + serviceUuid);
         RestTemplate restTemplate = new RestTemplate();
         try {
             ResponseEntity<?> response = restTemplate.getForEntity(
-                    "http://localhost:8084/oauth/tokens?code=" + code
+                    userServiceUrl + "/oauth/tokens?code=" + code
                             + "&gatewayUuid=" + gatewayUuid
                             + "&serviceSecret=" + serviceSecret
                             + "&serviceUuid=" + serviceUuid,
@@ -166,17 +167,17 @@ public class UserController {
     }
 
     @GetMapping(value = "/oauth/signin",
-    params = {
-            "serviceUuid",
-            "redirectUri"
-    })
+            params = {
+                    "serviceUuid",
+                    "redirectUri"
+            })
     public ResponseEntity<?> authenticateService(@RequestParam String serviceUuid, @RequestParam String redirectUri) {
 
         logger.info("Get auth request with service uuid: " + serviceUuid + "\n");
         RestTemplate restTemplate = new RestTemplate();
         try {
             ResponseEntity<?> response = restTemplate.getForEntity(
-                    "http://localhost:8084/oauth/signin?serviceUuid=" + serviceUuid + "&redirectUri=" + redirectUri + "&gatewayUuid=" + gatewayUuid,
+                    userServiceUrl + "/oauth/signin?serviceUuid=" + serviceUuid + "&redirectUri=" + redirectUri + "&gatewayUuid=" + gatewayUuid,
                     Object.class);
             return ResponseEntity.status(HttpStatus.FOUND).headers(response.getHeaders()).body(response.getBody());
         } catch (HttpClientErrorException ex) {
@@ -195,7 +196,7 @@ public class UserController {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<SignUpServiceRequest> request = new HttpEntity<>(signUpServiceRequest, headers);
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/oauth/signup" + "&gatewayUuid=" + gatewayUuid, request, Object.class);
+            ResponseEntity<?> response = restTemplate.postForEntity(userServiceUrl + "/oauth/signup" + "&gatewayUuid=" + gatewayUuid, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
         } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");
@@ -213,7 +214,7 @@ public class UserController {
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         HttpEntity<SignUpUserRequest> request = new HttpEntity<>(signUpUserRequest, headers);
         try {
-            ResponseEntity<?> response = restTemplate.postForEntity("http://localhost:8084/api/auth/signup?gatewayUuid=" + gatewayUuid, request, Object.class);
+            ResponseEntity<?> response = restTemplate.postForEntity(userServiceUrl + "/api/auth/signup?gatewayUuid=" + gatewayUuid, request, Object.class);
             return ResponseEntity.status(response.getStatusCode()).headers(response.getHeaders()).body(response.getBody());
         } catch (HttpClientErrorException ex) {
             logger.info("Troubles exists :(");

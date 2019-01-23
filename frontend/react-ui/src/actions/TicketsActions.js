@@ -7,9 +7,9 @@ export function pingTickets() {
             {
                 headers:
                     {
-                        'Content-Type':'application/json',
-                        'User':localStorage.getItem('userUuid'),
-                        'Service':`${SERVICE_UUID}`
+                        'Content-Type': 'application/json',
+                        'User': localStorage.getItem('userUuid'),
+                        'Service': `${SERVICE_UUID}`
                     }
             });
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Route, IndexRoute} from 'react-router';
+import {IndexRoute, Route} from 'react-router';
 
 import App from './components/App';
 import Greetings from './components/common/Greetings';
@@ -25,11 +25,11 @@ export default (
             <Route path="/routes/create" component={requireAuth(AddRoute)}/>
             <Route path="/routes/aggregation" component={AggregationRoute}/>
         </Route>
-        <Route path="/flights" >
+        <Route path="/flights">
             <IndexRoute component={Flights}/>
             <Route path="/flights/create" component={requireAuth(AddFlight)}/>
         </Route>
-        <Route path="/tickets" >
+        <Route path="/tickets">
             <IndexRoute component={requireAuth(Tickets)}/>
             <Route path="/tickets/create" component={requireAuth(AddTicket)}/>
         </Route>

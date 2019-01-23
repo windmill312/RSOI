@@ -72,8 +72,7 @@ public class OauthController {
             if (externalServiceRepository.existsByUuid(UUID.fromString(serviceUuid))) {
                 String url = frontendUrl + "/oauth?redirectUri=" + redirectUri + "&serviceUuid=" + serviceUuid;
                 return ResponseEntity.status(HttpStatus.OK).header("Location", url).build();
-            }
-            else
+            } else
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -94,18 +93,17 @@ public class OauthController {
             ExternalService externalService = new ExternalService(signUpServiceRequest.getName());
             ExternalService result = externalServiceRepository.save(externalService);
             return ResponseEntity.status(HttpStatus.CREATED).body(new ServiceResponse(true, "Service registered successfully", result.getUuid(), result.getSecretKey()));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @GetMapping(
             params = {
-                "serviceUuid",
-                "gatewayUuid"
-    })
-    public ResponseEntity<?> isServiceExists (@RequestParam String serviceUuid,
-                                              @RequestParam String gatewayUuid) {
+                    "serviceUuid",
+                    "gatewayUuid"
+            })
+    public ResponseEntity<?> isServiceExists(@RequestParam String serviceUuid,
+                                             @RequestParam String gatewayUuid) {
         if (gatewayUuid.equals(gateway)) {
             ExternalService externalService = externalServiceRepository.findByUuid(UUID.fromString(serviceUuid))
                     .orElseThrow(() -> new UsernameNotFoundException("Service not found with UUID : " + serviceUuid));
@@ -114,8 +112,7 @@ public class OauthController {
             signUpServiceRequest.setName(externalService.getName());
 
             return ResponseEntity.ok().body(signUpServiceRequest);
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -127,11 +124,11 @@ public class OauthController {
                     "serviceSecret",
                     "code"
             })
-    public ResponseEntity<?> getTokensByCode (@RequestParam String serviceUuid,
-                                              @RequestParam String gatewayUuid,
-                                              @RequestParam String serviceSecret,
-                                              @RequestParam String code
-                                              ) {
+    public ResponseEntity<?> getTokensByCode(@RequestParam String serviceUuid,
+                                             @RequestParam String gatewayUuid,
+                                             @RequestParam String serviceSecret,
+                                             @RequestParam String code
+    ) {
         if (gatewayUuid.equals(gateway)) {
 
             ServiceKey serviceKey = serviceKeyRepository.findByValue(UUID.fromString(code))
@@ -161,11 +158,9 @@ public class OauthController {
                 JwtAuthenticationResponse response = new JwtAuthenticationResponse(accessToken, refreshToken, jwtAccessExpirationInMs, null);
 
                 return ResponseEntity.ok().body(response);
-            }
-            else
+            } else
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Service secret is invalid!");
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

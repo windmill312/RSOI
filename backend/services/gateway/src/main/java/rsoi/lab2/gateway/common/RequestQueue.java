@@ -1,7 +1,8 @@
-package rsoi.lab2.gateway.common;
+/*package rsoi.lab2.gateway.common;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -13,6 +14,7 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import rsoi.lab2.gateway.model.FlightInfo;
 
+import javax.annotation.Resource;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.logging.Logger;
@@ -28,29 +30,24 @@ public class RequestQueue extends Thread {
     @Value("${app.gatewayUuid}")
     private String gatewayUuid;
 
-    private static volatile RequestQueue instance = new RequestQueue();
+    private static volatile RequestQueue instance;
+
+    @Resource(
+            authenticationType = Resource.AuthenticationType.CONTAINER,
+            shareable = true
+        )
     private BlockingQueue<FlightInfo> requests;
 
-    private static final FlightInfo SHUTDOWN_REQ = new FlightInfo();
+    private static FlightInfo SHUTDOWN_REQ;
     private volatile boolean shuttingDown, executionTerminated;
 
-    private RequestQueue() {
-        this.requests = new ArrayBlockingQueue<>(capacity);
-        SHUTDOWN_REQ.setMaxTickets(-1);
+    public RequestQueue() {
+        //requests = new ArrayBlockingQueue<>(capacity);
+        //instance = new RequestQueue();
+        //SHUTDOWN_REQ = new FlightInfo();
+        //SHUTDOWN_REQ.setMaxTickets(-1);
         start();
     }
-
-    public static RequestQueue getInstance() {
-        if (instance == null) {
-            synchronized (RequestQueue.class) {
-                if (instance == null) {
-                    instance = new RequestQueue();
-                }
-            }
-        }
-        return instance;
-    }
-
 
     public void add(FlightInfo request) {
         if (shuttingDown || executionTerminated) return;
@@ -102,4 +99,4 @@ public class RequestQueue extends Thread {
             executionTerminated = true;
         }
     }
-}
+}*/

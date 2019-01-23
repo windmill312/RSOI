@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import rsoi.lab2.gateway.common.CheckToken;
-import rsoi.lab2.gateway.common.RequestQueue;
+//import rsoi.lab2.gateway.common.RequestQueue;
 import rsoi.lab2.gateway.exception.InvalidTokenException;
 import rsoi.lab2.gateway.model.FlightInfo;
 import rsoi.lab2.gateway.model.TicketInfo;
+import rsoi.lab2.gateway.redis.MessagePublisher;
+import rsoi.lab2.gateway.redis.model.Task;
+import rsoi.lab2.gateway.redis.model.Topic;
 
 import java.util.logging.Logger;
 
@@ -26,11 +29,21 @@ public class TicketController {
 
     private Logger logger = Logger.getLogger(TicketController.class.getName());
 
-    /*@Autowired
-    private RequestQueue queue;*/
+    private final MessagePublisher messagePublisher;
 
     @Value("${app.gatewayUuid}")
     private String gatewayUuid;
+
+    @Value("${app.services.ticket}")
+    private String ticketServiceUrl;
+
+    @Value("${app.services.flight}")
+    private String flightServiceUrl;
+
+    @Autowired
+    public TicketController(MessagePublisher messagePublisher) {
+        this.messagePublisher = messagePublisher;
+    }
 
     @GetMapping(value = "/pingTickets")
     public ResponseEntity<?> pingTickets(@RequestHeader(name = "Authorization") String accessToken,
@@ -39,7 +52,7 @@ public class TicketController {
         logger.info("Get request (pingTickets)");
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8081/ping?gatewayUuid=" + gatewayUuid;
+            String resourceUrl = ticketServiceUrl + "/ping?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
         }
         else
@@ -55,7 +68,7 @@ public class TicketController {
         logger.info("Get request (getTickets)");
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8081/tickets?page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
+            String resourceUrl = ticketServiceUrl + "/tickets?page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
         } else
             throw new InvalidTokenException("Token is invalid");
@@ -70,7 +83,7 @@ public class TicketController {
         logger.info("Get request (getUserTickets)");
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8081/userTickets?page=" + page + "&size=" + size + "&userUuid=" + userUuid + "&gatewayUuid=" + gatewayUuid;
+            String resourceUrl = ticketServiceUrl + "/userTickets?page=" + page + "&size=" + size + "&userUuid=" + userUuid + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
         } else
             throw new InvalidTokenException("Token is invalid");
@@ -87,7 +100,7 @@ public class TicketController {
         logger.info("Get request (getTicketsByFlight)");
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8081/flightTickets?uidFlight=" + uidFlight + "&page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
+            String resourceUrl = ticketServiceUrl + "/flightTickets?uidFlight=" + uidFlight + "&page=" + page + "&size=" + size + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
         } else
             throw new InvalidTokenException("Token is invalid");
@@ -100,7 +113,7 @@ public class TicketController {
         logger.info("Get request (countTickets)");
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8081/countAll?gatewayUuid=" + gatewayUuid;
+            String resourceUrl = ticketServiceUrl + "/countAll?gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, String.class);
         } else
             throw new InvalidTokenException("Token is invalid");
@@ -115,7 +128,7 @@ public class TicketController {
         logger.info("Get request (getTicket)");
         if (CheckToken.checkToken(accessToken, userUuid, serviceUuid, gatewayUuid)) {
             RestTemplate restTemplate = new RestTemplate();
-            String resourceUrl = "http://localhost:8081/ticket?uidTicket=" + uidTicket + "&gatewayUuid=" + gatewayUuid;
+            String resourceUrl = ticketServiceUrl + "/ticket?uidTicket=" + uidTicket + "&gatewayUuid=" + gatewayUuid;
             return restTemplate.getForEntity(resourceUrl, Object.class);
         } else
             throw new InvalidTokenException("Token is invalid");
@@ -132,7 +145,7 @@ public class TicketController {
                 RestTemplate restTemplate = new RestTemplate();
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-                String resourceUrl = "http://localhost:8083/flight?uidFlight=" + ticketInfo.getUidFlight() + "&gatewayUuid=" + gatewayUuid;
+                String resourceUrl = flightServiceUrl + "/flight?uidFlight=" + ticketInfo.getUidFlight() + "&gatewayUuid=" + gatewayUuid;
                 ResponseEntity<?> responseNnTickets = restTemplate.getForEntity(resourceUrl, Object.class);
                 if (responseNnTickets.getStatusCode().equals(HttpStatus.OK)) {
                     String flightObject = mapper.writeValueAsString(responseNnTickets.getBody());
@@ -147,25 +160,28 @@ public class TicketController {
                         HttpHeaders headers = new HttpHeaders();
                         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                         HttpEntity<TicketInfo> requestTicket = new HttpEntity<>(ticketInfo, headers);
-                        ResponseEntity<String> responseTicket = restTemplate.exchange("http://localhost:8081/ticket?gatewayUuid=" + gatewayUuid, HttpMethod.PUT, requestTicket, String.class);
+                        ResponseEntity<String> responseTicket = restTemplate.exchange(ticketServiceUrl + "/ticket?gatewayUuid=" + gatewayUuid, HttpMethod.PUT, requestTicket, String.class);
                         if (responseTicket.getStatusCode().equals(HttpStatus.OK)) {
                             logger.info("Ticket created with uid " + responseTicket.getBody());
                             flightInfo.setNnTickets(flightInfo.getNnTickets() + 1);
 
+                            String requestUrl = flightServiceUrl + "/flight?_method=patch" + "&gatewayUuid=" + gatewayUuid;
+                            HttpEntity<FlightInfo> requestFlight;
                             try {
                                 RestTemplate restTemplateFlight = new RestTemplate();
-
                                 HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
                                 requestFactory.setConnectTimeout(500);
                                 requestFactory.setReadTimeout(500);
                                 restTemplate.setRequestFactory(requestFactory);
 
-                                HttpEntity<FlightInfo> requestFlight = new HttpEntity<>(flightInfo, headers);
-                                restTemplateFlight.postForObject("http://localhost:8083/flight?_method=patch" + "&gatewayUuid=" + gatewayUuid, requestFlight, ResponseEntity.class);
+                                requestFlight = new HttpEntity<>(flightInfo, headers);
+                                restTemplateFlight.postForObject(requestUrl, requestFlight, ResponseEntity.class);
                             }
                             catch (ResourceAccessException ex) {
                                 logger.info("Flight service is not available! Request added to the queue!");
-                                //queue.add(flightInfo);
+                                messagePublisher.publish(
+                                        Topic.TASK.getName(),
+                                        new Task(requestUrl, flightInfo));
                             }
                             return responseTicket;
                         } else
@@ -191,7 +207,7 @@ public class TicketController {
             try {
                 logger.info("Get PATCH request (editTicket)");
                 RestTemplate restTemplate = new RestTemplate();
-                String resourceUrl = "http://localhost:8081/ticket?_method=patch" + "&gatewayUuid=" + gatewayUuid;
+                String resourceUrl = ticketServiceUrl + "/ticket?_method=patch" + "&gatewayUuid=" + gatewayUuid;
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                 HttpEntity<TicketInfo> request = new HttpEntity<>(ticketInfo, headers);
@@ -217,7 +233,7 @@ public class TicketController {
                 RestTemplate restTemplate = new RestTemplate();
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-                String resourceUrl = "http://localhost:8081/ticket?uidTicket=" + uidTicket + "&gatewayUuid=" + gatewayUuid;
+                String resourceUrl = ticketServiceUrl + "/ticket?uidTicket=" + uidTicket + "&gatewayUuid=" + gatewayUuid;
                 ResponseEntity responseTicket = restTemplate.getForEntity(resourceUrl, String.class);
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 TicketInfo ticketInfo = gson.fromJson(responseTicket.getBody().toString(), TicketInfo.class);
@@ -229,11 +245,11 @@ public class TicketController {
                 ResponseEntity response = restTemplate.exchange(resourceUrl, HttpMethod.DELETE, request, String.class);
                 if (response.getStatusCode().equals(HttpStatus.OK)) {
                     //update flight
-                    resourceUrl = "http://localhost:8083/flight?uidFlight=" + uidFlight + "&gatewayUuid=" + gatewayUuid;
+                    resourceUrl = flightServiceUrl + "/flight?uidFlight=" + uidFlight + "&gatewayUuid=" + gatewayUuid;
                     ResponseEntity responseFlight = restTemplate.getForEntity(resourceUrl, String.class);
                     FlightInfo flightInfo = new Gson().fromJson(responseFlight.getBody().toString(), FlightInfo.class);
                     flightInfo.setNnTickets(flightInfo.getNnTickets() - 1);
-                    new FlightController().editFlight(flightInfo, gatewayUuid);
+                    new FlightController(messagePublisher).editFlight(flightInfo, gatewayUuid);
                     return responseFlight;
                 } else {
                     logger.info("Server error while removing ticket");
@@ -256,7 +272,7 @@ public class TicketController {
             try {
                 logger.info("Get DELETE request (deleteTickets)");
                 RestTemplate restTemplate = new RestTemplate();
-                String resourceUrl = "http://localhost:8081/tickets?gatewayUuid=" + gatewayUuid;
+                String resourceUrl = ticketServiceUrl + "/tickets?gatewayUuid=" + gatewayUuid;
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
                 HttpEntity<String> request = new HttpEntity<>(uidFlight, headers);

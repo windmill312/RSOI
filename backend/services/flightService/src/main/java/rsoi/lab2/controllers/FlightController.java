@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
+
 import com.google.gson.Gson;
 
 @RestController
@@ -36,7 +37,7 @@ public class FlightController {
     @GetMapping(
             value = "/ping",
             params = {
-                "gatewayUuid"
+                    "gatewayUuid"
             },
             produces = "application/json"
     )
@@ -76,15 +77,14 @@ public class FlightController {
                 return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
             else
                 return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @GetMapping(value = "/flight",
             params = {
-                "uidFlight",
-                "gatewayUuid"
+                    "uidFlight",
+                    "gatewayUuid"
             },
             produces = "application/json")
     public ResponseEntity<FlightInfo> getFlight(@RequestParam String uidFlight,
@@ -98,8 +98,8 @@ public class FlightController {
 
     @GetMapping(value = "/flights",
             params = {
-                "uidRoute",
-                "gatewayUuid"
+                    "uidRoute",
+                    "gatewayUuid"
             },
             produces = "application/json")
     public ResponseEntity<List<FlightInfo>> getRouteFlights(@RequestParam String uidRoute,
@@ -113,8 +113,7 @@ public class FlightController {
                 return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
             else
                 return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -198,8 +197,8 @@ public class FlightController {
     @DeleteMapping(
             value = "/flight",
             params = {
-            "gatewayUuid"
-    })
+                    "gatewayUuid"
+            })
     public ResponseEntity delete(@RequestBody String uidFlight,
                                  @RequestParam String gatewayUuid) {
         if (gatewayUuid.equals(gateway))

@@ -32,8 +32,8 @@ public class TicketController {
     @GetMapping(
             value = "/ping",
             params = {
-            "gatewayUuid"
-    })
+                    "gatewayUuid"
+            })
     public ResponseEntity ping(@RequestParam String gatewayUuid) {
         logger.info("Get \"ping\" request.");
         if (gatewayUuid.equals(gateway))
@@ -70,8 +70,7 @@ public class TicketController {
                 return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
             else
                 return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -90,8 +89,7 @@ public class TicketController {
                 return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
             else
                 return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -111,15 +109,14 @@ public class TicketController {
                 return ResponseEntity.ok(list.subList((size * (page - 1)), (size * page) - ((size * page) - list.size())));
             else
                 return ResponseEntity.ok(list.subList(size * (page - 1), size * page));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @GetMapping(value = "/ticket",
             params = {
-            "uidTicket",
-            "gatewayUuid"
+                    "uidTicket",
+                    "gatewayUuid"
             })
     public ResponseEntity getTicket(@RequestParam String uidTicket,
                                     @RequestParam String gatewayUuid) {
@@ -182,8 +179,8 @@ public class TicketController {
     @GetMapping(
             value = "/countTickets",
             params = {
-                "uidFlight",
-                "gatewayUuid"
+                    "uidFlight",
+                    "gatewayUuid"
             }
     )
     public ResponseEntity countFlightTickets(@RequestParam UUID uidFlight,
@@ -196,12 +193,12 @@ public class TicketController {
     }
 
     @GetMapping(
-        value = "/countTickets",
-        params = {
-                "uidFlight",
-                "classType",
-                "gatewayUuid"
-        }
+            value = "/countTickets",
+            params = {
+                    "uidFlight",
+                    "classType",
+                    "gatewayUuid"
+            }
     )
     public ResponseEntity countTickets(@RequestParam UUID uidFlight,
                                        @RequestParam String classType,
@@ -226,8 +223,7 @@ public class TicketController {
             ticket.setClassType(ticketInfo.getClassType());
             ticketService.saveOrUpdate(ticket);
             return ResponseEntity.ok().build();
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -243,8 +239,7 @@ public class TicketController {
         if (gatewayUuid.equals(gateway)) {
             ticketService.delete(UUID.fromString(uidTicket));
             return ResponseEntity.ok().build();
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -257,12 +252,11 @@ public class TicketController {
     public ResponseEntity deleteFlightTickets(@RequestBody String uidFlight,
                                               @RequestParam String gatewayUuid) {
         logger.info("Get DELETE request (deleteFlightTickets) with param (idFlight=" + uidFlight + ").");
-            if (gatewayUuid.equals(gateway)) {
-                ticketService.deleteFlightTickets(UUID.fromString(uidFlight));
-                return ResponseEntity.ok().build();
-            }
-            else
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        if (gatewayUuid.equals(gateway)) {
+            ticketService.deleteFlightTickets(UUID.fromString(uidFlight));
+            return ResponseEntity.ok().build();
+        } else
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
 }

@@ -112,8 +112,7 @@ public class AuthController {
             } else {
                 throw new UsernameNotFoundException("Token is invalid");
             }
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -153,8 +152,7 @@ public class AuthController {
                     );
 
             return tokensOperations(user, loginRequest);
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -163,8 +161,8 @@ public class AuthController {
             params = {
                     "gatewayUuid"
             })
-    public ResponseEntity<?> validation (@RequestBody UserRequest userRequest,
-                                         @RequestParam String gatewayUuid) {
+    public ResponseEntity<?> validation(@RequestBody UserRequest userRequest,
+                                        @RequestParam String gatewayUuid) {
         if (gatewayUuid.equals(gateway)) {
             User user = userRepository.findByUuid(userRequest.getUserUuid())
                     .orElseThrow(() ->
@@ -176,8 +174,7 @@ public class AuthController {
                 return ResponseEntity.ok().build();
             else
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
@@ -186,16 +183,16 @@ public class AuthController {
         ExternalService externalService = serviceRepository.findByUuid(loginRequest.getServiceUuid())
                 .orElseThrow(() -> new NoSuchElementException("Service not found"));
 
-            tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
+        tokenRepository.deleteAllByUserAndServiceUuid(user, loginRequest.getServiceUuid());
 
-            String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
-            String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
+        String jwtAccess = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
+        String jwtRefresh = tokenProvider.generateToken(loginRequest.getIdentifier(), user.getUuid().toString());
 
-            updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
-            updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
-            userRepository.save(user);
+        updateToken(loginRequest.getServiceUuid(), user, TokenType.ACCESS_TOKEN, jwtAccess);
+        updateToken(loginRequest.getServiceUuid(), user, TokenType.REFRESH_TOKEN, jwtRefresh);
+        userRepository.save(user);
 
-            return createResponseWithTokens(user, jwtAccess, jwtRefresh, externalService);
+        return createResponseWithTokens(user, jwtAccess, jwtRefresh, externalService);
     }
 
     private ResponseEntity createResponseWithTokens(User user, String jwtAccess, String jwtRefresh, ExternalService externalService) {
@@ -208,7 +205,7 @@ public class AuthController {
         for (Role role : user.getRoles())
             if (role.getName().equals(RoleName.ROLE_ADMIN))
                 response.setAdmin(true);
-            return ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 
     private UUID createAuthCode(ExternalService externalService, User user) {
@@ -266,8 +263,7 @@ public class AuthController {
                     .buildAndExpand(result.getUsername()).toUri();
 
             return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

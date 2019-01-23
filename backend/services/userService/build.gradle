@@ -39,8 +39,6 @@ dependencies {
     compile group: 'org.springframework.security', name: 'spring-security-config', version: '5.1.2.RELEASE'
 
 
-
-
     //testCompile group: 'org.mockito', name: 'mockito-all', version: '1.8.4'
 
     compile "org.postgresql:postgresql"

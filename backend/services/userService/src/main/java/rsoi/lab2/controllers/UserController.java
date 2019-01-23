@@ -22,16 +22,15 @@ public class UserController {
     @GetMapping(
             value = "/user/me",
             params = {
-            "gatewayUuid"
-    })
+                    "gatewayUuid"
+            })
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity getCurrentUser(@CurrentUser UserPrincipal currentUser,
-                                      @RequestParam String gatewayUuid) {
+                                         @RequestParam String gatewayUuid) {
         if (gatewayUuid.equals(gateway)) {
             UserSummary userSummary = new UserSummary(currentUser.getUuid(), currentUser.getUsername(), currentUser.getName());
             return ResponseEntity.ok().body(userSummary);
-        }
-        else
+        } else
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import setAuthorizationToken from '../utils/SetAuthorizationToken';
 import jwtDecode from 'jwt-decode';
-import { SET_CURRENT_USER } from './types';
+import {SET_CURRENT_USER} from './types';
 import {API_BASE_URL, SERVICE_UUID} from '../config';
 
 export function setCurrentUser(user) {
@@ -41,22 +41,21 @@ export function login(data) {
                     const decodedToken = jwtDecode(accessToken);
                     localStorage.setItem('userUuid', decodedToken.jti);
                     dispatch(setCurrentUser(decodedToken));
-                }
-                else {
+                } else {
                     localStorage.setItem('code', res.data.code);
                 }
-        });
+            });
     }
 }
 
 export function refreshToken() {
     return dispatch => {
-    if ( new Date().getTime() - parseInt(localStorage.getItem('msFrom'))  > parseInt(localStorage.getItem('jwtExpirationInMs'))) {
+        if (new Date().getTime() - parseInt(localStorage.getItem('msFrom')) > parseInt(localStorage.getItem('jwtExpirationInMs'))) {
 
-        const data = {
-            identifier: localStorage.getItem('identifier'),
-            serviceUuid: `${SERVICE_UUID}`
-        };
+            const data = {
+                identifier: localStorage.getItem('identifier'),
+                serviceUuid: `${SERVICE_UUID}`
+            };
 
 
             const authToken = localStorage.getItem('jwtRefreshToken');

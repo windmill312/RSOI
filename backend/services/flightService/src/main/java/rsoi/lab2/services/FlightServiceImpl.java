@@ -57,15 +57,14 @@ public class FlightServiceImpl implements FlightService {
     public void rollback() throws JSONException {
         Gson gson = new Gson();
         try {
-            for (int i=0; i< jsonArray.length(); i++)
-                for (int j=0; j < jsonArray.getJSONArray(i).length(); j++ ) {
+            for (int i = 0; i < jsonArray.length(); i++)
+                for (int j = 0; j < jsonArray.getJSONArray(i).length(); j++) {
                     Flight ticket = gson.fromJson(jsonArray.getJSONArray(i).getJSONObject(j).toString(), Flight.class);
                     flightRepository.save(ticket);
                 }
 
             jsonArray = new JSONArray();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

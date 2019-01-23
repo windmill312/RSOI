@@ -1,9 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { addFlashMessage } from '../actions/FlashMessages';
+import {connect} from 'react-redux';
+import {addFlashMessage} from '../actions/FlashMessages';
 import PropTypes from 'prop-types';
 
-export default function(ComposedComponent) {
+export default function (ComposedComponent) {
     class Authenticate extends React.Component {
         componentWillMount() {
             localStorage.setItem('url', window.location.href);
@@ -44,5 +44,5 @@ export default function(ComposedComponent) {
         };
     }
 
-    return connect(mapStateToProps, { addFlashMessage })(Authenticate);
+    return connect(mapStateToProps, {addFlashMessage})(Authenticate);
 }

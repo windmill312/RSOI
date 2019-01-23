@@ -9,6 +9,18 @@ import PropTypes from "prop-types";
 
 class App extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeTab: '0',
+            disabled: false,
+            userUuid: '',
+            userName: '',
+            userInfo: []
+        }
+
+    }
+
     componentDidUpdate(prevProps) {
         if (!prevProps.auth && this.props.auth) {
             this.startPeriodicRefresh();
@@ -37,24 +49,11 @@ class App extends React.Component {
         clearInterval(this.refreshInterval);
     }
 
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            activeTab: '0',
-            disabled: false,
-            userUuid: '',
-            userName: '',
-            userInfo: []
-        }
-
-    }
-
     render() {
         return (
             <div className="container">
-                <NavigationBar />
-                <FlashMessagesList />
+                <NavigationBar/>
+                <FlashMessagesList/>
                 {this.props.children}
             </div>
         )
