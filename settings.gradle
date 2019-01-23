@@ -1,9 +1,9 @@
-rootProject.name = 'lab2'
+rootProject.name = 'avia-trafic'
 
-include 'backend/services/flightService'
-include 'backend/services/ticketService'
-include 'backend/services/routeService'
-include 'backend/services/gateway'
-include 'backend/services/userService'
-include 'frontend/ui'
+include 'backend/services/flightService',
+        'backend/services/ticketService',
+        'backend/services/routeService',
+        'backend/services/gateway',
+        'backend/services/userService',
+        'frontend/ui'
 

@@ -16,10 +16,9 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'jacoco'
 
-group = 'rsoi.backend'
+group = 'com.sychev'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
-buildDir = '/home/andrey/Рабочий стол/Projects/RSOI/lab2/backend/services/gateway'
 
 repositories {
     mavenCentral()
