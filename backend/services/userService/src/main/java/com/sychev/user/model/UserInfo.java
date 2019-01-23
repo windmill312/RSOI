@@ -3,7 +3,6 @@ package com.sychev.user.model;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-@Deprecated
 public class UserInfo {
 
     private Long idUser;
