@@ -1,4 +1,4 @@
-rootProject.name = 'avia-trafic'
+rootProject.name = 'avia-traffic'
 
 include 'backend/services/flightService',
         'backend/services/ticketService',
