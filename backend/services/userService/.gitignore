@@ -1,7 +1,3 @@
-.gradle
-/build/
-!gradle/wrapper/gradle-wrapper.jar
-
 ### STS ###
 .apt_generated
 .classpath
@@ -24,3 +20,10 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### Gradle ###
+.gradle
+/build/
+gradle-app.setting
+!gradle-wrapper.jar
+.gradletasknamecache
